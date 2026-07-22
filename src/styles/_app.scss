@@ -1,0 +1,19 @@
+$chip-size: 12.5rem;
+$line-size: 1rem;
+
+.game-board {
+  display: flex;
+  justify-content: center;
+  padding-top: 4rem;
+
+  .board-content-wrapper {
+    width: 100%;
+    height: fit-content;
+    position: relative;
+    aspect-ratio: 1/1;
+
+    &.board--standard {
+      max-width: 29.75rem;
+    }
+  }
+}

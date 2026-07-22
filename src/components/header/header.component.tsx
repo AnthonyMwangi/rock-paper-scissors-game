@@ -1,4 +1,4 @@
-import { GameBoard, GameLogo } from '@/config';
+import { GameBoard, GameLogo } from '@/utilities';
 import { FC, useMemo } from 'react';
 import './header.styles.scss';
 

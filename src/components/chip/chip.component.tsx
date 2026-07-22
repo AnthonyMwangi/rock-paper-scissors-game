@@ -1,4 +1,4 @@
-import { GameBoard, GameOption, GameOptionImage } from '@/config';
+import { GameBoard, GameOption, GameOptionImage } from '@/utilities';
 import { FC, Fragment } from 'react';
 import './chip.styles.base.scss';
 
