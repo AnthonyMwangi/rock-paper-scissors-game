@@ -3,13 +3,14 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "ignoreDeprecations": "6.0",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
     }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*",
     "global.d.ts"
   ],
   "exclude": [
