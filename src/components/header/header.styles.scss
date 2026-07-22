@@ -1,0 +1,39 @@
+.header {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  border: 2px solid var(--color-gray-600);
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+
+  .score-card {
+    display: grid;
+    color: #282c34;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    background-color: var(--color-white);
+    border-radius: 0.5rem;
+    padding: 1rem 3rem;
+    gap: 10px;
+
+    label {
+      text-align: center;
+      color: var(--color-blue-700);
+      letter-spacing: 2.5px;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    h2 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      color: var(--color-gray-600);
+      font-weight: var(--font-weight-bold);
+      font-size: 4rem;
+      line-height: 1;
+    }
+  }
+}

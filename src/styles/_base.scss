@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700&display=swap');
+
+:root {
+  /* Font */
+  --font-family-base: "Barlow Semi Condensed", sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Primary */
+  --color-gold-500: #EB9F0E;
+  --color-gold-600: #C76C1B;
+  --color-blue-500: #4664F4;
+  --color-blue-700: #2A45C2;
+  --color-red-600: #DB2E4D;
+  --color-red-800: #9D1634;
+  --color-purple-600: #834EE3;
+  --color-purple-700: #5F37A8;
+  --color-light-blue-400: #3FB7CD;
+  --color-light-blue-500: #2D8DAB;
+
+  /* Neutral */
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-gray-200: #E1E4ED;
+  --color-gray-400: #B1B4C5;
+  --color-gray-500: #8A90AC;
+  --color-gray-600: #565468;
+  --color-navy-900: #3B4262;
+
+  /* Background gradient */
+  --color-bg-gradient-start: #1F3757;
+  --color-bg-gradient-end: #131537;
+  --color-bg-gradient: radial-gradient(circle,
+      var(--color-bg-gradient-start) 0%,
+      var(--color-bg-gradient-end) 100%);
+
+  /* Paper gradient */
+  --color-paper-gradient-start: #F3F3F3;
+  --color-paper-gradient-end: #DADADA;
+  --color-paper-gradient: linear-gradient(to right,
+      var(--color-paper-gradient-start) 0%,
+      var(--color-paper-gradient-end) 100%);
+
+  /* Breakpoints */
+  --breakpoint-min: 320px;
+  --breakpoint-mobile: 375px;
+  --breakpoint-desktop: 1366px;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-semibold);
+  background: var(--color-bg-gradient);
+  color: var(--color-navy-900);
+}
+
+.app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+
+  .content {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    padding: 3rem 0;
+    min-height: 100vh;
+    max-width: 960px;
+    width: 100%;
+  }
+}
