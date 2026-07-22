@@ -1,6 +1,6 @@
 import { GameBoard, GameOption, GameOptionImage } from '@/utilities';
-import { FC, Fragment } from 'react';
-import './chip.styles.base.scss';
+import { FC } from 'react';
+import './chip.styles.scss';
 
 type ChipProps = {
   board: GameBoard;
@@ -10,14 +10,10 @@ type ChipProps = {
 
 export const Chip: FC<ChipProps> = ({ board, option, onSelectOption }) => {
   return (
-    <Fragment key={option}>
-      <hr className={`line board--${board}`} />
-
-      <button className={`chip ${option} board--${board}`} onClick={() => onSelectOption(option)}>
-        <div className="wrapper">
-          <img className='icon' alt={`${option} icon`} src={GameOptionImage[option]} />
-        </div>
-      </button>
-    </Fragment>
+    <button className={`chip ${option} board--${board}`} onClick={() => onSelectOption(option)}>
+      <div className="wrapper">
+        <img className='icon' alt={`${option} icon`} src={GameOptionImage[option]} />
+      </div>
+    </button>
   )
 }
