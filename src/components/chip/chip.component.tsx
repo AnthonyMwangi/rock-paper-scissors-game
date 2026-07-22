@@ -14,6 +14,7 @@ export const Chip: FC<ChipProps> = ({ board, option, onSelectOption }) => {
       <div className="wrapper">
         <img className='icon' alt={`${option} icon`} src={GameOptionImage[option]} />
       </div>
+      <div className='hover-animation' />
     </button>
   )
 }

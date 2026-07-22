@@ -1,78 +1,79 @@
 .chip {
   width: var(--chip-size);
-  height: var(--chip-size);
+  height: calc(var(--chip-size) + 0.2rem);
+  cursor: url("../../images/pointer.svg"), pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   position: absolute;
   padding: 1.5rem;
-  cursor: url("../../images/pointer.svg"), pointer;
+  z-index: 1;
 
-  &::before,
-  &:after {
+  &::before {
     content: "";
     width: 100%;
-    height: calc(100% + 0.2rem);
+    height: calc(100% - 0.4rem);
     position: absolute;
     border-radius: 50%;
     display: block;
-    z-index: 1;
+    z-index: 2;
     top: 0;
   }
 
-  &::before {
-    height: calc(100% - 0.4rem);
-    z-index: 2;
+  &:hover {
+    &::after {
+      content: "";
+      width: calc(100% + 3.5rem);
+      height: calc(100% + 3.5rem);
+      background-color: var(--color-white);
+      transition: all 3s ease-in-out;
+      position: absolute;
+      border-radius: 50%;
+      display: block;
+      z-index: 1;
+      opacity: 0.1;
+      top: -1.75rem;
+    }
   }
 
   &.rock {
+    background: var(--color-red-800);
+
     &::before {
       background: var(--color-red-600);
-    }
-
-    &::after {
-      background: var(--color-red-800);
     }
   }
 
   &.paper {
+    background: var(--color-blue-700);
+
     &::before {
       background: var(--color-blue-500);
-    }
-
-    &::after {
-      background: var(--color-blue-700);
     }
   }
 
   &.scissors {
+    background: var(--color-gold-600);
+
     &::before {
       background: var(--color-gold-500);
-    }
-
-    &::after {
-      background: var(--color-gold-600);
     }
   }
 
   &.lizard {
+    background: var(--color-purple-700);
+
     &::before {
       background: var(--color-purple-600);
-    }
-
-    &::after {
-      background: var(--color-purple-700);
     }
   }
 
   &.spock {
+    background: var(--color-light-blue-500);
+
     &::before {
       background: var(--color-light-blue-400);
-    }
-
-    &::after {
-      background: var(--color-light-blue-500);
     }
   }
 
@@ -80,29 +81,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background: var(--color-gray-400);
     position: relative;
     border-radius: 50%;
     width: 9.5rem;
     height: 9.5rem;
-    z-index: 5;
+    z-index: 3;
 
-    &::before,
     &:after {
       content: "";
       width: 100%;
-      height: 100%;
-      background: var(--color-gray-400);
+      height: calc(100% - 0.5rem);
+      background: var(--color-paper-gradient);
       position: absolute;
       border-radius: 50%;
       display: block;
       bottom: 0;
-      z-index: 3;
-    }
-
-    &::after {
-      background: green;
-      background: var(--color-paper-gradient);
-      height: calc(100% - 0.5rem);
       z-index: 4;
     }
   }
@@ -114,19 +108,19 @@
   }
 
   &.board--standard {
-      &:nth-of-type(1) {
-        left: 0;
-        top: 0;
-      }
-
-      &:nth-of-type(2) {
-        right: 0;
-        top: 0;
-      }
-
-      &:nth-of-type(3) {
-        left: calc(50% - 6.25rem);
-        bottom: 0;
-      }
+    &:nth-of-type(1) {
+      left: 0;
+      top: 0;
     }
+
+    &:nth-of-type(2) {
+      right: 0;
+      top: 0;
+    }
+
+    &:nth-of-type(3) {
+      left: calc(50% - 6.25rem);
+      bottom: 0;
+    }
+  }
 }
