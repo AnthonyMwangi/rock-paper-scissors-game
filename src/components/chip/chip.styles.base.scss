@@ -1,0 +1,133 @@
+@use './chip.styles.line.scss';
+
+.chip {
+  width: var(--chip-size);
+  height: var(--chip-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: absolute;
+  padding: 1.5rem;
+
+  &::before,
+  &:after {
+    content: "";
+    width: 100%;
+    height: calc(100% + 0.2rem);
+    position: absolute;
+    border-radius: 50%;
+    display: block;
+    z-index: 1;
+    top: 0;
+  }
+
+  &::before {
+    height: calc(100% - 0.4rem);
+    z-index: 2;
+  }
+
+  &.rock {
+    &::before {
+      background: var(--color-red-600);
+    }
+
+    &::after {
+      background: var(--color-red-800);
+    }
+  }
+
+  &.paper {
+    &::before {
+      background: var(--color-blue-500);
+    }
+
+    &::after {
+      background: var(--color-blue-700);
+    }
+  }
+
+  &.scissors {
+    &::before {
+      background: var(--color-gold-500);
+    }
+
+    &::after {
+      background: var(--color-gold-600);
+    }
+  }
+
+  &.lizard {
+    &::before {
+      background: var(--color-purple-600);
+    }
+
+    &::after {
+      background: var(--color-purple-700);
+    }
+  }
+
+  &.spock {
+    &::before {
+      background: var(--color-light-blue-400);
+    }
+
+    &::after {
+      background: var(--color-light-blue-500);
+    }
+  }
+
+  .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 50%;
+    width: 9.5rem;
+    height: 9.5rem;
+    z-index: 5;
+
+    &::before,
+    &:after {
+      content: "";
+      width: 100%;
+      height: 100%;
+      background: var(--color-gray-400);
+      position: absolute;
+      border-radius: 50%;
+      display: block;
+      bottom: 0;
+      z-index: 3;
+    }
+
+    &::after {
+      background: green;
+      background: var(--color-paper-gradient);
+      height: calc(100% - 0.5rem);
+      z-index: 4;
+    }
+  }
+
+  .icon {
+    min-width: 4rem;
+    aspect-ratio: 1;
+    z-index: 5;
+  }
+
+  &.board--standard {
+      &:nth-of-type(1) {
+        left: 0;
+        top: 0;
+      }
+
+      &:nth-of-type(2) {
+        right: 0;
+        top: 0;
+      }
+
+      &:nth-of-type(3) {
+        left: calc(50% - 6.25rem);
+        bottom: 0;
+      }
+    }
+}

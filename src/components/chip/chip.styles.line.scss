@@ -1,0 +1,33 @@
+.line {
+  border: 0;
+  outline: 0;
+  position: absolute;
+  transform-origin: left center;
+  border-width: calc(var(--chip-line-width) / 2);
+  border-color: var(--color-black);
+  border-style: solid;
+  opacity: 0.2;
+  margin: 0;
+
+  &.board--standard {
+      width: calc(100% - var(--chip-size));
+
+      &:nth-of-type(1) {
+        left: calc(var(--chip-size) / 2);
+        margin-top: calc((var(--chip-line-width) / 2) * -1);
+        top: calc(var(--chip-size) / 2);
+      }
+
+      &:nth-of-type(2) {
+        left: calc(var(--chip-size) / 2);
+        transform: rotate(59.7deg);
+        top: calc(var(--chip-size) / 2);
+      }
+
+      &:nth-of-type(3) {
+        left: calc(100% - calc(var(--chip-size) / 2));
+        transform: rotate(120.3deg);
+        top: calc(var(--chip-size) / 2);
+      }
+    }
+}

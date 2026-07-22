@@ -1,14 +1,15 @@
+import { GameBoard, GameLogo } from '@/config';
+import { FC, useMemo } from 'react';
 import './header.styles.scss';
 
-import { FC } from 'react';
-
-
 type HeaderProps = {
-  logo: string;
+  board: GameBoard;
   score: number;
 }
 
-export const Header: FC<HeaderProps> = ({ logo, score }) => {
+export const Header: FC<HeaderProps> = ({ board, score }) => {
+  const logo = useMemo(() => GameLogo[board], [board]);
+
   return (
     <header className="header">
       <img className='logo' alt='app logo' src={logo} />
