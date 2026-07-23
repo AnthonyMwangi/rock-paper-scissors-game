@@ -5,6 +5,8 @@ import { Chip, Header } from './components';
 export const App: React.FC = () => {
   const [gameBoard, setGameMode] = useState<GameBoard>('standard');
   const [gameResults, setGameResults] = useState<Result[]>([]);
+  const [selectedOption, setSelectedOption] = useState<GameOption>();
+  const [computedResult, setComputedResult] = useState<Result>();
 
   const options = useMemo(() => GameOptions[gameBoard], [gameBoard]);
 
@@ -12,16 +14,23 @@ export const App: React.FC = () => {
     return gameResults.filter(game => game.outcome === 'win').length
   }, [gameResults]);
 
-  const handleSelectOption = useCallback((selectedOption: GameOption) => {
-    const computerChoice = getComputerChoice(options);
+  const handleSelectOption = useCallback((option: GameOption) => {
+    setSelectedOption(option);
 
-    setGameResults(values => [...values, {
-      computerChoice,
-      userChoice: selectedOption,
-      outcome: getUserOutcome(selectedOption, computerChoice),
-      timestamp: Date.now(),
-      board: gameBoard,
-    }]);
+    setTimeout(() => {
+      const computerChoice = getComputerChoice(options);
+
+      const result = {
+        userChoice: option,
+        houseChoice: computerChoice,
+        outcome: getUserOutcome(option, computerChoice),
+        timestamp: Date.now(),
+        board: gameBoard,
+      }
+
+      setGameResults(values => [...values, result]);
+      setComputedResult(result);
+    }, 1500);
   }, [gameBoard, options]);
 
   console.log('gameOutcomes', gameResults);
@@ -32,11 +41,30 @@ export const App: React.FC = () => {
         <Header board={gameBoard} score={userScore} />
 
         <section className="game-board">
-          <div className={`board-content-wrapper board--${gameBoard}`}>
-            {options.map((option) => (
-              <Chip key={option} option={option} onSelectOption={handleSelectOption} board={gameBoard} />
-            ))}
-          </div>
+          {!selectedOption ? (
+            <div className={`board-content-wrapper board--${gameBoard}`}>
+              {options.map((option) => (
+                <Chip key={option} option={option} onSelectOption={handleSelectOption} board={gameBoard} />
+              ))}
+            </div>
+          ) : (
+            <div className={`board-content-wrapper board--results`}>
+              <div className="selected-option selection--user">
+                <label className='selection-label'>YOU PICKED</label>
+                <Chip option={selectedOption} board={gameBoard} />
+              </div>
+
+              <div className="selected-option selection--house">
+                <label className='selection-label'>THE HOUSE PICKED</label>
+
+                {computedResult?.houseChoice ? (
+                  <Chip option={computedResult.houseChoice} board={gameBoard} />
+                ) : (
+                  <div className='chip chip--loader' />
+                )}
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </div>

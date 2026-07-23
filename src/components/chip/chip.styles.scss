@@ -1,6 +1,6 @@
 .chip {
   width: var(--chip-size);
-  height: calc(var(--chip-size) + 0.2rem);
+  height: calc(var(--chip-size) * 1.02);
   cursor: url("../../images/pointer.svg"), pointer;
   display: flex;
   align-items: center;
@@ -13,7 +13,7 @@
   &::before {
     content: "";
     width: 100%;
-    height: calc(100% - 0.4rem);
+    height: 95%;
     position: absolute;
     border-radius: 50%;
     display: block;
@@ -84,14 +84,15 @@
     background: var(--color-gray-400);
     position: relative;
     border-radius: 50%;
-    width: 9.5rem;
-    height: 9.5rem;
+    margin-top: -0.75rem;
+    width: 100%;
+    height: 100%;
     z-index: 3;
 
     &:after {
       content: "";
       width: 100%;
-      height: calc(100% - 0.5rem);
+      height: 94%;
       background: var(--color-paper-gradient);
       position: absolute;
       border-radius: 50%;
@@ -102,6 +103,7 @@
   }
 
   .icon {
+    width: 60%;
     min-width: 4rem;
     aspect-ratio: 1;
     z-index: 5;

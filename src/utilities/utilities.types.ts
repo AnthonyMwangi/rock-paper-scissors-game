@@ -8,7 +8,7 @@ export type GameOption = StandardOption | BonusOption;
 export type Result = {
   board: GameBoard;
   userChoice: GameOption;
-  computerChoice: GameOption;
+  houseChoice: GameOption;
   outcome: Outcome;
   timestamp: number;
 }

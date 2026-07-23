@@ -34,5 +34,55 @@ $line-size: 1rem;
         margin-top: -1rem;
       }
     }
+
+    &.board--results {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0.5rem 0.75rem;
+      max-height: 50vh;
+
+      .selected-option {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4rem;
+
+        label {
+          font-size: 1.5rem;
+          color: var(--color-white);
+          font-weight: var(--font-weight-bold);
+          letter-spacing: 3px;
+          line-height: 1.35;
+        }
+
+        .chip {
+          cursor: default;
+          position: relative;
+          padding: 2rem;
+          height: 18.75rem;
+          width: 18.25rem;
+
+          .wrapper {
+            margin-top: -1rem;
+          }
+
+          &.chip--loader {
+            opacity: 0.3;
+            background-image: url(../images/spinner.svg);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+          }
+
+          &:hover {
+            &::after {
+              display: none;
+            }
+          }
+        }
+      }
+    }
   }
 }
