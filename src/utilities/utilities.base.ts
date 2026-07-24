@@ -1,15 +1,28 @@
-import { GameOption, Outcome } from "./utilities.types";
+import { GameOptions } from "@/utilities/utilities.constants";
+import { GameBoard, GameOption, Outcome, Result } from "./utilities.types";
 
 export function getComputerChoice(options: GameOption[]) {
-  const randomIndex = Math.floor(Math.random() * (Math.floor(options.length - 1) - 1));
+  const randomIndex = Math.floor(Math.random() * options.length);
   return options[randomIndex];
 }
 
-export function getUserOutcome(userChoice: GameOption, computerChoice: GameOption): Outcome {
-  switch (`${userChoice}->${computerChoice}`) {
-    case 'rock->scissors': return 'win';
-    case 'scissors->paper': return 'win';
-    case 'paper->rock': return 'win';
-    default: return userChoice === computerChoice  ? 'draw' : 'lose';
+export function getUserOutcome(userChoice: GameOption, gameBoard: GameBoard): Result {
+  let userOutcome: Outcome = 'draw';
+  const options = GameOptions[gameBoard];
+  const houseChoice = getComputerChoice(options);
+
+  if (houseChoice !== userChoice) {
+    const userWinningRange = (options.length - 1) / 2;
+    const steps = options.indexOf(houseChoice) - options.indexOf(userChoice);
+    const housePosition = steps < 0 ? steps + options.length : steps;
+    userOutcome = housePosition <= userWinningRange ? 'win' : 'lose';
+  }
+
+  return {
+    outcome: userOutcome,
+    timestamp: Date.now(),
+    board: gameBoard,
+    houseChoice,
+    userChoice,
   }
 }

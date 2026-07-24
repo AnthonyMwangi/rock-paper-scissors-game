@@ -5,14 +5,13 @@ import iconScissors from '@/images/icon-scissors.svg'
 import iconSpock from '@/images/icon-spock.svg'
 import logoBonus from '@/images/logo-bonus.svg'
 import logo from '@/images/logo.svg'
-import { GameBoard, GameOption } from "./utilities.types"
+import { GameBoard, GameOption, Outcome } from "./utilities.types"
 
-export const DefaultOptions: GameOption[] = ['rock', 'paper', 'scissors'];
-export const BonusOptions: GameOption[] = [...DefaultOptions, 'lizard', 'spock'];
+export const AUTO_PLAY_TIMEOUT_SECONDS = 8;
 
 export const GameOptions: Record<GameBoard, GameOption[]> = {
-  standard: DefaultOptions,
-  bonus: BonusOptions
+  standard: ['rock', 'scissors', 'paper'],
+  bonus: ['rock', 'scissors', 'lizard', 'paper', 'spock']
 }
 
 export const GameLogo: Record<GameBoard, string> = {
@@ -26,4 +25,10 @@ export const GameOptionImage: Record<GameOption, string> = {
   scissors: iconScissors,
   lizard: iconLizard,
   spock: iconSpock,
+};
+
+export const GameOutcomeLabel: Record<Outcome, string> = {
+  win: 'You Win',
+  lose: 'You Lose',
+  draw: 'Draw',
 };
