@@ -1,3 +1,4 @@
+import { FixupPluginDefinition, fixupPluginRules } from "@eslint/compat";
 import js from "@eslint/js";
 import prettierConfig from "eslint-config-prettier";
 import prettierPlugin from "eslint-plugin-prettier";
@@ -36,6 +37,9 @@ export default defineConfig([
   {
     files: ["**/*.{jsx,tsx}"],
     ...pluginReact.configs.flat.recommended,
+    plugins: {
+      react: fixupPluginRules(pluginReact as FixupPluginDefinition),
+    },
     settings: {
       react: { version: "detect" },
     },

@@ -1,0 +1,15 @@
+.game-board {
+  display: flex;
+  justify-content: center;
+  padding-top: 4rem;
+
+  .board-content-wrapper {
+    width: 100%;
+    height: fit-content;
+    position: relative;
+    aspect-ratio: 1;
+
+    @import "./board.selection.scss";
+    @import './board.outcome.scss';
+  }
+}

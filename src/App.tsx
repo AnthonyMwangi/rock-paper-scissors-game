@@ -1,72 +1,96 @@
-import { GameBoard, GameOption, GameOptions, getComputerChoice, getUserOutcome, Result } from '@/utilities';
-import { useCallback, useMemo, useState } from 'react';
-import { Chip, Header } from './components';
+import { Footer, GameBoard, Modal } from "@/components";
+import {
+  AUTO_PLAY_TIMEOUT_SECONDS,
+  GameMode,
+  GameOption,
+  GameResult,
+  getUserOutcome,
+} from "@/utilities";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { Header } from "./components";
 
 export const App: React.FC = () => {
-  const [gameBoard, setGameMode] = useState<GameBoard>('standard');
-  const [gameResults, setGameResults] = useState<Result[]>([]);
-  const [selectedOption, setSelectedOption] = useState<GameOption>();
-  const [computedResult, setComputedResult] = useState<Result>();
+  const gameplayTimeoutRef = useRef<NodeJS.Timeout>(null);
+  const autoplayTimeoutRef = useRef<NodeJS.Timeout>(null);
 
-  const options = useMemo(() => GameOptions[gameBoard], [gameBoard]);
+  const [gameMode, setGameMode] = useState<GameMode>("standard");
+  const [gameResults, setGameResults] = useState<GameResult[]>([]);
+  const [selectedOption, setSelectedOption] = useState<GameOption>();
+  const [computedResult, setComputedResult] = useState<GameResult>();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const userScore = useMemo(() => {
-    return gameResults.filter(game => game.outcome === 'win').length
+    return gameResults.filter((game) => game.outcome === "win").length;
   }, [gameResults]);
 
-  const handleSelectOption = useCallback((option: GameOption) => {
-    setSelectedOption(option);
+  const handleReset = useCallback(() => {
+    setSelectedOption(undefined);
+    setComputedResult(undefined);
+  }, []);
 
-    setTimeout(() => {
-      const computerChoice = getComputerChoice(options);
+  const handleToggleGameMode = useCallback(() => {
+    setGameMode((currentMode) =>
+      currentMode === "standard" ? "bonus" : "standard",
+    );
+    return handleReset();
+  }, [handleReset]);
 
-      const result = {
-        userChoice: option,
-        houseChoice: computerChoice,
-        outcome: getUserOutcome(option, computerChoice),
-        timestamp: Date.now(),
-        board: gameBoard,
+  const handleSelectOption = useCallback(
+    (userChoice: GameOption) => {
+      setSelectedOption(userChoice);
+
+      if (gameplayTimeoutRef.current) {
+        clearTimeout(gameplayTimeoutRef.current);
       }
 
-      setGameResults(values => [...values, result]);
-      setComputedResult(result);
-    }, 1500);
-  }, [gameBoard, options]);
+      if (autoplayTimeoutRef.current) {
+        clearTimeout(autoplayTimeoutRef.current);
+      }
 
-  console.log('gameOutcomes', gameResults);
+      gameplayTimeoutRef.current = setTimeout(() => {
+        const result = getUserOutcome(userChoice, gameMode);
+
+        // Automatically play again if its a draw
+        if (result.outcome === "draw") {
+          autoplayTimeoutRef.current = setTimeout(() => {
+            handleReset();
+          }, AUTO_PLAY_TIMEOUT_SECONDS * 1000);
+        }
+
+        setGameResults((values) => [...values, result]);
+        setComputedResult(result);
+      }, 1500);
+    },
+    [gameMode, handleReset],
+  );
+
+  const handleToggleRulesModal = () => {
+    setIsModalVisible((currentValue) => !currentValue);
+  };
 
   return (
     <div className="app">
       <div className="content">
-        <Header board={gameBoard} score={userScore} />
+        <Header board={gameMode} score={userScore} />
 
-        <section className="game-board">
-          {!selectedOption ? (
-            <div className={`board-content-wrapper board--${gameBoard}`}>
-              {options.map((option) => (
-                <Chip key={option} option={option} onSelectOption={handleSelectOption} board={gameBoard} />
-              ))}
-            </div>
-          ) : (
-            <div className={`board-content-wrapper board--results`}>
-              <div className="selected-option selection--user">
-                <label className='selection-label'>YOU PICKED</label>
-                <Chip option={selectedOption} board={gameBoard} />
-              </div>
+        <GameBoard
+          board={gameMode}
+          result={computedResult}
+          userChoice={selectedOption}
+          onSelectOption={handleSelectOption}
+          onReset={handleReset}
+        />
 
-              <div className="selected-option selection--house">
-                <label className='selection-label'>THE HOUSE PICKED</label>
+        <Footer
+          board={gameMode}
+          onToggleGameMode={handleToggleGameMode}
+          onToggleRules={handleToggleRulesModal}
+        />
 
-                {computedResult?.houseChoice ? (
-                  <Chip option={computedResult.houseChoice} board={gameBoard} />
-                ) : (
-                  <div className='chip chip--loader' />
-                )}
-              </div>
-            </div>
-          )}
-        </section>
+        {isModalVisible ? (
+          <Modal board={gameMode} onCloseModal={handleToggleRulesModal} />
+        ) : null}
       </div>
     </div>
   );
-}
+};

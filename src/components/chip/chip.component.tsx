@@ -1,21 +1,33 @@
-import { GameBoard, GameOption, GameOptionImage } from '@/utilities';
-import { FC } from 'react';
-import './chip.styles.scss';
+import { GameMode, GameOption, GameOptionImage } from "@/utilities";
+import { FC } from "react";
+import "./chip.styles.scss";
 
 type ChipProps = {
-  board: GameBoard | 'outcome';
+  board: GameMode | "outcome";
   option: GameOption;
   onSelectOption?: (option: GameOption) => void;
   isWinningChip?: boolean;
-}
+};
 
-export const Chip: FC<ChipProps> = ({ board, option, isWinningChip, onSelectOption }) => {
+export const Chip: FC<ChipProps> = ({
+  board,
+  option,
+  isWinningChip,
+  onSelectOption,
+}) => {
   return (
-    <button className={`chip ${option} chip--${isWinningChip ? 'winning-chip' : 'neutral'} board--${board}`} onClick={() => onSelectOption?.(option)}>
+    <button
+      className={`chip ${option} chip--${isWinningChip ? "winning-chip" : "neutral"} board--${board}`}
+      onClick={() => onSelectOption?.(option)}
+    >
       <div className="wrapper">
-        <img className='icon' alt={`${option} icon`} src={GameOptionImage[option]} />
+        <img
+          className="icon"
+          alt={`${option} icon`}
+          src={GameOptionImage[option]}
+        />
       </div>
-      <div className='hover-animation' />
+      <div className="hover-animation" />
     </button>
-  )
-}
+  );
+};

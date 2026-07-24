@@ -42,6 +42,13 @@
       var(--color-paper-gradient-start) 0%,
       var(--color-paper-gradient-end) 100%);
 
+  /* Paper gradient */
+  --color-modal-gradient-start: #00000090;
+  --color-modal-gradient-end: #00000030;
+  --color-modal-gradient: radial-gradient(circle,
+      var(--color-modal-gradient-start) 0%,
+      var(--color-modal-gradient-end) 100%);
+
   /* Breakpoints */
   --breakpoint-min: 320px;
   --breakpoint-mobile: 375px;
@@ -51,6 +58,7 @@
   --chip-size-bonus: 9.1rem;
   --chip-size-standard: 12.5rem;
   --chip-size-outcome: 18.25rem;
+  --max-content-width: 60rem;
 }
 
 body {
@@ -64,15 +72,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 
   .content {
     display: grid;
     justify-content: center;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    padding: 3rem 0;
-    max-width: 60rem;
+    max-width: var(--max-content-width);
     min-height: 100vh;
+    padding: 3rem 0;
     width: 100%;
   }
 }

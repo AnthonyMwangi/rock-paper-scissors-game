@@ -1,13 +1,16 @@
 import { GameOptions } from "@/utilities/utilities.constants";
-import { GameBoard, GameOption, Outcome, Result } from "./utilities.types";
+import { GameMode, GameOption, Outcome, Result } from "./utilities.types";
 
 export function getComputerChoice(options: GameOption[]) {
   const randomIndex = Math.floor(Math.random() * options.length);
   return options[randomIndex];
 }
 
-export function getUserOutcome(userChoice: GameOption, gameBoard: GameBoard): Result {
-  let userOutcome: Outcome = 'draw';
+export function getUserOutcome(
+  userChoice: GameOption,
+  gameBoard: GameMode,
+): Result {
+  let userOutcome: Outcome = "draw";
   const options = GameOptions[gameBoard];
   const houseChoice = getComputerChoice(options);
 
@@ -15,7 +18,7 @@ export function getUserOutcome(userChoice: GameOption, gameBoard: GameBoard): Re
     const userWinningRange = (options.length - 1) / 2;
     const steps = options.indexOf(houseChoice) - options.indexOf(userChoice);
     const housePosition = steps < 0 ? steps + options.length : steps;
-    userOutcome = housePosition <= userWinningRange ? 'win' : 'lose';
+    userOutcome = housePosition <= userWinningRange ? "win" : "lose";
   }
 
   return {
@@ -24,5 +27,5 @@ export function getUserOutcome(userChoice: GameOption, gameBoard: GameBoard): Re
     board: gameBoard,
     houseChoice,
     userChoice,
-  }
+  };
 }
