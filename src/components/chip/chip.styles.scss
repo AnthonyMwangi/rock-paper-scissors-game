@@ -1,7 +1,4 @@
 .chip {
-  width: var(--chip-size);
-  height: calc(var(--chip-size) * 1.02);
-  cursor: url("../../images/pointer.svg"), pointer;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,6 +11,7 @@
     content: "";
     width: 100%;
     height: 95%;
+    pointer-events: none;
     position: absolute;
     border-radius: 50%;
     display: block;
@@ -21,20 +19,15 @@
     top: 0;
   }
 
-  &:hover {
-    &::after {
-      content: "";
-      width: calc(100% + 3.5rem);
-      height: calc(100% + 3.5rem);
-      background-color: var(--color-white);
-      transition: all 3s ease-in-out;
-      position: absolute;
-      border-radius: 50%;
-      display: block;
-      z-index: 1;
-      opacity: 0.1;
-      top: -1.75rem;
-    }
+  &::after {
+    content: "";
+    pointer-events: none;
+    transition: all .3s ease-in-out;
+    position: absolute;
+    border-radius: 50%;
+    display: block;
+    opacity: 0.2;
+    z-index: 1;
   }
 
   &.rock {
@@ -110,6 +103,9 @@
   }
 
   &.board--standard {
+    width: var(--chip-size-standard);
+    height: calc(var(--chip-size-standard) * 1.02);
+
     &:nth-of-type(1) {
       left: 0;
       top: 0;
@@ -121,8 +117,62 @@
     }
 
     &:nth-of-type(3) {
-      left: calc(50% - 6.25rem);
+      left: calc(50% - var(--chip-size-standard) / 2);
       bottom: 0;
+    }
+  }
+
+  &.board--bonus {
+    width: var(--chip-size-bonus);
+    height: calc(var(--chip-size-bonus) * 1.02);
+
+    &:nth-of-type(1) {
+      left: calc(50% - var(--chip-size-bonus) / 2);
+      top: 0;
+    }
+
+    &:nth-of-type(2) {
+      right: 0;
+      top: var(--chip-size-bonus);
+    }
+
+    &:nth-of-type(3) {
+      right: calc(var(--chip-size-bonus) / 2);
+      bottom: 0;
+    }
+
+    &:nth-of-type(4) {
+      left: calc(var(--chip-size-bonus) / 2);
+      bottom: 0;
+    }
+
+    &:nth-of-type(5) {
+      left: 0;
+      top: var(--chip-size-bonus);
+    }
+  }
+
+  &.chip--neutral {
+    &:hover {
+      &::after {
+        width: calc(100% + 3.5rem);
+        height: calc(100% + 3.5rem);
+        background-color: var(--color-white);
+        top: -1.75rem;
+      }
+    }
+  }
+
+  &.chip--winning-chip {
+    &::after {
+      top: -50%;
+      width: calc(100% * 2);
+      height: calc(100% * 2);
+      background-image: url(../../images/spinner.svg);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      opacity: .5;
     }
   }
 }

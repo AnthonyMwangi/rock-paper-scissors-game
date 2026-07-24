@@ -48,7 +48,9 @@
   --breakpoint-desktop: 1366px;
 
   /* Tokens */
-  --chip-size: 12.5rem;
+  --chip-size-bonus: 9.1rem;
+  --chip-size-standard: 12.5rem;
+  --chip-size-outcome: 18.25rem;
 }
 
 body {
@@ -62,9 +64,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
-  min-height: 100vh;
 
   .content {
     display: grid;
@@ -72,8 +71,8 @@ body {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     padding: 3rem 0;
+    max-width: 60rem;
     min-height: 100vh;
-    max-width: 960px;
     width: 100%;
   }
 }

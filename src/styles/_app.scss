@@ -1,5 +1,12 @@
-$chip-size: 12.5rem;
-$line-size: 1rem;
+@keyframes netflix-slide {
+  0% {
+    width: 0%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
 
 .game-board {
   display: flex;
@@ -10,37 +17,57 @@ $line-size: 1rem;
     width: 100%;
     height: fit-content;
     position: relative;
-    aspect-ratio: 1/1;
+    aspect-ratio: 1;
 
-    &::after {
-      content: "";
-      display: block;
-      position: absolute;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: 100%;
-      aspect-ratio: 1;
-      width: 100%;
-    }
-
-    &.board--standard {
+    &.board--standard,
+    &.board--bonus {
       max-width: 29.75rem;
 
       &::after {
-        top: calc(var(--chip-size) / 2);
-        left: calc(var(--chip-size) / 2);
-        background-image: url('../images/bg-triangle.svg');
-        max-width: calc(100% - var(--chip-size));
-        margin-top: -1rem;
+        content: "";
+        display: block;
+        position: absolute;
+        pointer-events: none;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        aspect-ratio: 1;
+        width: 100%;
       }
     }
 
-    &.board--results {
+    &.board--standard {
+      &::after {
+        top: calc(var(--chip-size-standard) / 2);
+        left: calc(var(--chip-size-standard) / 2);
+        background-image: url('../images/bg-triangle.svg');
+        max-width: calc(100% - var(--chip-size-standard));
+      }
+    }
+
+    &.board--bonus {
+      &::after {
+        top: calc(var(--chip-size-bonus) / 2);
+        left: calc(var(--chip-size-bonus) / 2);
+        background-image: url('../images/bg-pentagon.svg');
+        max-width: calc(100% - var(--chip-size-bonus));
+      }
+    }
+
+    &.board--outcome {
       width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      transition: all .3s ease-in-out;
       padding: 0.5rem 0.75rem;
       max-height: 50vh;
+
+      &.board--status-loading {
+        justify-content: center;
+        gap: 4rem;
+      }
 
       .selected-option {
         display: flex;
@@ -61,8 +88,9 @@ $line-size: 1rem;
           cursor: default;
           position: relative;
           padding: 2rem;
-          height: 18.75rem;
-          width: 18.25rem;
+          // height: 18.75rem;
+          height: calc(var(--chip-size-outcome) * 1.02);
+          width: var(--chip-size-outcome);
 
           .wrapper {
             margin-top: -1rem;
@@ -76,9 +104,68 @@ $line-size: 1rem;
             background-size: contain;
           }
 
+          &.chip--neutral {
+            &:hover {
+              &::after {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+
+      .selection-outcome {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+
+        &>label {
+          font-size: 3.5rem;
+          font-weight: var(--font-weight-bold);
+          color: var(--color-white);
+          text-transform: uppercase;
+          line-height: 1.2;
+        }
+
+        &>button {
+          width: 100%;
+          font-size: 1rem;
+          padding: 1rem 4rem;
+          text-transform: uppercase;
+          border-radius: 0.5rem;
+          letter-spacing: 2.5px;
+          line-height: 1.2;
+
           &:hover {
+            color: var(--color-red-800);
+          }
+
+          &.button--draw {
+            position: relative;
+            background: var(--color-gray-400);
+            overflow: hidden;
+            z-index: 1;
+
+            span {
+              position: relative;
+              z-index: 3;
+            }
+
             &::after {
-              display: none;
+              content: "";
+              display: block;
+              position: absolute;
+              animation-name: netflix-slide;
+              animation-duration: inherit;
+              animation-timing-function: ease-in-out;
+              background: var(--color-white);
+              height: 100%;
+              z-index: 2;
+              width: 0%;
+              left: 0;
+              top: 0;
             }
           }
         }
