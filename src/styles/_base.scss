@@ -80,13 +80,13 @@ body {
   color: var(--color-navy-900);
 }
 
-.app {
+#root {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 
-  .content {
+  .app {
     display: grid;
     justify-content: center;
     grid-template-columns: 1fr;

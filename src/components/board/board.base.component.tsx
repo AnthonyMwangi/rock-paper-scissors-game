@@ -23,7 +23,7 @@ export const GameBoard: FC<GameBoardProps> = ({
   onReset,
 }) => {
   return (
-    <section className="game-board">
+    <main className="game-board">
       {!userChoice ? (
         <GameBoardSelection onSelectOption={onSelectOption} board={board} />
       ) : (
@@ -33,6 +33,6 @@ export const GameBoard: FC<GameBoardProps> = ({
           onReset={onReset}
         />
       )}
-    </section>
+    </main>
   );
 };

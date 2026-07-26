@@ -15,7 +15,7 @@ export const LabeledChip: FC<LabeledChipProps> = ({
   isWinningChip,
 }) => {
   return (
-    <div className="selected-option">
+    <section className="selected-option">
       <label className="selection-label">{label}</label>
 
       {option ? (
@@ -28,6 +28,6 @@ export const LabeledChip: FC<LabeledChipProps> = ({
           })}
         />
       )}
-    </div>
+    </section>
   );
 };

@@ -44,21 +44,18 @@ Users should be able to:
 - Semantic HTML5 markup
 - CSS custom properties
 
-
 ### What I learned
 
 Use this section to recap over some of your major learnings while working through this project. Writing these out and providing code samples of areas you want to highlight is a great way to reinforce your own knowledge.
 
-
 ### Continued development
 
-Use this section to outline areas that you want to continue focusing on in future projects. These could be concepts you're still not completely comfortable with or techniques you found useful that you want to refine and perfect.
-
-**Note: Delete this note and the content within this section and replace with your own plans for continued development.**
+I'd like to build a dynamic version of the game that allows users to specify their own custom options (complete with colors, icons, ordering and rules)
 
 ### Useful resources
 
 - [Statistical Modeling, Causal Inference, and Social Science](https://statmodeling.stat.columbia.edu/2007/05/21/how_to_win_at_r/) - This helped me in building the advanced model for the computer to use when playing against a user instead of just relying on a randomly generated value.
+- [Understanding the JavaScript Modulo Operator](https://www.joshwcomeau.com/javascript/modulo-operator/) - This blog post by **Josh Comeau** provides an easy way to understand modular arithmentic which is pivotal in evaluating the outcome of a rock-paper-scissors game
 
 ### AI Collaboration
 

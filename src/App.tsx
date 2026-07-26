@@ -70,27 +70,25 @@ export const App: React.FC = () => {
 
   return (
     <div className="app">
-      <div className="content">
-        <Header board={gameMode} score={userScore} />
+      <Header board={gameMode} score={userScore} />
 
-        <GameBoard
-          board={gameMode}
-          result={computedResult}
-          userChoice={selectedOption}
-          onSelectOption={handleSelectOption}
-          onReset={handleReset}
-        />
+      <GameBoard
+        board={gameMode}
+        result={computedResult}
+        userChoice={selectedOption}
+        onSelectOption={handleSelectOption}
+        onReset={handleReset}
+      />
 
-        <Footer
-          board={gameMode}
-          onToggleGameMode={handleToggleGameMode}
-          onToggleRules={handleToggleRulesModal}
-        />
+      <Footer
+        board={gameMode}
+        onToggleGameMode={handleToggleGameMode}
+        onToggleRules={handleToggleRulesModal}
+      />
 
-        {isModalVisible ? (
-          <Modal board={gameMode} onCloseModal={handleToggleRulesModal} />
-        ) : null}
-      </div>
+      {isModalVisible ? (
+        <Modal board={gameMode} onCloseModal={handleToggleRulesModal} />
+      ) : null}
     </div>
   );
 };

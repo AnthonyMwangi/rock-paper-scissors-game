@@ -10,7 +10,13 @@ import tsEslintConfig from "typescript-eslint";
 
 export default defineConfig([
   {
-    ignores: ["node_modules/**", "public/**", "build/**", "**/*.d.ts"],
+    ignores: [
+      "node_modules/**",
+      "public/**",
+      "build/**",
+      "dist/**",
+      "**/*.d.ts",
+    ],
   },
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
@@ -29,9 +35,9 @@ export default defineConfig([
 
     rules: {
       ...prettierConfig.rules,
+      "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": "error",
       "no-console": "error",
-      "prettier/prettier": "error",
     },
   },
   {
