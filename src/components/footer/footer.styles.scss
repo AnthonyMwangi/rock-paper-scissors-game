@@ -1,8 +1,11 @@
+@import '../../styles/breakpoints';
+
 .footer {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: stretch;
+  width: 100%;
   gap: 1rem;
 
   .button--toggle {
@@ -32,5 +35,19 @@
     background: transparent;
     border: 1px solid var(--color-white);
     color: var(--color-white);
+  }
+
+  @media (max-width: $--breakpoint-mobile) {
+    justify-content: space-between;
+
+    .button--toggle {
+      span {
+        padding: 0 1rem;
+      }
+    }
+
+    .button--outline {
+      padding: 0.5rem 1rem;
+    }
   }
 }

@@ -7,7 +7,7 @@ import imageRulesBonus from "@/images/image-rules-bonus.svg";
 import imageRules from "@/images/image-rules.svg";
 import logoBonus from "@/images/logo-bonus.svg";
 import logo from "@/images/logo.svg";
-import { GameMode, GameOption, Outcome } from "./utilities.types";
+import { GameMode, GameOption, GameOutcome } from "./utilities.types";
 
 export const AUTO_PLAY_TIMEOUT_SECONDS = 8;
 
@@ -34,7 +34,7 @@ export const GameOptionImage: Record<GameOption, string> = {
   spock: iconSpock,
 };
 
-export const GameOutcomeLabel: Record<Outcome, string> = {
+export const GameOutcomeLabel: Record<GameOutcome, string> = {
   win: "You Win",
   lose: "You Lose",
   draw: "Draw",

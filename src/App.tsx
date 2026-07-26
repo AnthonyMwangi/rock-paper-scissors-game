@@ -59,7 +59,7 @@ export const App: React.FC = () => {
 
         setGameResults((values) => [...values, result]);
         setComputedResult(result);
-      }, 1500);
+      }, 85000);
     },
     [gameMode, handleReset],
   );

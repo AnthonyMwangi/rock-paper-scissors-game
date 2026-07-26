@@ -1,3 +1,5 @@
+@import '../../styles/breakpoints';
+
 .header {
   display: flex;
   align-items: stretch;
@@ -9,13 +11,12 @@
 
   .score-card {
     display: grid;
-    color: #282c34;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     background-color: var(--color-white);
     border-radius: 0.5rem;
     padding: 1rem 3rem;
-    gap: 10px;
+    gap: 0.65rem;
 
     label {
       text-align: center;
@@ -35,6 +36,16 @@
       font-weight: var(--font-weight-bold);
       font-size: 4rem;
       line-height: 1;
+    }
+  }
+
+  @media (max-width: $--breakpoint-mobile) {
+    padding: 0.75rem 0.85rem;
+
+    .score-card {
+        display: grid;
+        padding: 0.625rem 1.5rem;
+        gap: 0;
     }
   }
 }

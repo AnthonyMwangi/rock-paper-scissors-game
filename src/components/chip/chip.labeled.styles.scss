@@ -1,0 +1,51 @@
+ @import '../../styles/breakpoints';
+
+ .selected-option {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-direction: column;
+   gap: 4rem;
+
+   label {
+     font-size: 1.5rem;
+     color: var(--color-white);
+     font-weight: var(--font-weight-bold);
+     letter-spacing: 3px;
+     line-height: 1.35;
+   }
+
+   .chip {
+     cursor: default;
+     position: relative;
+
+     &.chip--loader {
+       opacity: 0.3;
+       width: calc(var(--chip-size-outcome));
+       height: calc(var(--chip-size-outcome) * 1.02);
+       background-image: url(../../images/spinner.svg);
+       background-position: center;
+       background-repeat: no-repeat;
+       background-size: contain;
+     }
+
+     &.chip--neutral {
+       &:hover {
+         &::after {
+           display: none;
+         }
+       }
+     }
+   }
+
+   @media (max-width: $--breakpoint-mobile) {
+      flex-direction: column-reverse;
+     gap: 2rem;
+
+     label {
+       font-size: 1rem;
+       letter-spacing: 2px;
+       line-height: 2;
+     }
+   }
+ }

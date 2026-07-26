@@ -1,3 +1,4 @@
+@import './breakpoints';
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700&display=swap');
 
 :root {
@@ -49,16 +50,27 @@
       var(--color-modal-gradient-start) 0%,
       var(--color-modal-gradient-end) 100%);
 
-  /* Breakpoints */
-  --breakpoint-min: 320px;
-  --breakpoint-mobile: 375px;
-  --breakpoint-desktop: 1366px;
-
   /* Tokens */
   --chip-size-bonus: 9.1rem;
+  --chip-size-bonus-padding: 1.5rem;
   --chip-size-standard: 12.5rem;
+  --chip-size-standard-padding: 1.5rem;
   --chip-size-outcome: 18.25rem;
-  --max-content-width: 60rem;
+  --chip-size-outcome-padding: 2rem;
+  --chip-icon-size: 4rem;
+}
+
+@media (max-width: $--breakpoint-mobile) {
+  :root {
+    /* Override Tokens */
+    --chip-size-bonus: 6.5rem;
+    --chip-size-bonus-padding: 0.85rem;
+    --chip-size-standard: 8.5rem;
+    --chip-size-standard-padding: 1.25rem;
+    --chip-size-outcome: 8.5rem;
+    --chip-size-outcome-padding: 1.25rem;
+    --chip-icon-size: 2.5rem;
+  }
 }
 
 body {
@@ -79,9 +91,23 @@ body {
     justify-content: center;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    max-width: var(--max-content-width);
+    max-width: $--breakpoint-max;
     min-height: 100vh;
     padding: 3rem 0;
     width: 100%;
+  }
+
+  @media (max-width: $--breakpoint-tablet) {
+    .content {
+      max-width: 100%;
+      padding: 2.5rem 2.5rem 1.5rem;
+    }
+  }
+
+  @media (max-width: $--breakpoint-mobile) {
+    .content {
+      max-width: 100%;
+      padding: 2rem 2rem 1rem;
+    }
   }
 }

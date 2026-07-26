@@ -1,4 +1,4 @@
-import { Chip } from "@/components";
+import { LabeledChip } from "@/components";
 import {
   AUTO_PLAY_TIMEOUT_SECONDS,
   GameOption,
@@ -22,14 +22,11 @@ export const GameBoardOutcome: FC<GameBoardOutcomeProps> = ({
     <div
       className={`board-content-wrapper board--outcome board--status-${result?.outcome ? "loaded" : "loading"}`}
     >
-      <div className="selected-option selection--user">
-        <label className="selection-label">YOU PICKED</label>
-        <Chip
-          option={userChoice}
-          board={"outcome"}
-          isWinningChip={["win", "draw"].includes(result?.outcome || "")}
-        />
-      </div>
+      <LabeledChip
+        label="YOU PICKED"
+        isWinningChip={["win", "draw"].includes(result?.outcome || "")}
+        option={userChoice}
+      />
 
       {result?.outcome ? (
         <div className="selection-outcome">
@@ -47,19 +44,11 @@ export const GameBoardOutcome: FC<GameBoardOutcomeProps> = ({
         </div>
       ) : null}
 
-      <div className="selected-option selection--house">
-        <label className="selection-label">THE HOUSE PICKED</label>
-
-        {result?.houseChoice ? (
-          <Chip
-            board="outcome"
-            option={result.houseChoice}
-            isWinningChip={["lose", "draw"].includes(result.outcome)}
-          />
-        ) : (
-          <div className="chip chip--loader" />
-        )}
-      </div>
+      <LabeledChip
+        label="THE HOUSE PICKED"
+        isWinningChip={["lose", "draw"].includes(result?.outcome || "")}
+        option={result?.houseChoice}
+      />
     </div>
   );
 };

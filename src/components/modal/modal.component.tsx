@@ -24,7 +24,7 @@ export const Modal: FC<ModalProps> = ({ board, onCloseModal }) => {
     <div className="modal">
       <div className={`md-content ${isVideoMode ? "content--video" : ""}`}>
         <button className="md-close-button" onClick={onCloseModal}>
-          <img alt="md-close-icon" src={iconClose} />
+          <img className="md-close-icon" alt="close icon" src={iconClose} />
         </button>
 
         <div className="md-header">

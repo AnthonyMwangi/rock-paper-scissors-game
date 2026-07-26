@@ -1,6 +1,6 @@
 import { GameMode, GameOption, GameOptionImage } from "@/utilities";
 import { FC } from "react";
-import "./chip.styles.scss";
+import "./chip.base.styles.scss";
 
 type ChipProps = {
   board: GameMode | "outcome";

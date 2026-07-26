@@ -1,3 +1,5 @@
+@import '../../styles/breakpoints';
+
 .game-board {
   display: flex;
   justify-content: center;
@@ -11,5 +13,18 @@
 
     @import "./board.selection.scss";
     @import './board.outcome.scss';
+  }
+
+  @media (max-width: $--breakpoint-tablet) {
+    padding-top: 3rem;
+  }
+
+  @media (max-width: $--breakpoint-mobile) {
+    padding-top: 5rem;
+
+    .board-content-wrapper {
+      width: 100%;
+      aspect-ratio: 1;
+    }
   }
 }

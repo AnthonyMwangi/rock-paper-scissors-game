@@ -1,3 +1,5 @@
+@import '../../styles/breakpoints';
+
 @keyframes netflix-slide {
   0% {
     width: 0%;
@@ -21,51 +23,6 @@
   &.board--status-loading {
     justify-content: center;
     gap: 4rem;
-  }
-
-  .selected-option {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 4rem;
-
-    label {
-      font-size: 1.5rem;
-      color: var(--color-white);
-      font-weight: var(--font-weight-bold);
-      letter-spacing: 3px;
-      line-height: 1.35;
-    }
-
-    .chip {
-      cursor: default;
-      position: relative;
-      padding: 2rem;
-      // height: 18.75rem;
-      height: calc(var(--chip-size-outcome) * 1.02);
-      width: var(--chip-size-outcome);
-
-      .wrapper {
-        margin-top: -1rem;
-      }
-
-      &.chip--loader {
-        opacity: 0.3;
-        background-image: url(../images/spinner.svg);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-      }
-
-      &.chip--neutral {
-        &:hover {
-          &::after {
-            display: none;
-          }
-        }
-      }
-    }
   }
 
   .selection-outcome {
@@ -121,6 +78,43 @@
           left: 0;
           top: 0;
         }
+      }
+    }
+  }
+
+  @media (max-width: $--breakpoint-tablet) {
+    display: grid;
+    align-items: flex-start;
+    grid-template-rows: min-content min-content;
+    grid-template-columns: repeat(2, 1fr);
+    aspect-ratio: unset;
+    max-height: none;
+
+    .selection-outcome {
+      grid-row: 2 / -1;
+      grid-column: 1 / -1;
+      padding-top: 2rem;
+
+      &>button {
+        padding: 1rem 5rem;
+        width: auto;
+      }
+    }
+  }
+
+  @media (max-width: $--breakpoint-mobile) {
+    grid-template-columns: repeat(2, max-content);
+
+    &.board--status-loading {
+      justify-content: space-between;
+      gap: 0;
+    }
+
+    .selection-outcome {
+      padding-top: 4rem;
+
+      &>label {
+        font-size: 3rem;
       }
     }
   }
