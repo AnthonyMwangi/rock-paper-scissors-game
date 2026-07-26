@@ -1,34 +1,38 @@
-&.board--standard,
-&.board--bonus {
-  max-width: 29.75rem;
+@mixin board-selection {
+  width: 100%;
 
-  &::after {
-    content: "";
-    display: block;
-    position: absolute;
-    pointer-events: none;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    aspect-ratio: 1;
-    width: 100%;
+  &__board-standard,
+  &__board-bonus {
+    max-width: 29.75rem;
+
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      pointer-events: none;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      aspect-ratio: 1;
+      width: 100%;
+    }
   }
-}
 
-&.board--standard {
-  &::after {
-    top: calc(var(--chip-size-standard) / 2);
-    left: calc(var(--chip-size-standard) / 2);
-    background-image: url('../../images/bg-triangle.svg');
-    max-width: calc(100% - var(--chip-size-standard));
+  &__board-standard {
+    &::after {
+      top: calc(var(--chip-size-standard) / 2);
+      left: calc(var(--chip-size-standard) / 2);
+      background-image: url('../../images/bg-triangle.svg');
+      max-width: calc(100% - var(--chip-size-standard));
+    }
   }
-}
 
-&.board--bonus {
-  &::after {
-    top: calc(var(--chip-size-bonus) / 2);
-    left: calc(var(--chip-size-bonus) / 2);
-    background-image: url('../../images/bg-pentagon.svg');
-    max-width: calc(100% - var(--chip-size-bonus));
+  &__board-bonus {
+    &::after {
+      top: calc(var(--chip-size-bonus) / 2);
+      left: calc(var(--chip-size-bonus) / 2);
+      background-image: url('../../images/bg-pentagon.svg');
+      max-width: calc(100% - var(--chip-size-bonus));
+    }
   }
 }

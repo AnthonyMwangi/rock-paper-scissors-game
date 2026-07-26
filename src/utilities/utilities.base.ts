@@ -1,5 +1,10 @@
 import { GameOptions } from "@/utilities/utilities.constants";
-import { GameMode, GameOption, GameOutcome, Result } from "./utilities.types";
+import {
+  GameMode,
+  GameOption,
+  GameOutcome,
+  GameResult,
+} from "./utilities.types";
 
 export function getComputerChoice(options: GameOption[]) {
   const randomIndex = Math.floor(Math.random() * options.length);
@@ -9,7 +14,7 @@ export function getComputerChoice(options: GameOption[]) {
 export function getUserOutcome(
   userChoice: GameOption,
   gameBoard: GameMode,
-): Result {
+): GameResult {
   let userOutcome: GameOutcome = "draw";
   const options = GameOptions[gameBoard];
   const houseChoice = getComputerChoice(options);

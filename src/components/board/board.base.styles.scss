@@ -1,4 +1,6 @@
-@import '../../styles/breakpoints';
+@use 'breakpoints';
+@use "./board.selection.scss" as bs;
+@use './board.outcome.scss' as bo;
 
 .game-board {
   display: flex;
@@ -11,15 +13,15 @@
     position: relative;
     aspect-ratio: 1;
 
-    @import "./board.selection.scss";
-    @import './board.outcome.scss';
+    @include bs.board-selection;
+    @include bo.board-outcome;
   }
 
-  @media (max-width: $--breakpoint-tablet) {
+  @include breakpoints.tablet {
     padding-top: 3rem;
   }
 
-  @media (max-width: $--breakpoint-mobile) {
+  @include breakpoints.mobile {
     padding-top: 5rem;
 
     .board-content-wrapper {

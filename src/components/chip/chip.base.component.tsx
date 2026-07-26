@@ -1,4 +1,4 @@
-import { GameMode, GameOption, GameOptionImage } from "@/utilities";
+import { classnames, GameMode, GameOption, GameOptionImage } from "@/utilities";
 import { FC } from "react";
 import "./chip.base.styles.scss";
 
@@ -17,17 +17,21 @@ export const Chip: FC<ChipProps> = ({
 }) => {
   return (
     <button
-      className={`chip ${option} chip--${isWinningChip ? "winning-chip" : "neutral"} board--${board}`}
       onClick={() => onSelectOption?.(option)}
+      className={classnames("chip", {
+        status: isWinningChip ? "winner" : "neutral",
+        option,
+        board,
+      })}
     >
-      <div className="wrapper">
+      <div className="chip-wrapper">
         <img
-          className="icon"
-          alt={`${option} icon`}
+          className="chip-icon"
+          alt={`chip ${option} icon`}
           src={GameOptionImage[option]}
         />
       </div>
-      <div className="hover-animation" />
+      <div className="chip-hover-animation" />
     </button>
   );
 };

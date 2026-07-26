@@ -1,4 +1,4 @@
-import { GameOption } from "@/utilities";
+import { classnames, GameOption } from "@/utilities";
 import { FC } from "react";
 import { Chip } from "./chip.base.component";
 import "./chip.labeled.styles.scss";
@@ -21,7 +21,12 @@ export const LabeledChip: FC<LabeledChipProps> = ({
       {option ? (
         <Chip board="outcome" isWinningChip={isWinningChip} option={option} />
       ) : (
-        <div className="chip board--outcome chip--loader" />
+        <div
+          className={classnames("chip", {
+            status: "loading",
+            board: "outcome",
+          })}
+        />
       )}
     </div>
   );

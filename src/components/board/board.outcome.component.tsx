@@ -1,6 +1,7 @@
 import { LabeledChip } from "@/components";
 import {
   AUTO_PLAY_TIMEOUT_SECONDS,
+  classnames,
   GameOption,
   GameOutcomeLabel,
   GameResult,
@@ -20,7 +21,10 @@ export const GameBoardOutcome: FC<GameBoardOutcomeProps> = ({
 }) => {
   return (
     <div
-      className={`board-content-wrapper board--outcome board--status-${result?.outcome ? "loaded" : "loading"}`}
+      className={classnames("board-content-wrapper", {
+        isLoading: !result?.outcome,
+        board: "outcome",
+      })}
     >
       <LabeledChip
         label="YOU PICKED"
@@ -33,7 +37,7 @@ export const GameBoardOutcome: FC<GameBoardOutcomeProps> = ({
           <label>{GameOutcomeLabel[result.outcome]}</label>
 
           <button
-            className={`button--${result.outcome}`}
+            className={classnames(`button`, { outcome: result.outcome })}
             style={{
               animationDuration: `${AUTO_PLAY_TIMEOUT_SECONDS}s`,
             }}

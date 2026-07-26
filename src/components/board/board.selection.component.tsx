@@ -1,5 +1,5 @@
 import { Chip } from "@/components/chip";
-import { GameMode, GameOption, GameOptions } from "@/utilities";
+import { classnames, GameMode, GameOption, GameOptions } from "@/utilities";
 import { FC, useMemo } from "react";
 
 export type GameBoardSelectionProps = {
@@ -14,7 +14,7 @@ export const GameBoardSelection: FC<GameBoardSelectionProps> = ({
   const options = useMemo(() => GameOptions[board], [board]);
 
   return (
-    <div className={`board-content-wrapper board--${board}`}>
+    <div className={classnames("board-content-wrapper", { board })}>
       {options.map((option) => (
         <Chip
           key={option}

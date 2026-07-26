@@ -1,6 +1,6 @@
 import iconClose from "@/images/icon-close.svg";
 import iconYoutube from "@/images/icon-youtube.svg";
-import { GameMode, GameRules } from "@/utilities";
+import { classnames, GameMode, GameRules } from "@/utilities";
 import { FC, useCallback, useMemo, useState } from "react";
 import "./modal.styles.scss";
 
@@ -10,19 +10,23 @@ type ModalProps = {
 };
 
 export const Modal: FC<ModalProps> = ({ board, onCloseModal }) => {
-  const [isVideoMode, setIsVideoMode] = useState(false);
+  const [isVideoContent, setIsVideoContent] = useState(false);
 
   const rulesImageUrl = useMemo(() => GameRules[board], [board]);
 
   const handleToggleVideo = useCallback(() => {
     if (board === "bonus") {
-      setIsVideoMode((currentValue) => !currentValue);
+      setIsVideoContent((currentValue) => !currentValue);
     }
   }, [board]);
 
   return (
     <div className="modal">
-      <div className={`md-content ${isVideoMode ? "content--video" : ""}`}>
+      <div
+        className={classnames("md-content", {
+          contentType: isVideoContent ? "video" : "image",
+        })}
+      >
         <button className="md-close-button" onClick={onCloseModal}>
           <img className="md-close-icon" alt="close icon" src={iconClose} />
         </button>
@@ -31,9 +35,7 @@ export const Modal: FC<ModalProps> = ({ board, onCloseModal }) => {
           <h2 className="md-title">RULES</h2>
         </div>
 
-        <div
-          className={`md-content-wrapper ${isVideoMode ? "content--video" : ""}`}
-        >
+        <div className="md-content-wrapper">
           <img
             src={rulesImageUrl}
             className="md-content-image"
@@ -50,11 +52,8 @@ export const Modal: FC<ModalProps> = ({ board, onCloseModal }) => {
           />
 
           {board === "bonus" ? (
-            <button
-              className={`md-video-button ${isVideoMode ? "content--video" : ""}`}
-              onClick={handleToggleVideo}
-            >
-              {isVideoMode ? (
+            <button className="md-video-button" onClick={handleToggleVideo}>
+              {isVideoContent ? (
                 <span>View Rules Matrix</span>
               ) : (
                 <img alt="play video" src={iconYoutube} />

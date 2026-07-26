@@ -1,4 +1,4 @@
- @import '../../styles/breakpoints';
+ @use 'breakpoints';
 
  .selected-option {
    display: flex;
@@ -19,17 +19,17 @@
      cursor: default;
      position: relative;
 
-     &.chip--loader {
+     &__status-loading {
        opacity: 0.3;
        width: calc(var(--chip-size-outcome));
        height: calc(var(--chip-size-outcome) * 1.02);
-       background-image: url(../../images/spinner.svg);
+       background-image: url("../../images/spinner.svg");
        background-position: center;
        background-repeat: no-repeat;
        background-size: contain;
      }
 
-     &.chip--neutral {
+     &__status-neutral {
        &:hover {
          &::after {
            display: none;
@@ -38,8 +38,8 @@
      }
    }
 
-   @media (max-width: $--breakpoint-mobile) {
-      flex-direction: column-reverse;
+   @include breakpoints.mobile {
+     flex-direction: column-reverse;
      gap: 2rem;
 
      label {

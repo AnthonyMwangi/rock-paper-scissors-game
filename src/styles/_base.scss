@@ -1,5 +1,5 @@
-@import './breakpoints';
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700&display=swap');
+@use 'breakpoints';
+@import 'https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;600;700&display=swap';
 
 :root {
   /* Font */
@@ -21,8 +21,8 @@
   --color-light-blue-500: #2D8DAB;
 
   /* Neutral */
-  --color-white: #FFFFFF;
-  --color-black: #000000;
+  --color-white: #FFF;
+  --color-black: #000;
   --color-gray-200: #E1E4ED;
   --color-gray-400: #B1B4C5;
   --color-gray-500: #8A90AC;
@@ -60,7 +60,7 @@
   --chip-icon-size: 4rem;
 }
 
-@media (max-width: $--breakpoint-mobile) {
+@media (max-width: breakpoints.$breakpoint-mobile) {
   :root {
     /* Override Tokens */
     --chip-size-bonus: 6.5rem;
@@ -91,20 +91,20 @@ body {
     justify-content: center;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    max-width: $--breakpoint-max;
+    max-width: breakpoints.$breakpoint-max;
     min-height: 100vh;
     padding: 3rem 0;
     width: 100%;
   }
 
-  @media (max-width: $--breakpoint-tablet) {
+  @include breakpoints.tablet {
     .content {
       max-width: 100%;
       padding: 2.5rem 2.5rem 1.5rem;
     }
   }
 
-  @media (max-width: $--breakpoint-mobile) {
+  @include breakpoints.mobile {
     .content {
       max-width: 100%;
       padding: 2rem 2rem 1rem;

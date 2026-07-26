@@ -1,4 +1,16 @@
 /* Breakpoints */
-$--breakpoint-mobile: 30rem;
-$--breakpoint-tablet: 50rem;
-$--breakpoint-max: 60rem;
+$breakpoint-mobile: 30rem;
+$breakpoint-tablet: 50rem;
+$breakpoint-max: 60rem;
+
+@mixin tablet {
+  @media (max-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (max-width: $breakpoint-mobile) {
+    @content;
+  }
+}
