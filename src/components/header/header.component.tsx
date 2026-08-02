@@ -1,14 +1,18 @@
-import { GameLogo, GameMode } from "@/utilities";
+import { useAppContext } from "@/context";
+import { GameLogo, GameOutcomePoints } from "@/utilities";
 import { FC, useMemo } from "react";
 import "./header.styles.scss";
 
-type HeaderProps = {
-  board: GameMode;
-  score: number;
-};
+export const Header: FC = () => {
+  const { gameMode, currentPlayerResults } = useAppContext();
 
-export const Header: FC<HeaderProps> = ({ board, score }) => {
-  const logo = useMemo(() => GameLogo[board], [board]);
+  const logo = useMemo(() => GameLogo[gameMode], [gameMode]);
+
+  const playerScore = useMemo(() => {
+    return currentPlayerResults
+      .filter((result) => result.mode === gameMode)
+      .reduce((total, result) => total + GameOutcomePoints[result.outcome], 0);
+  }, [currentPlayerResults, gameMode]);
 
   return (
     <header className="header">
@@ -16,7 +20,7 @@ export const Header: FC<HeaderProps> = ({ board, score }) => {
 
       <div className="score-card">
         <label>SCORE</label>
-        <h2>{score}</h2>
+        <h2>{playerScore}</h2>
       </div>
     </header>
   );

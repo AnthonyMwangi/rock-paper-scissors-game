@@ -39,3 +39,9 @@ export const GameOutcomeLabel: Record<GameOutcome, string> = {
   lose: "You Lose",
   draw: "Draw",
 };
+
+export const GameOutcomePoints: Record<GameOutcome, number> = {
+  win: 1,
+  lose: -1,
+  draw: 0,
+};

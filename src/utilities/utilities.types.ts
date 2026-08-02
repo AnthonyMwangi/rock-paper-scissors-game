@@ -6,9 +6,12 @@ export type GameOutcome = "win" | "draw" | "lose";
 export type GameOption = StandardOption | BonusOption;
 
 export type GameResult = {
-  board: GameMode;
-  userChoice: GameOption;
-  houseChoice: GameOption;
+  id: string | null;
+  mode: GameMode;
   outcome: GameOutcome;
+  playerId: string | null;
+  playerChoice: GameOption;
+  opponentId: string | null;
+  opponentChoice: GameOption;
   timestamp: number;
 };

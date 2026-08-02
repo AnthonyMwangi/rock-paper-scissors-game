@@ -1,26 +1,27 @@
+import { useAppContext } from "@/context/app.context";
+import { useGlobalStore } from "@/store";
 import { GameMode } from "@/utilities";
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import "./footer.styles.scss";
 
-type FooterProps = {
-  board: GameMode;
-  onToggleGameMode: () => void;
-  onToggleRules: () => void;
-};
+export const Footer: FC = () => {
+  const { gameMode, onToggleRulesModal } = useAppContext();
 
-export const Footer: FC<FooterProps> = ({
-  board,
-  onToggleGameMode,
-  onToggleRules,
-}) => {
+  const handleToggleGameMode = useCallback(() => {
+    const newMode: GameMode = gameMode === "standard" ? "bonus" : "standard";
+    return useGlobalStore.getState().setGameMode(newMode);
+  }, [gameMode]);
+
   return (
     <footer className="footer">
-      <button className="button-toggle" onClick={onToggleGameMode}>
-        <span className={board === "standard" ? "selected" : ""}>Easy</span>
-        <span className={board === "bonus" ? "selected" : ""}>Advanced</span>
+      <button className="button-toggle" onClick={handleToggleGameMode}>
+        <span className={gameMode === "standard" ? "selected" : ""}>
+          Original
+        </span>
+        <span className={gameMode === "bonus" ? "selected" : ""}>Bonus</span>
       </button>
 
-      <button className="button-outline" onClick={onToggleRules}>
+      <button className="button-outline" onClick={onToggleRulesModal}>
         <span>Rules</span>
       </button>
     </footer>

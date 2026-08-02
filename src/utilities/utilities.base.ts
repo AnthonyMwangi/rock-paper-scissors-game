@@ -1,11 +1,10 @@
+import { useGlobalStore } from "@/store";
 import { GameOptions } from "@/utilities/utilities.constants";
-import {
-  GameMode,
-  GameOption,
-  GameOutcome,
-  GameResult,
-} from "./utilities.types";
+import { GameOption, GameOutcome, GameResult } from "./utilities.types";
 
+/**
+ * Computer just picks a random value
+ */
 export function getComputerChoice(options: GameOption[]) {
   const randomIndex = Math.floor(Math.random() * options.length);
   return options[randomIndex];
@@ -18,16 +17,15 @@ export function getComputerChoice(options: GameOption[]) {
  * - If the number of steps are within the winning range, the user's choice wins.
  * - Modular arithmetic is used to get the actual index in the cycle
  */
-export function getUserOutcome(
-  userChoice: GameOption,
-  gameBoard: GameMode,
-): GameResult {
-  let userOutcome: GameOutcome = "draw";
-  const options = GameOptions[gameBoard];
+export function getPlayerOutcome(playerChoice: GameOption): GameResult {
+  let playerOutcome: GameOutcome = "draw";
+  const { gameMode, player } = useGlobalStore.getState().app;
+
+  const options = GameOptions[gameMode];
   const houseChoice = getComputerChoice(options);
 
-  if (houseChoice !== userChoice) {
-    const userChoiceIndex = options.indexOf(userChoice);
+  if (houseChoice !== playerChoice) {
+    const userChoiceIndex = options.indexOf(playerChoice);
     const houseChoiceIndex = options.indexOf(houseChoice);
 
     const userWinningRange = (options.length - 1) / 2;
@@ -35,14 +33,17 @@ export function getUserOutcome(
       houseChoiceIndex - userChoiceIndex + options.length;
     const userStepsToHouse = userModularDistance % options.length;
 
-    userOutcome = userStepsToHouse <= userWinningRange ? "win" : "lose";
+    playerOutcome = userStepsToHouse <= userWinningRange ? "win" : "lose";
   }
 
   return {
-    outcome: userOutcome,
+    id: null,
+    mode: gameMode,
+    outcome: playerOutcome,
+    opponentChoice: houseChoice,
+    opponentId: null,
     timestamp: Date.now(),
-    board: gameBoard,
-    houseChoice,
-    userChoice,
+    playerId: player?.uid || null,
+    playerChoice,
   };
 }

@@ -1,0 +1,95 @@
+import { useGlobalStore } from "@/store";
+import {
+  AUTO_PLAY_TIMEOUT_SECONDS,
+  Firebase,
+  GameOption,
+  GameResult,
+} from "@/utilities";
+import {
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { AppContext } from "./app.context";
+
+export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const gameplayTimeoutRef = useRef<NodeJS.Timeout>(null);
+  const autoplayTimeoutRef = useRef<NodeJS.Timeout>(null);
+
+  const gameMode = useGlobalStore((state) => state.app.gameMode);
+  const isLoading = useGlobalStore((state) => !state.app.hasHydrated);
+  const currentPlayer = useGlobalStore((state) => state.app.player);
+  const currentPlayerResults = useGlobalStore(
+    (state) => state.app.playerResults,
+  );
+
+  const [currentPlayerChoice, setCurrentPlayerChoice] = useState<GameOption>();
+  const [currentGameResult, setCurrentGameResult] = useState<GameResult>();
+  const [isRulesModalVisible, setIsRulesModalVisible] = useState(false);
+
+  const onResetGame = useCallback(() => {
+    setCurrentPlayerChoice(undefined);
+    setCurrentGameResult(undefined);
+  }, []);
+
+  const onToggleRulesModal = useCallback(() => {
+    setIsRulesModalVisible((currentValue) => !currentValue);
+  }, []);
+
+  const onSelectPlayerOption = useCallback(
+    (option: GameOption) => {
+      setCurrentPlayerChoice(option);
+
+      if (gameplayTimeoutRef.current) {
+        clearTimeout(gameplayTimeoutRef.current);
+      }
+
+      if (autoplayTimeoutRef.current) {
+        clearTimeout(autoplayTimeoutRef.current);
+      }
+
+      gameplayTimeoutRef.current = setTimeout(async () => {
+        const result = await Firebase.savePlayerChoice(option);
+
+        // Automatically play again if its a draw
+        if (result.outcome === "draw") {
+          autoplayTimeoutRef.current = setTimeout(() => {
+            onResetGame();
+          }, AUTO_PLAY_TIMEOUT_SECONDS * 1000);
+        }
+
+        setCurrentGameResult(result);
+      }, 1500);
+    },
+    [onResetGame],
+  );
+
+  useEffect(() => {
+    Firebase.signIn();
+  }, []);
+
+  return (
+    <AppContext.Provider
+      value={{
+        gameMode,
+        currentGameResult,
+        currentPlayerChoice,
+        currentPlayerResults,
+        uid: currentPlayer?.uid || "",
+        isRulesModalVisible,
+        onSelectPlayerOption,
+        onToggleRulesModal,
+        onResetGame,
+      }}
+    >
+      {isLoading || !currentPlayer?.uid ? (
+        <div className="loader">Loading</div>
+      ) : (
+        children
+      )}
+    </AppContext.Provider>
+  );
+};

@@ -1,47 +1,43 @@
 import { LabeledChip } from "@/components";
+import { useAppContext } from "@/context/app.context";
 import {
   AUTO_PLAY_TIMEOUT_SECONDS,
   classnames,
-  GameOption,
   GameOutcomeLabel,
-  GameResult,
 } from "@/utilities";
 import { FC } from "react";
 
-export type GameBoardOutcomeProps = {
-  userChoice: GameOption;
-  result?: GameResult;
-  onReset: () => void;
-};
+export const GameBoardOutcome: FC = () => {
+  const { currentPlayerChoice, currentGameResult, onResetGame } =
+    useAppContext();
 
-export const GameBoardOutcome: FC<GameBoardOutcomeProps> = ({
-  result,
-  userChoice,
-  onReset,
-}) => {
   return (
     <div
       className={classnames("board-content-wrapper", {
-        isLoading: !result?.outcome,
+        isLoading: !currentGameResult?.outcome,
         board: "outcome",
       })}
     >
       <LabeledChip
         label="YOU PICKED"
-        isWinningChip={["win", "draw"].includes(result?.outcome || "")}
-        option={userChoice}
+        isWinningChip={["win", "draw"].includes(
+          currentGameResult?.outcome || "",
+        )}
+        option={currentPlayerChoice}
       />
 
-      {result?.outcome ? (
+      {currentGameResult?.outcome ? (
         <div className="selection-outcome">
-          <label>{GameOutcomeLabel[result.outcome]}</label>
+          <label>{GameOutcomeLabel[currentGameResult.outcome]}</label>
 
           <button
-            className={classnames(`button`, { outcome: result.outcome })}
+            className={classnames(`button`, {
+              outcome: currentGameResult.outcome,
+            })}
             style={{
               animationDuration: `${AUTO_PLAY_TIMEOUT_SECONDS}s`,
             }}
-            onClick={onReset}
+            onClick={onResetGame}
           >
             <span>Play Again</span>
           </button>
@@ -50,8 +46,10 @@ export const GameBoardOutcome: FC<GameBoardOutcomeProps> = ({
 
       <LabeledChip
         label="THE HOUSE PICKED"
-        isWinningChip={["lose", "draw"].includes(result?.outcome || "")}
-        option={result?.houseChoice}
+        isWinningChip={["lose", "draw"].includes(
+          currentGameResult?.outcome || "",
+        )}
+        option={currentGameResult?.opponentChoice}
       />
     </div>
   );

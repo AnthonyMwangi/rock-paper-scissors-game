@@ -1,24 +1,22 @@
+import { useAppContext } from "@/context/app.context";
 import iconClose from "@/images/icon-close.svg";
 import iconYoutube from "@/images/icon-youtube.svg";
-import { classnames, GameMode, GameRules } from "@/utilities";
+import { classnames, GameRules } from "@/utilities";
 import { FC, useCallback, useMemo, useState } from "react";
 import "./modal.styles.scss";
 
-type ModalProps = {
-  board: GameMode;
-  onCloseModal: () => void;
-};
+export const Modal: FC = () => {
+  const { gameMode, onToggleRulesModal } = useAppContext();
 
-export const Modal: FC<ModalProps> = ({ board, onCloseModal }) => {
   const [isVideoContent, setIsVideoContent] = useState(false);
 
-  const rulesImageUrl = useMemo(() => GameRules[board], [board]);
+  const rulesImageUrl = useMemo(() => GameRules[gameMode], [gameMode]);
 
   const handleToggleVideo = useCallback(() => {
-    if (board === "bonus") {
+    if (gameMode === "bonus") {
       setIsVideoContent((currentValue) => !currentValue);
     }
-  }, [board]);
+  }, [gameMode]);
 
   return (
     <div className="modal">
@@ -27,7 +25,7 @@ export const Modal: FC<ModalProps> = ({ board, onCloseModal }) => {
           contentType: isVideoContent ? "video" : "image",
         })}
       >
-        <button className="md-close-button" onClick={onCloseModal}>
+        <button className="md-close-button" onClick={onToggleRulesModal}>
           <img className="md-close-icon" alt="close icon" src={iconClose} />
         </button>
 
@@ -51,7 +49,7 @@ export const Modal: FC<ModalProps> = ({ board, onCloseModal }) => {
             allowFullScreen={false}
           />
 
-          {board === "bonus" ? (
+          {gameMode === "bonus" ? (
             <button className="md-video-button" onClick={handleToggleVideo}>
               {isVideoContent ? (
                 <span>View Rules Matrix</span>

@@ -1,26 +1,21 @@
 import { Chip } from "@/components/chip";
-import { classnames, GameMode, GameOption, GameOptions } from "@/utilities";
+import { useAppContext } from "@/context/app.context";
+import { classnames, GameOptions } from "@/utilities";
 import { FC, useMemo } from "react";
 
-export type GameBoardSelectionProps = {
-  board: GameMode;
-  onSelectOption: (option: GameOption) => void;
-};
+export const GameBoardSelection: FC = () => {
+  const { gameMode, onSelectPlayerOption } = useAppContext();
 
-export const GameBoardSelection: FC<GameBoardSelectionProps> = ({
-  board,
-  onSelectOption,
-}) => {
-  const options = useMemo(() => GameOptions[board], [board]);
+  const options = useMemo(() => GameOptions[gameMode], [gameMode]);
 
   return (
-    <div className={classnames("board-content-wrapper", { board })}>
+    <div className={classnames("board-content-wrapper", { board: gameMode })}>
       {options.map((option) => (
         <Chip
           key={option}
           option={option}
-          onSelectOption={onSelectOption}
-          board={board}
+          onSelectOption={onSelectPlayerOption}
+          board={gameMode}
         />
       ))}
     </div>
