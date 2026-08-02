@@ -10,8 +10,8 @@ export const useGlobalStore = create<GlobalStore>()(
       ...createAppSlice(...a),
     }),
     {
-      name: "global-store",
-      storage: createJSONStorage(() => sessionStorage),
+      name: "rps-global-store",
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         app: { ...initialAppState, ...state.app },
       }),

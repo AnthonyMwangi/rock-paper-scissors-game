@@ -37,7 +37,7 @@ export class Firebase {
    * Authenticate user anonymously
    * - All users are assigned a guest session
    */
-  static signIn = () => {
+  static guestSignIn = () => {
     return new Promise((resolve, reject) => {
       onAuthStateChanged(this.auth, async (user) => {
         let authUser = user;

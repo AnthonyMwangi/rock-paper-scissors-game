@@ -68,7 +68,7 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 
   useEffect(() => {
-    Firebase.signIn();
+    Firebase.guestSignIn();
   }, []);
 
   return (
