@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "clsx": "^2.1.1",
+    "firebase": "^12.17.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "sass": "^1.101.3"
+    "sass": "^1.101.3",
+    "zustand": "^5.0.14"
   },
   "scripts": {
     "dev": "vite --port 3000",
