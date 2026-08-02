@@ -98,16 +98,14 @@
     }
 
     @include breakpoints.mobile {
-      .md-content {
-        height: 100vh;
-        justify-content: center;
-        grid-template-columns: 1fr;
-        padding: 4rem 1.5rem;
-        border-radius: 0;
+      height: 100vh;
+      justify-content: center;
+      grid-template-columns: 1fr;
+      padding: 4rem 1.5rem;
+      border-radius: 0;
 
-        &[data-content-type="video"] {
-          max-width: 100%;
-        }
+      &__content-type-video {
+        max-width: 100%;
       }
 
       .md-header {

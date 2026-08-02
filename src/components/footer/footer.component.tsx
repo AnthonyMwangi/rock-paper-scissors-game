@@ -5,16 +5,22 @@ import { FC, useCallback } from "react";
 import "./footer.styles.scss";
 
 export const Footer: FC = () => {
-  const { gameMode, onToggleRulesModal } = useAppContext();
+  const { gameMode, currentPlayerChoice, onToggleRulesModal, onResetGame } =
+    useAppContext();
 
   const handleToggleGameMode = useCallback(() => {
     const newMode: GameMode = gameMode === "standard" ? "bonus" : "standard";
-    return useGlobalStore.getState().setGameMode(newMode);
-  }, [gameMode]);
+    useGlobalStore.getState().setGameMode(newMode);
+    return onResetGame();
+  }, [gameMode, onResetGame]);
 
   return (
     <footer className="footer">
-      <button className="button-toggle" onClick={handleToggleGameMode}>
+      <button
+        className="button-toggle"
+        disabled={!!currentPlayerChoice}
+        onClick={handleToggleGameMode}
+      >
         <span className={gameMode === "standard" ? "selected" : ""}>
           Original
         </span>
