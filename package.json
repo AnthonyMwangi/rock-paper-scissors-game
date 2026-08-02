@@ -19,8 +19,8 @@
     "eslint:ci": "npm run eslint -- --max-warnings=0",
     "stylelint": "stylelint '**/*.{css,scss}'",
     "stylelint:fix": "npm run stylelint -- --fix",
-    "lint": "npm run eslint && npm run stylelint && npm run prettier",
-    "lint:fix": "npm run eslint:fix && npm run stylelint:fix && npm run prettier:fix",
+    "lint": "npm run eslint && npm run stylelint",
+    "lint:fix": "npm run eslint:fix && npm run stylelint:fix",
     "lint:ci": "npm run eslint:ci && npm run stylelint && npm run typecheck",
     "typecheck": "tsc --noEmit --project tsconfig.json"
   },
