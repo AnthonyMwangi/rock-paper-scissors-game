@@ -16,8 +16,8 @@ export const Footer: FC<FooterProps> = ({
   return (
     <footer className="footer">
       <button className="button-toggle" onClick={onToggleGameMode}>
-        <span className={board === "standard" ? "selected" : ""}>Original</span>
-        <span className={board === "bonus" ? "selected" : ""}>Bonus</span>
+        <span className={board === "standard" ? "selected" : ""}>Easy</span>
+        <span className={board === "bonus" ? "selected" : ""}>Advanced</span>
       </button>
 
       <button className="button-outline" onClick={onToggleRules}>
