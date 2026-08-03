@@ -1,7 +1,21 @@
 // Import the functions you need from the SDKs you need
 import { useGlobalStore } from "@/store";
 import { getPlayerOutcome } from "@/utilities/utilities.base";
-import { GameOption, GameResult } from "@/utilities/utilities.types";
+import { toSnakeCase } from "@/utilities/utilities.snakeCase";
+import {
+  GameAnalytics,
+  GameOption,
+  GamePlayer,
+  GameResult,
+  Writable,
+} from "@/utilities/utilities.types";
+import {
+  Analytics,
+  getAnalytics,
+  isSupported,
+  logEvent,
+  setUserId,
+} from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import {
@@ -15,11 +29,13 @@ import {
 } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: `${import.meta.env.VITE_FIREBASE_API_KEY}`,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
   databaseURL: `https://${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseio.com`,
-  projectId: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}`,
   storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebasestorage.app`,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
@@ -28,9 +44,17 @@ const firebaseApp = initializeApp(firebaseConfig);
 export class Firebase {
   private static db = getFirestore(firebaseApp);
   private static auth = getAuth(firebaseApp);
+  private static analytics: Analytics | undefined;
 
   private static db_collection = () => {
     return collection(this.db, "rps_results");
+  };
+
+  private static initAnalytics = async () => {
+    const isAnalyticsSupported = await isSupported();
+    if (isAnalyticsSupported && import.meta.env.PROD) {
+      this.analytics = getAnalytics(firebaseApp);
+    }
   };
 
   /**
@@ -38,15 +62,25 @@ export class Firebase {
    * - All users are assigned a guest session
    */
   static guestSignIn = () => {
+    this.initAnalytics();
+
     return new Promise((resolve, reject) => {
       onAuthStateChanged(this.auth, async (user) => {
-        let authUser = user;
+        const authUser: Writable<GamePlayer> = {
+          uid: user?.uid || "",
+          displayName: user?.displayName || "",
+          isAnonymous: !!user?.isAnonymous,
+          isReturning: true,
+        };
 
         // If there's no user info, sign-in
         if (!authUser?.uid) {
           await signInAnonymously(this.auth)
             .then((cred) => {
-              authUser = cred.user;
+              authUser.uid = cred.user.uid || "";
+              authUser.displayName = cred.user.displayName || "";
+              authUser.isAnonymous = !!cred.user.isAnonymous;
+              authUser.isReturning = false;
             })
             .catch(reject);
         }
@@ -56,11 +90,13 @@ export class Firebase {
           authUser?.uid &&
           authUser?.uid !== useGlobalStore.getState().app.player?.uid
         ) {
-          useGlobalStore.getState().setPlayerInfo({
-            uid: authUser.uid,
-            displayName: authUser.displayName,
-            isAnonymous: authUser.isAnonymous,
-          });
+          useGlobalStore.getState().setPlayerInfo(authUser);
+        }
+
+        // Track guest sign-ins
+        if (this.analytics && authUser?.uid) {
+          setUserId(this.analytics, authUser.uid);
+          this.trackEvent("RPS_SESSION_START", authUser);
         }
 
         // Update history in the background
@@ -77,6 +113,8 @@ export class Firebase {
   static savePlayerChoice = async (playerChoice: GameOption) => {
     const result = getPlayerOutcome(playerChoice);
 
+    this.trackEvent("RPS_RESULT", result);
+
     await addDoc(this.db_collection(), {
       ...result,
       createdAt: serverTimestamp(),
@@ -91,16 +129,35 @@ export class Firebase {
    * Fetch the current player's previous results
    */
   static getPlayerResults = async () => {
-    const uid = useGlobalStore.getState().app.player?.uid;
-    const q = query(this.db_collection(), where("playerId", "==", uid));
+    const { player } = useGlobalStore.getState().app;
 
-    const data = (await getDocs(q)).docs.map((document) => ({
-      id: document.id,
-      ...document.data(),
-    })) as unknown as GameResult[];
+    if (player?.uid) {
+      const q = query(
+        this.db_collection(),
+        where("playerId", "==", player.uid),
+      );
 
-    useGlobalStore.getState().setPlayerResults(data);
+      const data = (await getDocs(q)).docs.map((document) => ({
+        id: document.id,
+        ...document.data(),
+      })) as unknown as GameResult[];
 
-    return data;
+      useGlobalStore.getState().setPlayerResults(data);
+
+      return data;
+    }
+  };
+
+  static trackEvent = <K extends keyof GameAnalytics>(
+    name: K,
+    params: GameAnalytics[K],
+  ) => {
+    if (this.analytics) {
+      return logEvent(
+        this.analytics,
+        name.toLowerCase(),
+        toSnakeCase(params || undefined),
+      );
+    }
   };
 }

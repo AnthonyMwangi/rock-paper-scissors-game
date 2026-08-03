@@ -1,11 +1,19 @@
 import { useAppContext } from "@/context/app.context";
 import iconClose from "@/images/icon-close.svg";
 import iconYoutube from "@/images/icon-youtube.svg";
-import { classnames, GameRules } from "@/utilities";
-import { FC, useCallback, useMemo, useState } from "react";
+import {
+  BONUS_RULES_VIDEO,
+  classnames,
+  Firebase,
+  GameRules,
+  VideoPlayerStatus,
+} from "@/utilities";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./modal.styles.scss";
 
 export const Modal: FC = () => {
+  const videoRef = useRef<HTMLIFrameElement>(null);
+
   const { gameMode, onToggleRulesModal } = useAppContext();
 
   const [isVideoContent, setIsVideoContent] = useState(false);
@@ -14,9 +22,60 @@ export const Modal: FC = () => {
 
   const handleToggleVideo = useCallback(() => {
     if (gameMode === "bonus") {
-      setIsVideoContent((currentValue) => !currentValue);
+      const newValue = !isVideoContent;
+
+      if (newValue) {
+        Firebase.trackEvent("RPS_RULES_VIDEO_VIEWED", {
+          id: BONUS_RULES_VIDEO.ID,
+        });
+      }
+
+      return setIsVideoContent(newValue);
     }
-  }, [gameMode]);
+  }, [gameMode, isVideoContent]);
+
+  /**
+   * Enable the iframe to start posting state events
+   */
+  const onVideoLoad = () => {
+    if (!videoRef.current) return;
+
+    videoRef.current.contentWindow?.postMessage(
+      JSON.stringify({ event: "listening", id: BONUS_RULES_VIDEO.ID }),
+      BONUS_RULES_VIDEO.ORIGIN,
+    );
+  };
+
+  /**
+   * Listen for the iframe state events
+   */
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== BONUS_RULES_VIDEO.ORIGIN) return;
+
+      let data;
+      try {
+        data = JSON.parse(event.data);
+      } catch {
+        return; // not a JSON message, ignore
+      }
+
+      if (data?.info?.playerState === VideoPlayerStatus.Playing) {
+        Firebase.trackEvent("RPS_RULES_VIDEO_PLAYED", {
+          videoUrl: data?.videoUrl ?? "null",
+          currentTime: data?.currentTime ?? "null",
+          duration: data?.duration ?? "null",
+          playbackRate: data?.playbackRate ?? "null",
+          title: data?.videoData?.title ?? "null",
+          eventId: data?.videoData?.eventId ?? "null",
+          author: data?.videoData?.author ?? "null",
+        });
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   return (
     <div className="modal">
@@ -42,11 +101,13 @@ export const Modal: FC = () => {
 
           <iframe
             title="YouTube video player"
-            src="https://www.youtube.com/embed/iSHPVCBsnLw?si=o5k8hBQ5hfh2GaLW&amp;start=24"
+            src={`https://www.youtube.com/embed/${BONUS_RULES_VIDEO.ID}?si=o5k8hBQ5hfh2GaLW&amp;start=24&amp;enablejsapi=1`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerPolicy="strict-origin-when-cross-origin"
             className="md-youtube-player"
             allowFullScreen={false}
+            onLoad={onVideoLoad}
+            ref={videoRef}
           />
 
           {gameMode === "bonus" ? (

@@ -36,11 +36,17 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   const onToggleRulesModal = useCallback(() => {
-    setIsRulesModalVisible((currentValue) => !currentValue);
-  }, []);
+    const newValue = !isRulesModalVisible;
+
+    if (newValue) {
+      Firebase.trackEvent("RPS_RULES_MODAL_VIEWED", { mode: gameMode });
+    }
+
+    return setIsRulesModalVisible(newValue);
+  }, [gameMode, isRulesModalVisible]);
 
   const onSelectPlayerOption = useCallback(
-    (option: GameOption) => {
+    async (option: GameOption) => {
       setCurrentPlayerChoice(option);
 
       if (gameplayTimeoutRef.current) {
@@ -51,18 +57,16 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
         clearTimeout(autoplayTimeoutRef.current);
       }
 
-      gameplayTimeoutRef.current = setTimeout(async () => {
-        const result = await Firebase.savePlayerChoice(option);
+      const result = await Firebase.savePlayerChoice(option);
 
-        // Automatically play again if its a draw
-        if (result.outcome === "draw") {
-          autoplayTimeoutRef.current = setTimeout(() => {
-            onResetGame();
-          }, AUTO_PLAY_TIMEOUT_SECONDS * 1000);
-        }
+      // Automatically play again if its a draw
+      if (result.outcome === "draw") {
+        autoplayTimeoutRef.current = setTimeout(() => {
+          onResetGame();
+        }, AUTO_PLAY_TIMEOUT_SECONDS * 1000);
+      }
 
-        setCurrentGameResult(result);
-      }, 1500);
+      setCurrentGameResult(result);
     },
     [onResetGame],
   );

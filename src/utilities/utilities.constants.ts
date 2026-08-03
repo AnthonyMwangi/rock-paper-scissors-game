@@ -9,7 +9,12 @@ import logoBonus from "@/images/logo-bonus.svg";
 import logo from "@/images/logo.svg";
 import { GameMode, GameOption, GameOutcome } from "./utilities.types";
 
-export const AUTO_PLAY_TIMEOUT_SECONDS = 8;
+export const BONUS_RULES_VIDEO = {
+  ID: "iSHPVCBsnLw",
+  ORIGIN: "https://www.youtube.com",
+};
+
+export const AUTO_PLAY_TIMEOUT_SECONDS = 5;
 
 export const GameOptions: Record<GameMode, GameOption[]> = {
   standard: ["rock", "scissors", "paper"],

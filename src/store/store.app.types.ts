@@ -1,9 +1,8 @@
-import { GameMode, GameResult } from "@/utilities";
-import type { User } from "firebase/auth";
+import { GameMode, GamePlayer, GameResult } from "@/utilities";
 
 export type AppState = {
   hasHydrated: boolean;
-  player?: Pick<User, "uid" | "displayName" | "isAnonymous">;
+  player?: GamePlayer;
   playerResults: GameResult[];
   gameMode: GameMode;
 };
@@ -11,7 +10,7 @@ export type AppState = {
 export interface AppStore {
   app: AppState;
   setHasHydrated: (value: boolean) => void;
-  setPlayerInfo: (user: AppState["player"]) => void;
+  setPlayerInfo: (user: GamePlayer) => void;
   setPlayerResults: (results: GameResult[]) => void;
   setGameMode: (mode: GameMode) => void;
   resetApp: () => void;
