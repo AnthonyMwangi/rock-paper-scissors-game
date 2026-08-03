@@ -192,6 +192,14 @@
          top: -1.75rem;
        }
      }
+
+     @include breakpoints.tablet {
+       &:hover {
+         &::after {
+           display: none;
+         }
+       }
+     }
    }
 
    &__status-winner {

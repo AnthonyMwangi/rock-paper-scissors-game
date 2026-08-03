@@ -59,6 +59,7 @@
       width: 100%;
       position: relative;
       visibility: visible;
+      user-select: none;
     }
 
     .md-youtube-player {
@@ -99,10 +100,14 @@
 
     @include breakpoints.mobile {
       height: 100vh;
+      max-width: none;
       justify-content: center;
       grid-template-columns: 1fr;
       padding: 4rem 1.5rem;
       border-radius: 0;
+      position: fixed;
+      left: 0;
+      top: 0;
 
       &__content-type-video {
         max-width: 100%;

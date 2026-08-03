@@ -74,23 +74,32 @@
 }
 
 body {
+  user-select: none;
   font-family: var(--font-family-base);
   font-weight: var(--font-weight-semibold);
-  background: var(--color-bg-gradient);
   color: var(--color-navy-900);
+  width: 100vw;
+
+  @include breakpoints.tablet {
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
 }
 
 #root {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--color-bg-gradient);
   position: relative;
+  width: 100%;
 
   .app {
     display: grid;
     justify-content: center;
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto 1fr auto;
     max-width: breakpoints.$breakpoint-max;
     min-height: 100vh;
     padding: 3rem 0;
@@ -98,6 +107,10 @@ body {
   }
 
   @include breakpoints.tablet {
+    position: fixed;
+    left: 0;
+    top: 0;
+
     .app {
       max-width: 100%;
       padding: 2.5rem 2.5rem 1.5rem;
