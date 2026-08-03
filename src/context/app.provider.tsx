@@ -90,7 +90,7 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       {isLoading || !currentPlayer?.uid ? (
-        <div className="loader">Loading</div>
+        <div className="app-loading__animation" />
       ) : (
         children
       )}

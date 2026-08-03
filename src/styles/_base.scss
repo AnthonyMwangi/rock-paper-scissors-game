@@ -106,6 +106,31 @@ body {
     width: 100%;
   }
 
+  .app-loading {
+    &__animation {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-bg-gradient);
+      position: fixed;
+      left: 0;
+      top: 0;
+
+      &::after {
+        content: "";
+        display: block;
+        background: url("../images/loader.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        aspect-ratio: 1;
+        width: 4rem;
+      }
+    }
+  }
+
   @include breakpoints.tablet {
     position: fixed;
     left: 0;
