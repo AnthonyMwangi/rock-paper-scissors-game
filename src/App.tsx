@@ -1,8 +1,11 @@
 import { Footer, GameBoard, Modal } from "@/components";
 import { useAppContext } from "@/context";
+import { useSEOComponent } from "@/hooks";
 import { Header } from "./components";
 
 export const App: React.FC = () => {
+  useSEOComponent();
+
   const { isRulesModalVisible } = useAppContext();
 
   return (
