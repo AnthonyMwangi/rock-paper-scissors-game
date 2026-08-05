@@ -17,7 +17,12 @@ import {
   setUserId,
 } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, signInAnonymously } from "firebase/auth";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInAnonymously,
+  updateProfile,
+} from "firebase/auth";
 import {
   addDoc,
   collection,
@@ -55,6 +60,24 @@ export class Firebase {
     if (isAnalyticsSupported && import.meta.env.PROD) {
       this.analytics = getAnalytics(firebaseApp);
     }
+  };
+
+  /**
+   * Update user display name
+   */
+  static updateUserName = async (name: string) => {
+    if (!this.auth.currentUser) return;
+
+    await updateProfile(this.auth.currentUser, {
+      displayName: name,
+    });
+
+    useGlobalStore.getState().setPlayerInfo({
+      uid: this.auth.currentUser.uid,
+      isReturning: !!useGlobalStore.getState().app.player?.isReturning,
+      isAnonymous: this.auth.currentUser.isAnonymous,
+      displayName: name,
+    });
   };
 
   /**

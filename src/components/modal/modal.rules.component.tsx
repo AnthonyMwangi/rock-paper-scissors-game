@@ -1,17 +1,15 @@
+import { ModalComponent } from "@/components/modal/modal.base.component";
 import { useAppContext } from "@/context/app.context";
-import iconClose from "@/images/icon-close.svg";
 import iconYoutube from "@/images/icon-youtube.svg";
 import {
   BONUS_RULES_VIDEO,
-  classnames,
   Firebase,
   GameRules,
   VideoPlayerStatus,
 } from "@/utilities";
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import "./modal.styles.scss";
 
-export const Modal: FC = () => {
+export const RulesModal: FC = () => {
   const videoRef = useRef<HTMLIFrameElement>(null);
 
   const { gameMode, onToggleRulesModal } = useAppContext();
@@ -78,49 +76,36 @@ export const Modal: FC = () => {
   }, []);
 
   return (
-    <div className="modal">
-      <div
-        className={classnames("md-content", {
-          contentType: isVideoContent ? "video" : "image",
-        })}
-      >
-        <button className="md-close-button" onClick={onToggleRulesModal}>
-          <img className="md-close-icon" alt="close icon" src={iconClose} />
+    <ModalComponent
+      title="rules"
+      modalName="rules"
+      onCloseModal={onToggleRulesModal}
+      classNameModifiers={{
+        media: isVideoContent ? "video" : "image",
+      }}
+    >
+      <img src={rulesImageUrl} className="md-content-image" alt="game rules" />
+
+      <iframe
+        title="YouTube video player"
+        src={`https://www.youtube.com/embed/${BONUS_RULES_VIDEO.ID}?si=o5k8hBQ5hfh2GaLW&amp;start=24&amp;enablejsapi=1`}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        className="md-youtube-player"
+        allowFullScreen={false}
+        onLoad={onVideoLoad}
+        ref={videoRef}
+      />
+
+      {gameMode === "bonus" ? (
+        <button className="md-video-button" onClick={handleToggleVideo}>
+          {isVideoContent ? (
+            <span>View Rules Matrix</span>
+          ) : (
+            <img alt="play video" src={iconYoutube} />
+          )}
         </button>
-
-        <div className="md-header">
-          <h2 className="md-title">RULES</h2>
-        </div>
-
-        <div className="md-content-wrapper">
-          <img
-            src={rulesImageUrl}
-            className="md-content-image"
-            alt="game rules"
-          />
-
-          <iframe
-            title="YouTube video player"
-            src={`https://www.youtube.com/embed/${BONUS_RULES_VIDEO.ID}?si=o5k8hBQ5hfh2GaLW&amp;start=24&amp;enablejsapi=1`}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            className="md-youtube-player"
-            allowFullScreen={false}
-            onLoad={onVideoLoad}
-            ref={videoRef}
-          />
-
-          {gameMode === "bonus" ? (
-            <button className="md-video-button" onClick={handleToggleVideo}>
-              {isVideoContent ? (
-                <span>View Rules Matrix</span>
-              ) : (
-                <img alt="play video" src={iconYoutube} />
-              )}
-            </button>
-          ) : null}
-        </div>
-      </div>
-    </div>
+      ) : null}
+    </ModalComponent>
   );
 };

@@ -6,6 +6,7 @@ export const initialAppState: AppState = {
   gameMode: "standard",
   player: undefined,
   playerResults: [],
+  playerWantsToStayAnonymous: false,
 };
 
 export const createAppSlice: StateCreator<Store, [], [], Store> = (set) => ({
@@ -15,6 +16,9 @@ export const createAppSlice: StateCreator<Store, [], [], Store> = (set) => ({
   },
   setPlayerInfo: (player) => {
     set((state) => ({ app: { ...state.app, player } }));
+  },
+  setPlayerWantsToStayAnonymous: (playerWantsToStayAnonymous = true) => {
+    set((state) => ({ app: { ...state.app, playerWantsToStayAnonymous } }));
   },
   setPlayerResults: (playerResults) => {
     set((state) => ({ app: { ...state.app, playerResults } }));

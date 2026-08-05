@@ -4,3 +4,4 @@ export * from "./utilities.constants";
 export * from "./utilities.firebase";
 export * from "./utilities.snakeCase";
 export * from "./utilities.types";
+export * from "./utilities.username";

@@ -6,10 +6,12 @@ type AppContextValues = {
   gameMode: GameMode;
   onResetGame: () => void;
   onToggleRulesModal: () => void;
+  onToggleUsernameModal: () => void;
   onSelectPlayerOption: (option: GameOption) => void;
   currentPlayerChoice?: GameOption;
   currentGameResult?: GameResult;
   currentPlayerResults: GameResult[];
+  isUsernameModalVisible: boolean;
   isRulesModalVisible: boolean;
 };
 
@@ -18,10 +20,12 @@ export const AppContext = createContext<AppContextValues>({
   gameMode: "standard",
   onResetGame: () => undefined,
   onToggleRulesModal: () => undefined,
+  onToggleUsernameModal: () => undefined,
   onSelectPlayerOption: () => undefined,
   currentPlayerChoice: undefined,
   currentGameResult: undefined,
   currentPlayerResults: [],
+  isUsernameModalVisible: false,
   isRulesModalVisible: false,
 });
 

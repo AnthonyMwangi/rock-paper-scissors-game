@@ -1,0 +1,60 @@
+@use 'breakpoints';
+
+@mixin rules-modal {
+  &#rules {
+    .md-content-image {
+      width: 100%;
+      position: relative;
+      visibility: visible;
+      user-select: none;
+    }
+
+    .md-youtube-player {
+      width: 100%;
+      height: auto;
+      position: absolute;
+      visibility: hidden;
+      aspect-ratio: 16 / 9;
+      outline: 0;
+      border: 0;
+    }
+
+    .md-video-button {
+      border: 0;
+
+      img {
+        width: 6rem;
+      }
+    }
+
+    &__media-video {
+      max-width: 35rem;
+
+      .md-content-image {
+        position: absolute;
+        visibility: hidden;
+      }
+
+      .md-youtube-player {
+        position: initial;
+        visibility: visible;
+      }
+
+      .md-video-button {
+        border: 1.5px solid var(--color-navy-900);
+      }
+    }
+
+    @include breakpoints.mobile {
+      &__content-type-video {
+        max-width: 100%;
+      }
+
+      .md-content-wrapper {
+        .md-youtube-player {
+          border-radius: 0.5rem;
+        }
+      }
+    }
+  }
+}

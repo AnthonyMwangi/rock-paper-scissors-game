@@ -1,4 +1,4 @@
-import { Footer, GameBoard, Modal } from "@/components";
+import { Footer, GameBoard, RulesModal, UsernameModal } from "@/components";
 import { useAppContext } from "@/context";
 import { useSEOComponent } from "@/hooks";
 import { Header } from "./components";
@@ -6,7 +6,7 @@ import { Header } from "./components";
 export const App: React.FC = () => {
   useSEOComponent();
 
-  const { isRulesModalVisible } = useAppContext();
+  const { isRulesModalVisible, isUsernameModalVisible } = useAppContext();
 
   return (
     <div className="app">
@@ -14,7 +14,8 @@ export const App: React.FC = () => {
       <GameBoard />
       <Footer />
 
-      {isRulesModalVisible ? <Modal /> : null}
+      {isUsernameModalVisible ? <UsernameModal /> : null}
+      {isRulesModalVisible ? <RulesModal /> : null}
     </div>
   );
 };

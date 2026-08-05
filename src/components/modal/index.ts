@@ -1,1 +1,2 @@
-export * from "./modal.component";
+export * from "./modal.rules.component";
+export * from "./modal.username.component";

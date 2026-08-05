@@ -1,4 +1,6 @@
 @use 'breakpoints';
+@use "./modal.rules.styles.scss" as rules;
+@use "./modal.username.styles.scss" as username;
 
 .modal {
   width: 100vw;
@@ -55,48 +57,8 @@
       gap: 3rem;
     }
 
-    .md-content-image {
-      width: 100%;
-      position: relative;
-      visibility: visible;
-      user-select: none;
-    }
-
-    .md-youtube-player {
-      width: 100%;
-      height: auto;
-      position: absolute;
-      visibility: hidden;
-      aspect-ratio: 16 / 9;
-      outline: 0;
-      border: 0;
-    }
-
-    .md-video-button {
-      border: 0;
-
-      img {
-        width: 6rem;
-      }
-    }
-
-    &__content-type-video {
-      max-width: 35rem;
-
-      .md-content-image {
-        position: absolute;
-        visibility: hidden;
-      }
-
-      .md-youtube-player {
-        position: initial;
-        visibility: visible;
-      }
-
-      .md-video-button {
-        border: 1.5px solid var(--color-navy-900);
-      }
-    }
+    @include rules.rules-modal;
+    @include username.username-modal;
 
     @include breakpoints.mobile {
       height: 100vh;
@@ -108,10 +70,6 @@
       position: fixed;
       left: 0;
       top: 0;
-
-      &__content-type-video {
-        max-width: 100%;
-      }
 
       .md-header {
         text-align: center;
@@ -131,10 +89,6 @@
       .md-content-wrapper {
         grid-row: 2;
         grid-column: 1;
-
-        .md-youtube-player {
-          border-radius: 0.5rem;
-        }
       }
     }
   }

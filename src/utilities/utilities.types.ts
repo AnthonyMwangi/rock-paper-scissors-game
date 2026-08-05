@@ -42,6 +42,7 @@ export type GameAnalytics = {
     isFirstTime: boolean;
   };
   RPS_LEADERBOARD_VIEWED: null;
+  RPS_USERNAME_MODAL_VIEWED: null;
   RPS_RULES_MODAL_VIEWED: { mode: GameMode };
   RPS_RULES_VIDEO_VIEWED: { id: string };
   RPS_RULES_VIDEO_PLAYED: {
