@@ -27,21 +27,23 @@
       }
     }
 
-    &__media-video {
-      max-width: 35rem;
+    &.md-content {
+      &__media-video {
+        max-width: 35rem;
 
-      .md-content-image {
-        position: absolute;
-        visibility: hidden;
-      }
+        .md-content-image {
+          position: absolute;
+          visibility: hidden;
+        }
 
-      .md-youtube-player {
-        position: initial;
-        visibility: visible;
-      }
+        .md-youtube-player {
+          position: initial;
+          visibility: visible;
+        }
 
-      .md-video-button {
-        border: 1.5px solid var(--color-navy-900);
+        .md-video-button {
+          border: 1.5px solid var(--color-navy-900);
+        }
       }
     }
 

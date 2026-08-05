@@ -1,10 +1,14 @@
 import { GameMode, GameOption, GameResult } from "@/utilities";
 import { createContext, useContext } from "react";
 
+export type OnResetGameOptions = {
+  showUsernameModal: boolean;
+};
+
 type AppContextValues = {
   uid: string;
   gameMode: GameMode;
-  onResetGame: () => void;
+  onResetGame: (options: OnResetGameOptions) => void;
   onToggleRulesModal: () => void;
   onToggleUsernameModal: () => void;
   onSelectPlayerOption: (option: GameOption) => void;

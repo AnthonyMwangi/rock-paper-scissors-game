@@ -15,6 +15,12 @@ export const UsernameModal: FC = () => {
   const [submitErrorCount, setSubmitErrorCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleModalClose = useCallback(() => {
+    if (isLoading) return;
+    Firebase.trackEvent("RPS_USERNAME_MODAL_DISMISSED", null);
+    return onToggleUsernameModal();
+  }, [isLoading, onToggleUsernameModal]);
+
   /**
    * Handle username input
    * - Clear any previous submit errors
@@ -65,7 +71,7 @@ export const UsernameModal: FC = () => {
     <ModalComponent
       title=""
       modalName="username"
-      onCloseModal={onToggleUsernameModal}
+      onCloseModal={handleModalClose}
       classNameModifiers={{ type: "username" }}
     >
       <div className="md-input-wrapper">
@@ -85,6 +91,7 @@ export const UsernameModal: FC = () => {
           onChange={handleUsernameInput}
           id="display-name-input"
           autoComplete="name"
+          disabled={isLoading}
           value={username}
         />
 

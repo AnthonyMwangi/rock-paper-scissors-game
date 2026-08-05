@@ -3,16 +3,13 @@
 @use "./modal.username.styles.scss" as username;
 
 .modal {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
+  inset: 0;
+  position: fixed;
   background: var(--color-modal-gradient);
   justify-content: center;
   align-items: center;
   display: flex;
   z-index: 1000;
-  left: 0;
-  top: 0;
 
   .md-content {
     width: 100%;
@@ -31,6 +28,7 @@
 
       .md-title {
         font-size: 2rem;
+        text-transform: uppercase;
         color: var(--color-navy-900);
         line-height: 1;
       }
@@ -61,15 +59,13 @@
     @include username.username-modal;
 
     @include breakpoints.mobile {
-      height: 100vh;
       max-width: none;
       justify-content: center;
       grid-template-columns: 1fr;
-      padding: 4rem 1.5rem;
+      padding: 2rem 1.5rem;
       border-radius: 0;
       position: fixed;
-      left: 0;
-      top: 0;
+      inset: 0;
 
       .md-header {
         text-align: center;

@@ -72,6 +72,11 @@ export class Firebase {
       displayName: name,
     });
 
+    await this.trackEvent("RPS_PLAYER_NAME_UPDATED", {
+      isFirstTime: !this.auth.currentUser.displayName,
+      displayName: name,
+    });
+
     useGlobalStore.getState().setPlayerInfo({
       uid: this.auth.currentUser.uid,
       isReturning: !!useGlobalStore.getState().app.player?.isReturning,

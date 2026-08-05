@@ -11,7 +11,7 @@ export const Footer: FC = () => {
   const handleToggleGameMode = useCallback(() => {
     const newMode: GameMode = gameMode === "standard" ? "bonus" : "standard";
     useGlobalStore.getState().setGameMode(newMode);
-    return onResetGame();
+    return onResetGame({ showUsernameModal: false });
   }, [gameMode, onResetGame]);
 
   return (

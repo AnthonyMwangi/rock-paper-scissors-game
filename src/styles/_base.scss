@@ -133,8 +133,7 @@ body {
 
   @include breakpoints.tablet {
     position: fixed;
-    left: 0;
-    top: 0;
+    inset: 0;
 
     .app {
       max-width: 100%;
@@ -145,7 +144,8 @@ body {
   @include breakpoints.mobile {
     .app {
       max-width: 100%;
-      padding: 2rem 1rem 1rem;
+      min-height: 100%;
+      padding: 1rem;
     }
   }
 }

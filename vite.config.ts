@@ -4,6 +4,9 @@ import { defineConfig } from "vite";
 import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
+  server: {
+    host: true,
+  },
   plugins: [svgr(), react()],
   resolve: {
     alias: {

@@ -38,11 +38,12 @@ export type GameResult = {
 export type GameAnalytics = {
   RPS_RESULT: GameResult;
   RPS_SESSION_START: GamePlayer | null;
-  RPS_PLAYER_NAME_SET: Pick<GamePlayer, "displayName"> & {
+  RPS_PLAYER_NAME_UPDATED: Pick<GamePlayer, "displayName"> & {
     isFirstTime: boolean;
   };
   RPS_LEADERBOARD_VIEWED: null;
   RPS_USERNAME_MODAL_VIEWED: null;
+  RPS_USERNAME_MODAL_DISMISSED: null;
   RPS_RULES_MODAL_VIEWED: { mode: GameMode };
   RPS_RULES_VIDEO_VIEWED: { id: string };
   RPS_RULES_VIDEO_PLAYED: {

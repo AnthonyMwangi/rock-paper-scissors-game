@@ -13,7 +13,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { AppContext } from "./app.context";
+import { AppContext, OnResetGameOptions } from "./app.context";
 
 export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const gameplayTimeoutRef = useRef<NodeJS.Timeout>(null);
@@ -32,9 +32,12 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isRulesModalVisible, setIsRulesModalVisible] = useState(false);
   const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
 
-  const onResetGame = useCallback(() => {
+  const onResetGame = useCallback((options: OnResetGameOptions) => {
     // Show the input modal if the player hasn't chosen to stay anonymous
-    if (!useGlobalStore.getState().app.player?.displayName) {
+    if (
+      options.showUsernameModal &&
+      !useGlobalStore.getState().app.player?.displayName
+    ) {
       setIsUsernameModalVisible(
         !useGlobalStore.getState().app.playerWantsToStayAnonymous,
       );
@@ -81,7 +84,7 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
       // Automatically play again if its a draw
       if (result.outcome === "draw") {
         autoplayTimeoutRef.current = setTimeout(() => {
-          onResetGame();
+          onResetGame({ showUsernameModal: true });
         }, AUTO_PLAY_TIMEOUT_SECONDS * 1000);
       }
 

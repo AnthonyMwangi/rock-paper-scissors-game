@@ -37,7 +37,7 @@ export const GameBoardOutcome: FC = () => {
             style={{
               animationDuration: `${AUTO_PLAY_TIMEOUT_SECONDS}s`,
             }}
-            onClick={onResetGame}
+            onClick={() => onResetGame({ showUsernameModal: true })}
           >
             <span>Play Again</span>
           </button>
