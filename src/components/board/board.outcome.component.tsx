@@ -28,10 +28,12 @@ export const GameBoardOutcome: FC = () => {
 
       {currentGameResult?.outcome ? (
         <div className="selection-outcome">
-          <label>{GameOutcomeLabel[currentGameResult.outcome]}</label>
+          <span className="outcome-label">
+            {GameOutcomeLabel[currentGameResult.outcome]}
+          </span>
 
           <button
-            className={classnames(`button`, {
+            className={classnames("outcome-button", {
               outcome: currentGameResult.outcome,
             })}
             style={{

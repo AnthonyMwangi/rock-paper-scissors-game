@@ -16,7 +16,7 @@ export const LabeledChip: FC<LabeledChipProps> = ({
 }) => {
   return (
     <section className="selected-option">
-      <label className="selection-label">{label}</label>
+      <span className="selection-label">{label}</span>
 
       {option ? (
         <Chip board="outcome" isWinningChip={isWinningChip} option={option} />

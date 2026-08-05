@@ -19,8 +19,8 @@ export const Header: FC = () => {
       <img className="logo" alt="app logo" src={logo} />
 
       <div className="score-card">
-        <label>SCORE</label>
-        <h2>{playerScore}</h2>
+        <span className="score-card-label">SCORE</span>
+        <h2 className="score-card-value">{playerScore}</h2>
       </div>
     </header>
   );

@@ -18,7 +18,7 @@
     padding: 1rem 3rem;
     gap: 0.65rem;
 
-    label {
+    .score-card-label {
       text-align: center;
       color: var(--color-blue-700);
       letter-spacing: 2.5px;
@@ -26,7 +26,7 @@
       line-height: 1.2;
     }
 
-    h2 {
+    .score-card-value {
       margin: 0;
       display: flex;
       align-items: center;
@@ -39,13 +39,13 @@
     }
   }
 
-@include breakpoints.mobile {
+  @include breakpoints.mobile {
     padding: 0.75rem 0.85rem;
 
     .score-card {
-        display: grid;
-        padding: 0.625rem 1.5rem;
-        gap: 0;
+      display: grid;
+      padding: 0.625rem 1.5rem;
+      gap: 0;
     }
   }
 }

@@ -40,7 +40,7 @@
       align-items: center;
       gap: 1rem;
 
-      &>label {
+      .outcome-label {
         font-size: 3.5rem;
         font-weight: var(--font-weight-bold);
         color: var(--color-white);
@@ -48,7 +48,7 @@
         line-height: 1.2;
       }
 
-      &>.button {
+      .outcome-button {
         width: 100%;
         font-size: 1rem;
         padding: 1rem 4rem;
@@ -102,7 +102,7 @@
         grid-column: 1 / -1;
         padding-top: 2rem;
 
-        &>.button {
+        .outcome-button {
           padding: 1rem 5rem;
           width: auto;
         }
@@ -115,7 +115,7 @@
       .selection-outcome {
         padding-top: 4rem;
 
-        &>label {
+        .outcome-label {
           font-size: 3rem;
         }
       }

@@ -6,11 +6,8 @@ export type UsernameInvalidReason =
   "empty" | "too_short" | "too_long" | "invalid_characters";
 
 type UsernameValidationResult =
-  | { valid: true }
-  | {
-      valid: false;
-      reason: UsernameInvalidReason;
-    };
+  | { valid: true; reason?: string }
+  | { valid: false; reason: UsernameInvalidReason };
 
 export const USERNAME_ERROR_MESSAGES: Record<UsernameInvalidReason, string> = {
   empty: "Please enter a username",

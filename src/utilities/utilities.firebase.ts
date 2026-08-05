@@ -72,7 +72,7 @@ export class Firebase {
       displayName: name,
     });
 
-    await this.trackEvent("RPS_PLAYER_NAME_UPDATED", {
+    this.trackEvent("RPS_PLAYER_NAME_UPDATED", {
       isFirstTime: !this.auth.currentUser.displayName,
       displayName: name,
     });
