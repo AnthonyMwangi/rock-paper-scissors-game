@@ -1,6 +1,6 @@
-import { ModalComponent } from "@/components/modal/modal.base.component";
-import { useAppContext } from "@/context/app.context";
+import { ModalComponent } from "@/components/modals/modal.base.component";
 import iconYoutube from "@/images/icon-youtube.svg";
+import { useGlobalStore } from "@/store";
 import {
   BONUS_RULES_VIDEO,
   Firebase,
@@ -11,8 +11,7 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export const RulesModal: FC = () => {
   const videoRef = useRef<HTMLIFrameElement>(null);
-
-  const { gameMode, onToggleRulesModal } = useAppContext();
+  const gameMode = useGlobalStore((state) => state.app.gameMode);
 
   const [isVideoContent, setIsVideoContent] = useState(false);
 
@@ -79,7 +78,6 @@ export const RulesModal: FC = () => {
     <ModalComponent
       title="rules"
       modalName="rules"
-      onCloseModal={onToggleRulesModal}
       classNameModifiers={{
         media: isVideoContent ? "video" : "image",
       }}

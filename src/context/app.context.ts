@@ -1,36 +1,41 @@
-import { GameMode, GameOption, GameResult } from "@/utilities";
+import { GameModal, GameMode, GameOption, GameResult } from "@/utilities";
 import { createContext, useContext } from "react";
 
 export type OnResetGameOptions = {
   showUsernameModal: boolean;
 };
 
-type AppContextValues = {
+export type ModalStatus = Record<Lowercase<GameModal>, boolean>;
+
+export type AppContextValues = {
   uid: string;
   gameMode: GameMode;
   onResetGame: (options: OnResetGameOptions) => void;
-  onToggleRulesModal: () => void;
-  onToggleUsernameModal: () => void;
+  onToggleModal: (
+    modal: Lowercase<GameModal>,
+    options?: Record<string, unknown>,
+  ) => void;
   onSelectPlayerOption: (option: GameOption) => void;
   currentPlayerChoice?: GameOption;
   currentGameResult?: GameResult;
   currentPlayerResults: GameResult[];
-  isUsernameModalVisible: boolean;
-  isRulesModalVisible: boolean;
+  isModalOpen: ModalStatus;
 };
 
 export const AppContext = createContext<AppContextValues>({
   uid: "",
   gameMode: "standard",
   onResetGame: () => undefined,
-  onToggleRulesModal: () => undefined,
-  onToggleUsernameModal: () => undefined,
+  onToggleModal: () => undefined,
   onSelectPlayerOption: () => undefined,
   currentPlayerChoice: undefined,
   currentGameResult: undefined,
   currentPlayerResults: [],
-  isUsernameModalVisible: false,
-  isRulesModalVisible: false,
+  isModalOpen: {
+    rules: false,
+    leaderboard: false,
+    username: false,
+  },
 });
 
 export const useAppContext = () => useContext(AppContext);

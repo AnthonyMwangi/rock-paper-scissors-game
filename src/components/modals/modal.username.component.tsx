@@ -1,5 +1,5 @@
-import { ModalComponent } from "@/components/modal/modal.base.component";
-import { useAppContext } from "@/context/app.context";
+import { ModalComponent } from "@/components/modals/modal.base.component";
+import { useAppContext } from "@/context";
 import {
   classnames,
   Firebase,
@@ -9,17 +9,11 @@ import {
 import { ChangeEvent, FC, useCallback, useMemo, useState } from "react";
 
 export const UsernameModal: FC = () => {
-  const { onToggleUsernameModal } = useAppContext();
+  const { onToggleModal } = useAppContext();
 
   const [username, setUsername] = useState<string>("");
   const [submitErrorCount, setSubmitErrorCount] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleModalClose = useCallback(() => {
-    if (isLoading) return;
-    Firebase.trackEvent("RPS_USERNAME_MODAL_DISMISSED", null);
-    return onToggleUsernameModal();
-  }, [isLoading, onToggleUsernameModal]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   /**
    * Handle username input
@@ -59,8 +53,8 @@ export const UsernameModal: FC = () => {
       setIsLoading(false);
     });
 
-    return onToggleUsernameModal();
-  }, [handleValidation, onToggleUsernameModal, username]);
+    return onToggleModal("username", {});
+  }, [handleValidation, onToggleModal, username]);
 
   const validationErrorMessage = useMemo(
     () => handleValidation(false),
@@ -68,12 +62,7 @@ export const UsernameModal: FC = () => {
   );
 
   return (
-    <ModalComponent
-      title=""
-      modalName="username"
-      onCloseModal={handleModalClose}
-      classNameModifiers={{ type: "username" }}
-    >
+    <ModalComponent modalName="username" disableCloseBtn={isLoading}>
       <div className="md-input-wrapper">
         <h2 className="md-heading">Don&lsquo;t play as a ghost!</h2>
 

@@ -2,6 +2,7 @@ import { useGlobalStore } from "@/store";
 import {
   AUTO_PLAY_TIMEOUT_SECONDS,
   Firebase,
+  GameModal,
   GameOption,
   GameResult,
 } from "@/utilities";
@@ -13,7 +14,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { AppContext, OnResetGameOptions } from "./app.context";
+import { AppContext, ModalStatus, OnResetGameOptions } from "./app.context";
 
 export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const gameplayTimeoutRef = useRef<NodeJS.Timeout>(null);
@@ -29,43 +30,50 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [currentPlayerChoice, setCurrentPlayerChoice] = useState<GameOption>();
   const [currentGameResult, setCurrentGameResult] = useState<GameResult>();
 
-  const [isRulesModalVisible, setIsRulesModalVisible] = useState(false);
-  const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState<ModalStatus>({
+    rules: false,
+    leaderboard: false,
+    username: false,
+  });
 
-  const onResetGame = useCallback((options: OnResetGameOptions) => {
-    // Show the input modal if the player hasn't chosen to stay anonymous
-    if (
-      options.showUsernameModal &&
-      !useGlobalStore.getState().app.player?.displayName
-    ) {
-      setIsUsernameModalVisible(
-        !useGlobalStore.getState().app.playerWantsToStayAnonymous,
-      );
-    }
+  const onToggleModal = useCallback(
+    (
+      modal: keyof ModalStatus,
+      analyticsEventParams?: Record<string, unknown>,
+    ) => {
+      return setIsModalVisible((currValue) => {
+        const isModalOpen = !currValue[modal];
+        const modalAction = isModalOpen ? "VIEWED" : "CLOSED";
 
-    setCurrentPlayerChoice(undefined);
-    setCurrentGameResult(undefined);
-  }, []);
+        if (isModalOpen) {
+          Firebase.trackEvent(
+            `RPS_${modal.toUpperCase() as Uppercase<GameModal>}_MODAL_${modalAction}`,
+            analyticsEventParams || {},
+          );
+        }
 
-  const onToggleRulesModal = useCallback(() => {
-    const newValue = !isRulesModalVisible;
+        return { ...currValue, [modal]: isModalOpen };
+      });
+    },
+    [],
+  );
 
-    if (newValue) {
-      Firebase.trackEvent("RPS_RULES_MODAL_VIEWED", { mode: gameMode });
-    }
+  const onResetGame = useCallback(
+    (options: OnResetGameOptions) => {
+      // Show the input modal if the player hasn't chosen to stay anonymous
+      if (
+        options.showUsernameModal &&
+        !useGlobalStore.getState().app.player?.displayName &&
+        !useGlobalStore.getState().app.playerWantsToStayAnonymous
+      ) {
+        onToggleModal("username");
+      }
 
-    return setIsRulesModalVisible(newValue);
-  }, [gameMode, isRulesModalVisible]);
-
-  const onToggleUsernameModal = useCallback(() => {
-    const newValue = !isUsernameModalVisible;
-
-    if (newValue) {
-      Firebase.trackEvent("RPS_USERNAME_MODAL_VIEWED", null);
-    }
-
-    return setIsUsernameModalVisible(newValue);
-  }, [isUsernameModalVisible]);
+      setCurrentPlayerChoice(undefined);
+      setCurrentGameResult(undefined);
+    },
+    [onToggleModal],
+  );
 
   const onSelectPlayerOption = useCallback(
     async (option: GameOption) => {
@@ -105,12 +113,10 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
         currentPlayerChoice,
         currentPlayerResults,
         uid: currentPlayer?.uid || "",
-        isUsernameModalVisible,
-        isRulesModalVisible,
+        isModalOpen: isModalVisible,
         onSelectPlayerOption,
-        onToggleUsernameModal,
-        onToggleRulesModal,
         onResetGame,
+        onToggleModal,
       }}
     >
       {isLoading || !currentPlayer?.uid ? (

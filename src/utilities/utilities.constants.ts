@@ -16,9 +16,18 @@ export const BONUS_RULES_VIDEO = {
 
 export const AUTO_PLAY_TIMEOUT_SECONDS = 5;
 
+export const LEADERBOARD_MIN_GAMES_THRESHOLD = 1;
+export const LEADERBOARD_FETCH_BUFFER = 30;
+export const LEADERBOARD_SIZE = 10;
+
 export const GameOptions: Record<GameMode, GameOption[]> = {
   standard: ["rock", "scissors", "paper"],
   bonus: ["rock", "scissors", "lizard", "paper", "spock"],
+};
+
+export const GameModeName: Record<GameMode, string> = {
+  standard: "original",
+  bonus: "bonus",
 };
 
 export const GameLogo: Record<GameMode, string> = {

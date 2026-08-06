@@ -1,12 +1,18 @@
 // Import the functions you need from the SDKs you need
 import { useGlobalStore } from "@/store";
 import { getPlayerOutcome } from "@/utilities/utilities.base";
+import {
+  LEADERBOARD_FETCH_BUFFER,
+  LEADERBOARD_MIN_GAMES_THRESHOLD,
+  LEADERBOARD_SIZE,
+} from "@/utilities/utilities.constants";
 import { toSnakeCase } from "@/utilities/utilities.snakeCase";
 import {
   GameAnalytics,
   GameOption,
   GamePlayer,
   GameResult,
+  LeaderboardEntry,
   Writable,
 } from "@/utilities/utilities.types";
 import {
@@ -26,10 +32,16 @@ import {
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   getFirestore,
+  increment,
+  limit,
+  orderBy,
   query,
+  QueryConstraint,
   serverTimestamp,
+  setDoc,
   where,
 } from "firebase/firestore";
 
@@ -51,9 +63,8 @@ export class Firebase {
   private static auth = getAuth(firebaseApp);
   private static analytics: Analytics | undefined;
 
-  private static db_collection = () => {
-    return collection(this.db, "rps_results");
-  };
+  private static results_db_name = "rps_results";
+  private static leaderboard_db_name = "rps_leaderboard";
 
   private static initAnalytics = async () => {
     const isAnalyticsSupported = await isSupported();
@@ -68,9 +79,17 @@ export class Firebase {
   static updateUserName = async (name: string) => {
     if (!this.auth.currentUser) return;
 
+    // Update auth profile
     await updateProfile(this.auth.currentUser, {
       displayName: name,
     });
+
+    // Update leaderboard from anonymous
+    await setDoc(
+      doc(this.db, this.leaderboard_db_name, this.auth.currentUser.uid),
+      { displayName: name },
+      { merge: true },
+    );
 
     this.trackEvent("RPS_PLAYER_NAME_UPDATED", {
       isFirstTime: !this.auth.currentUser.displayName,
@@ -143,10 +162,12 @@ export class Firebase {
 
     this.trackEvent("RPS_RESULT", result);
 
-    await addDoc(this.db_collection(), {
+    await addDoc(collection(this.db, this.results_db_name), {
       ...result,
       createdAt: serverTimestamp(),
     });
+
+    await this.updateLeaderboard(result);
 
     await this.getPlayerResults();
 
@@ -161,7 +182,7 @@ export class Firebase {
 
     if (player?.uid) {
       const q = query(
-        this.db_collection(),
+        collection(this.db, this.results_db_name),
         where("playerId", "==", player.uid),
       );
 
@@ -174,6 +195,51 @@ export class Firebase {
 
       return data;
     }
+  };
+
+  static fetchLeaderboard = async (playerId?: string) => {
+    const queryParams: QueryConstraint[] = [
+      orderBy("netScore", "desc"),
+      limit(LEADERBOARD_FETCH_BUFFER),
+    ];
+
+    if (playerId) {
+      queryParams.push(where("uid", "==", playerId));
+    }
+
+    const snapshot = await getDocs(
+      query(collection(this.db, this.leaderboard_db_name), ...queryParams),
+    );
+
+    return snapshot.docs
+      .map((d) => {
+        const entry = d.data() as LeaderboardEntry;
+        return { ...entry, winRate: (entry.wins / entry.totalGames) * 100 };
+      })
+      .filter((entry) => entry.totalGames >= LEADERBOARD_MIN_GAMES_THRESHOLD)
+      .slice(0, LEADERBOARD_SIZE);
+  };
+
+  static updateLeaderboard = async (result: GameResult) => {
+    if (!import.meta.env.PROD) return;
+    if (!this.auth.currentUser) return;
+
+    return await setDoc(
+      doc(this.db, this.leaderboard_db_name, this.auth.currentUser.uid),
+      {
+        uid: this.auth.currentUser.uid,
+        displayName: this.auth.currentUser.displayName ?? "Anonymous",
+        wins: increment(result.outcome === "win" ? 1 : 0),
+        losses: increment(result.outcome === "lose" ? 1 : 0),
+        draws: increment(result.outcome === "draw" ? 1 : 0),
+        netScore: increment(
+          result.outcome === "win" ? 1 : result.outcome === "lose" ? -1 : 0,
+        ),
+        totalGames: increment(1),
+        lastPlayedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
   };
 
   static trackEvent = <K extends keyof GameAnalytics>(

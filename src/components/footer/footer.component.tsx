@@ -1,6 +1,8 @@
+import { Button } from "@/components/button";
 import { useAppContext } from "@/context/app.context";
+import leaderboardIcon from "@/images/ranking.svg";
 import { useGlobalStore } from "@/store";
-import { classnames, GameMode } from "@/utilities";
+import { classnames, GameMode, GameModeName } from "@/utilities";
 import { FC, useCallback, useMemo, useState } from "react";
 import "./footer.styles.scss";
 
@@ -9,7 +11,7 @@ export const Footer: FC = () => {
     useGlobalStore.getState().app.gameMode,
   );
 
-  const { gameMode, currentPlayerChoice, onToggleRulesModal, onResetGame } =
+  const { gameMode, currentPlayerChoice, onResetGame, onToggleModal } =
     useAppContext();
 
   const handleToggleGameMode = useCallback(
@@ -22,28 +24,45 @@ export const Footer: FC = () => {
     [gameMode, onResetGame],
   );
 
-  const options = useMemo<GameMode[]>(() => ["standard", "bonus"], []);
+  const gameModes = useMemo(
+    () =>
+      Object.entries(GameModeName).map(([name, label]) => ({
+        name: name as GameMode,
+        label,
+      })),
+    [],
+  );
 
   return (
     <footer className="footer">
       <div className="toggle-button-wrapper">
-        {options.map((option) => (
-          <button
-            key={option}
-            data-option-name={option}
+        {gameModes.map((option) => (
+          <Button
+            id={option.name}
+            key={option.name}
+            label={option.label}
             disabled={!!currentPlayerChoice}
-            onClick={() => handleToggleGameMode(option)}
+            onClick={() => handleToggleGameMode(option.name)}
             className={classnames("toggle-button", {
-              isSelected: gameMode === option,
-              isPrev: prevState === option,
+              isSelected: gameMode === option.name,
+              isPrev: prevState === option.name,
             })}
           />
         ))}
       </div>
 
-      <button className="outline-button" onClick={onToggleRulesModal}>
-        <span>Rules</span>
-      </button>
+      <Button
+        label="Leaderboard"
+        icon={leaderboardIcon}
+        onClick={() => onToggleModal("leaderboard")}
+        className="outline-button"
+      />
+
+      <Button
+        label="Rules"
+        onClick={() => onToggleModal("rules")}
+        className="outline-button"
+      />
     </footer>
   );
 };

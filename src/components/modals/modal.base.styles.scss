@@ -1,5 +1,6 @@
 @use 'breakpoints';
 @use "./modal.rules.styles.scss" as rules;
+@use "./modal.leaderboard.styles.scss" as leaderboard;
 @use "./modal.username.styles.scss" as username;
 
 .modal {
@@ -15,7 +16,7 @@
     width: 100%;
     max-width: 27rem;
     display: grid;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: auto 1fr auto;
     grid-template-columns: 1fr auto;
     background: var(--color-white);
     border-radius: 0.5rem;
@@ -30,6 +31,8 @@
         font-size: 2rem;
         text-transform: uppercase;
         color: var(--color-navy-900);
+        font-weight: var(--font-weight-black);
+        letter-spacing: 1px;
         line-height: 1;
       }
     }
@@ -56,6 +59,7 @@
     }
 
     @include rules.rules-modal;
+    @include leaderboard.leaderboard-modal;
     @include username.username-modal;
 
     @include breakpoints.mobile {

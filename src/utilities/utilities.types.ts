@@ -18,6 +18,10 @@ export type StandardOption = "rock" | "paper" | "scissors";
 export type BonusOption = "lizard" | "spock";
 export type GameOutcome = "win" | "draw" | "lose";
 
+export type GameModal = "RULES" | "LEADERBOARD" | "USERNAME";
+export type GameModalOpenedEvent = `RPS_${GameModal}_MODAL_VIEWED`;
+export type GameModalClosedEvent = `RPS_${GameModal}_MODAL_CLOSED`;
+
 export type GameOption = StandardOption | BonusOption;
 
 export type GamePlayer = Pick<User, "uid" | "displayName" | "isAnonymous"> & {
@@ -35,16 +39,18 @@ export type GameResult = {
   timestamp: number;
 };
 
-export type GameAnalytics = {
+export type GameModalAnalytics = Record<
+  GameModalOpenedEvent | GameModalClosedEvent,
+  object
+>;
+
+export type GameAnalytics = GameModalAnalytics & {
   RPS_RESULT: GameResult;
   RPS_SESSION_START: GamePlayer | null;
   RPS_PLAYER_NAME_UPDATED: Pick<GamePlayer, "displayName"> & {
     isFirstTime: boolean;
   };
   RPS_LEADERBOARD_VIEWED: null;
-  RPS_USERNAME_MODAL_VIEWED: null;
-  RPS_USERNAME_MODAL_DISMISSED: null;
-  RPS_RULES_MODAL_VIEWED: { mode: GameMode };
   RPS_RULES_VIDEO_VIEWED: { id: string };
   RPS_RULES_VIDEO_PLAYED: {
     videoUrl: string;
@@ -56,3 +62,13 @@ export type GameAnalytics = {
     author: string;
   };
 };
+
+export interface LeaderboardEntry {
+  uid: string;
+  displayName: string;
+  totalGames: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  netScore: number;
+}
