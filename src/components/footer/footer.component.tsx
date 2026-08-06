@@ -1,33 +1,47 @@
 import { useAppContext } from "@/context/app.context";
 import { useGlobalStore } from "@/store";
-import { GameMode } from "@/utilities";
-import { FC, useCallback } from "react";
+import { classnames, GameMode } from "@/utilities";
+import { FC, useCallback, useMemo, useState } from "react";
 import "./footer.styles.scss";
 
 export const Footer: FC = () => {
+  const [prevState, setPrevState] = useState<GameMode>(
+    useGlobalStore.getState().app.gameMode,
+  );
+
   const { gameMode, currentPlayerChoice, onToggleRulesModal, onResetGame } =
     useAppContext();
 
-  const handleToggleGameMode = useCallback(() => {
-    const newMode: GameMode = gameMode === "standard" ? "bonus" : "standard";
-    useGlobalStore.getState().setGameMode(newMode);
-    return onResetGame({ showUsernameModal: false });
-  }, [gameMode, onResetGame]);
+  const handleToggleGameMode = useCallback(
+    (mode: GameMode) => {
+      if (mode === gameMode) return;
+      setPrevState(gameMode);
+      useGlobalStore.getState().setGameMode(mode);
+      return onResetGame({ showUsernameModal: false });
+    },
+    [gameMode, onResetGame],
+  );
+
+  const options = useMemo<GameMode[]>(() => ["standard", "bonus"], []);
 
   return (
     <footer className="footer">
-      <button
-        className="button-toggle"
-        disabled={!!currentPlayerChoice}
-        onClick={handleToggleGameMode}
-      >
-        <span className={gameMode === "standard" ? "selected" : ""}>
-          Original
-        </span>
-        <span className={gameMode === "bonus" ? "selected" : ""}>Bonus</span>
-      </button>
+      <div className="toggle-button-wrapper">
+        {options.map((option) => (
+          <button
+            key={option}
+            data-option-name={option}
+            disabled={!!currentPlayerChoice}
+            onClick={() => handleToggleGameMode(option)}
+            className={classnames("toggle-button", {
+              isSelected: gameMode === option,
+              isPrev: prevState === option,
+            })}
+          />
+        ))}
+      </div>
 
-      <button className="button-outline" onClick={onToggleRulesModal}>
+      <button className="outline-button" onClick={onToggleRulesModal}>
         <span>Rules</span>
       </button>
     </footer>

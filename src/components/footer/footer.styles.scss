@@ -8,30 +8,83 @@
   width: 100%;
   gap: 1rem;
 
-  .button-toggle {
+  .toggle-button-wrapper {
     display: flex;
     align-items: stretch;
-    color: var(--color-white);
-    background: var(--color-gray-400);
-    position: relative;
+    border: 1px solid var(--color-white);
+    border-radius: 0.5rem;
     overflow: hidden;
     padding: 0;
 
-    span {
+    .toggle-button {
       display: flex;
       align-items: center;
       justify-content: center;
+      background: transparent;
+      position: relative;
       padding: 0 1.5rem;
+      border-radius: 0;
       height: 100%;
+      z-index: 5;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
 
-      &.selected {
+      &::before {
+        content: "";
+        display: block;
+        position: absolute;
         background: var(--color-white);
-        color: var(--color-navy-900);
+        transition: transform .3s linear;
+        pointer-events: none;
+        z-index: -1;
+        inset: 0;
+      }
+
+      &::after {
+        display: block;
+        color: var(--color-white);
+        content: attr(data-option-name);
+        transition: color .1s linear;
+        transition-delay: .2s;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      &[data-option-name="standard"] {
+        &::before {
+          transform: translateX(100%);
+        }
+      }
+
+      &[data-option-name="bonus"] {
+        &::before {
+          transform: translateX(-100%);
+        }
+      }
+
+      &--is-selected {
+        &::after {
+          color: var(--color-navy-900)
+        }
+
+        &[data-option-name="standard"] {
+          &::before {
+            transform: translateX(0);
+            transition-delay: .1s;
+          }
+        }
+
+        &[data-option-name="bonus"] {
+          &::before {
+            transform: translateX(0);
+            transition-delay: .1s;
+          }
+        }
       }
     }
   }
 
-  .button-outline {
+  .outline-button {
     background: transparent;
     border: 1px solid var(--color-white);
     color: var(--color-white);
@@ -40,14 +93,36 @@
   @include breakpoints.mobile {
     justify-content: space-between;
 
-    .button-toggle {
-      span {
+    .toggle-button-wrapper {
+      .toggle-button {
         padding: 0 1rem;
       }
     }
 
-    .button-outline {
+    .outline-button {
       padding: 0.5rem 1rem;
     }
+  }
+}
+
+@keyframes slide-left {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
+    background: red;
+  }
+}
+
+@keyframes slide-right {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+    background: red;
   }
 }
