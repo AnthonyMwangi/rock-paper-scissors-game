@@ -1,20 +1,20 @@
 import { useCallback, useRef } from "react";
 
-export type UseLayoutCallback = (e: {
-  layout: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-}) => void;
+export type Layout = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export type UseLayoutCallback = (e: { layout: Layout }) => void;
 
 export function useLayout(onLayoutCallback: UseLayoutCallback) {
   const observerRef = useRef<ResizeObserver>(null);
 
   // Callback ref manages the element lifestyle cleanly
   return useCallback(
-    (node: HTMLElement) => {
+    (node: HTMLElement | null) => {
       if (observerRef.current) {
         observerRef.current?.disconnect();
       }

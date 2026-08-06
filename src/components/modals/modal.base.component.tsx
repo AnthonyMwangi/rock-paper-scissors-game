@@ -1,4 +1,5 @@
 import { useAppContext } from "@/context";
+import { useLayout, UseLayoutCallback } from "@/hooks";
 import iconClose from "@/images/icon-close.svg";
 import { classnames, GameModal, ModifierValue } from "@/utilities";
 import { FC, PropsWithChildren } from "react";
@@ -9,16 +10,21 @@ type ModalComponentProps = PropsWithChildren<{
   classNameModifiers?: Record<string, ModifierValue>;
   modalName: Lowercase<GameModal>;
   disableCloseBtn?: boolean;
+  onLayout?: UseLayoutCallback;
 }>;
 
 export const ModalComponent: FC<ModalComponentProps> = ({
   title,
   children,
+  onLayout,
   classNameModifiers = {},
   disableCloseBtn,
   modalName,
 }) => {
   const { gameMode, onToggleModal } = useAppContext();
+
+  const contentWrapperRef = useLayout((e) => onLayout?.(e));
+
   return (
     <div className="modal">
       <div
@@ -39,7 +45,9 @@ export const ModalComponent: FC<ModalComponentProps> = ({
           {title ? <h1 className="md-title">{title}</h1> : null}
         </div>
 
-        <div className="md-content-wrapper">{children}</div>
+        <div ref={contentWrapperRef} className="md-content-wrapper">
+          {children}
+        </div>
       </div>
     </div>
   );

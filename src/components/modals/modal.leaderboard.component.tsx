@@ -1,4 +1,5 @@
 import { ModalComponent } from "@/components/modals/modal.base.component";
+import { Layout, useLayout } from "@/hooks";
 import { useGlobalStore } from "@/store";
 import { classnames, Firebase, LeaderboardEntry } from "@/utilities";
 import { FC, useCallback, useEffect, useState } from "react";
@@ -9,6 +10,16 @@ export const LeaderboardModal: FC = () => {
   const [data, setData] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPlayerRanked, setIsPlayerRanked] = useState<boolean>(true);
+  const [wrapperLayout, setWrapperLayout] = useState<Layout>();
+
+  const handleLayout = useCallback(
+    (layout: Layout) => {
+      if (!wrapperLayout?.height) {
+        setWrapperLayout(layout);
+      }
+    },
+    [wrapperLayout?.height],
+  );
 
   useEffect(() => {
     Firebase.fetchLeaderboard()
@@ -22,7 +33,7 @@ export const LeaderboardModal: FC = () => {
           setIsPlayerRanked(false);
         }
 
-        setData([]);
+        setData(entries);
       })
       .finally(() => setIsLoading(false));
   }, [isLoading]);
@@ -42,6 +53,8 @@ export const LeaderboardModal: FC = () => {
     [isPlayerRanked, playerId],
   );
 
+  const listRef = useLayout((e) => handleLayout(e.layout));
+
   return (
     <ModalComponent title="Leaderboard" modalName="leaderboard">
       <p className="lb-description">
@@ -51,12 +64,9 @@ export const LeaderboardModal: FC = () => {
         talking.
       </p>
 
-      <div className="lb-list-wrapper">
-        {isLoading ? <div /> : null}
-
-        {!data?.length ? <div /> : <></>}
-
+      <div ref={listRef} className="lb-list-wrapper">
         <ul
+          style={{ height: wrapperLayout?.height }}
           className={classnames("lb-list-container", {
             isEmpty: !isLoading && !data?.length,
             isLoading: isLoading,
