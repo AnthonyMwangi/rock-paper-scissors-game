@@ -3,7 +3,7 @@
 .footer {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: stretch;
   width: 100%;
   gap: 1rem;
@@ -77,16 +77,26 @@
   }
 
   @include breakpoints.mobile {
-    justify-content: space-between;
+    gap: 0.5rem;
+    position: absolute;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 0 0.5rem 1rem;
+    bottom: 0;
+    right: 0;
+    left: 0;
 
     .toggle-button-wrapper {
       .toggle-button {
-        padding: 0 1rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
       }
     }
 
     .outline-button {
       padding: 0.5rem 1rem;
+      font-size: 0.8rem;
     }
   }
 }
