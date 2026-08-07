@@ -1,6 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { useGlobalStore } from "@/store";
-import { getPlayerOutcome } from "@/utilities/utilities.base";
+import {
+  getPlayerOutcome,
+  parseLeaderboardEntry,
+} from "@/utilities/utilities.base";
 import {
   LEADERBOARD_FETCH_BUFFER,
   LEADERBOARD_MIN_GAMES_THRESHOLD,
@@ -33,13 +36,13 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getDocs,
   getFirestore,
   increment,
   limit,
   orderBy,
   query,
-  QueryConstraint,
   serverTimestamp,
   setDoc,
   where,
@@ -198,24 +201,23 @@ export class Firebase {
   };
 
   static fetchLeaderboard = async (playerId?: string) => {
-    const queryParams: QueryConstraint[] = [
-      orderBy("netScore", "desc"),
-      limit(LEADERBOARD_FETCH_BUFFER),
-    ];
-
     if (playerId) {
-      queryParams.push(where("uid", "==", playerId));
+      const playerEntry = await getDoc(
+        doc(this.db, this.leaderboard_db_name, playerId),
+      ).then((playerSnapshot) => playerSnapshot.data() as LeaderboardEntry);
+      return [parseLeaderboardEntry(playerEntry)];
     }
 
     const snapshot = await getDocs(
-      query(collection(this.db, this.leaderboard_db_name), ...queryParams),
+      query(
+        collection(this.db, this.leaderboard_db_name),
+        orderBy("netScore", "desc"),
+        limit(LEADERBOARD_FETCH_BUFFER),
+      ),
     );
 
     return snapshot.docs
-      .map((d) => {
-        const entry = d.data() as LeaderboardEntry;
-        return { ...entry, winRate: (entry.wins / entry.totalGames) * 100 };
-      })
+      .map((d) => parseLeaderboardEntry(d.data() as LeaderboardEntry))
       .filter((entry) => entry.totalGames >= LEADERBOARD_MIN_GAMES_THRESHOLD)
       .slice(0, LEADERBOARD_SIZE);
   };

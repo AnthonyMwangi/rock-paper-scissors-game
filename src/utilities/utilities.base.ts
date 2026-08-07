@@ -1,6 +1,11 @@
 import { useGlobalStore } from "@/store";
 import { GameOptions } from "@/utilities/utilities.constants";
-import { GameOption, GameOutcome, GameResult } from "./utilities.types";
+import {
+  GameOption,
+  GameOutcome,
+  GameResult,
+  LeaderboardEntry,
+} from "./utilities.types";
 
 /**
  * Computer just picks a random value
@@ -46,4 +51,11 @@ export function getPlayerOutcome(playerChoice: GameOption): GameResult {
     playerId: player?.uid || null,
     playerChoice,
   };
+}
+
+/**
+ * Parse leaderboard entry
+ */
+export function parseLeaderboardEntry(entry: LeaderboardEntry) {
+  return { ...entry, winRate: (entry.wins / entry.totalGames) * 100 };
 }
