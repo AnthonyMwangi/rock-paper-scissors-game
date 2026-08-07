@@ -204,9 +204,12 @@ export class Firebase {
     if (playerId) {
       const playerEntry = await getDoc(
         doc(this.db, this.leaderboard_db_name, playerId),
-      ).then((playerSnapshot) => playerSnapshot.data() as LeaderboardEntry);
+      ).then(
+        (playerSnapshot) =>
+          playerSnapshot.data() as LeaderboardEntry | undefined,
+      );
 
-      return [parseLeaderboardEntry(playerEntry)];
+      return playerEntry?.uid ? [parseLeaderboardEntry(playerEntry)] : [];
     }
 
     const snapshot = await getDocs(
