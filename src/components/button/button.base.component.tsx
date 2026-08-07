@@ -1,8 +1,8 @@
 import { useLayout } from "@/hooks";
 import { FC, useState } from "react";
-import "./button.styles.scss";
+import "./button.base.styles.scss";
 
-type ButtonProps = {
+export type ButtonProps = {
   id?: string;
   icon?: string;
   label: string;

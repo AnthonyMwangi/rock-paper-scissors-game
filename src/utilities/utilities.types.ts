@@ -65,6 +65,7 @@ export type GameAnalytics = GameModalAnalytics & {
 
 export interface LeaderboardEntry {
   uid: string;
+  mode: GameMode;
   displayName: string;
   totalGames: number;
   wins: number;

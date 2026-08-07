@@ -1,7 +1,13 @@
-import { GameMode, GamePlayer, GameResult } from "@/utilities";
+import {
+  GameMode,
+  GamePlayer,
+  GameResult,
+  LeaderboardEntry,
+} from "@/utilities";
 
 export type AppState = {
   hasHydrated: boolean;
+  playerStats?: Record<GameMode, LeaderboardEntry | undefined>;
   playerWantsToStayAnonymous?: boolean;
   playerResults: GameResult[];
   player?: GamePlayer;
@@ -11,7 +17,7 @@ export type AppState = {
 export interface AppStore {
   app: AppState;
   setHasHydrated: (value: boolean) => void;
-  setPlayerInfo: (user: GamePlayer) => void;
+  setPlayerInfo: (params: Pick<AppState, "player" | "playerStats">) => void;
   setPlayerWantsToStayAnonymous: (value?: boolean) => void;
   setPlayerResults: (results: GameResult[]) => void;
   setGameMode: (mode: GameMode) => void;

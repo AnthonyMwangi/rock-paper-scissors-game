@@ -1,15 +1,25 @@
+import { ToggleButton } from "@/components";
 import { ModalComponent } from "@/components/modals/modal.base.component";
 import { Layout, useLayout } from "@/hooks";
 import { useGlobalStore } from "@/store";
-import { classnames, Firebase, LeaderboardEntry } from "@/utilities";
-import { FC, useCallback, useEffect, useState } from "react";
+import {
+  classnames,
+  Firebase,
+  GameMode,
+  GameModeName,
+  LeaderboardEntry,
+} from "@/utilities";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 export const LeaderboardModal: FC = () => {
   const playerId = useGlobalStore((state) => state.app.player?.uid);
+  const globalGameMode = useGlobalStore((state) => state.app.gameMode);
 
   const [error, setError] = useState<string>();
   const [data, setData] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [gameModeFilter, setGameModeFilter] = useState(globalGameMode);
+
   const [isPlayerRanked, setIsPlayerRanked] = useState<boolean>(true);
   const [wrapperLayout, setWrapperLayout] = useState<Layout>();
 
@@ -22,27 +32,35 @@ export const LeaderboardModal: FC = () => {
     [wrapperLayout?.height],
   );
 
+  const fetchLeaderboardData = useCallback(async () => {
+    try {
+      const entries = await Firebase.fetchLeaderboard(gameModeFilter);
+
+      // If user is not ranked show their stats at the end
+      if (playerId && !entries.find((entry) => entry.uid === playerId)) {
+        const [userEntry] = await Firebase.fetchLeaderboard(
+          gameModeFilter,
+          playerId,
+        );
+        if (userEntry?.uid) entries.push(userEntry);
+        setIsPlayerRanked(false);
+      }
+
+      setData(entries);
+    } catch (e: unknown) {
+      setError(
+        `Uh oh! Something went wrong, Please close the board and try again — ${(e as Error).message}`,
+      );
+    }
+
+    setIsLoading(false);
+  }, [gameModeFilter, playerId]);
+
   useEffect(() => {
-    Firebase.fetchLeaderboard()
-      .then(async (entries) => {
-        const { player } = useGlobalStore.getState().app;
-
-        // If user is not ranked show their stats at the end
-        if (player?.uid && !entries.find((entry) => entry.uid === player.uid)) {
-          const [userEntry] = await Firebase.fetchLeaderboard(player.uid);
-          if (userEntry?.uid) entries.push(userEntry);
-          setIsPlayerRanked(false);
-        }
-
-        setData(entries);
-      })
-      .catch((e) =>
-        setError(
-          `Uh oh! Something went wrong, Please close the board and try again — ${e.message}`,
-        ),
-      )
-      .finally(() => setIsLoading(false));
-  }, [isLoading]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchLeaderboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameModeFilter]);
 
   const getOverlayCopy = useCallback(
     (entry: LeaderboardEntry, rank: number) => {
@@ -59,6 +77,15 @@ export const LeaderboardModal: FC = () => {
     [isPlayerRanked, playerId],
   );
 
+  const gameModes = useMemo(() => {
+    return Object.entries(GameModeName).map(([name, label]) => ({
+      id: name,
+      onClick: () => setGameModeFilter(name as GameMode),
+      disabled: isLoading || !data.length,
+      label,
+    }));
+  }, [data.length, isLoading]);
+
   const listRef = useLayout((e) => handleLayout(e.layout));
 
   return (
@@ -69,6 +96,14 @@ export const LeaderboardModal: FC = () => {
         tie 🤪). Play enough games to make the cut, then let your record do the
         talking.
       </p>
+
+      <div className="lb-filter">
+        <ToggleButton
+          theme="dark"
+          selectedOptionID={gameModeFilter}
+          options={gameModes}
+        />
+      </div>
 
       <div ref={listRef} className="lb-list-wrapper">
         <ul

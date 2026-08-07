@@ -7,8 +7,6 @@
     max-width: calc(breakpoints.$breakpoint-max - 2rem);
     gap: 1rem;
 
-
-
     .md-content-wrapper {
       gap: 0;
       position: relative;
@@ -16,6 +14,8 @@
     }
 
     .lb-description {
+      text-align: center;
+
       b.pos {
         color: var(--color-blue-500);
       }
@@ -23,6 +23,12 @@
       b.neg {
         color: var(--color-red-600);
       }
+    }
+
+    .lb-filter {
+      display: flex;
+      justify-content: flex-end;
+      padding: 2rem 1rem 0;
     }
 
     .lb-list-wrapper {
@@ -354,8 +360,8 @@
         grid-column: 1/-1;
       }
 
-      .lb-description {
-        text-align: center;
+      .lb-filter {
+        justify-content: center;
       }
 
       .lb-list-container {

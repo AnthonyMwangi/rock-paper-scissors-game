@@ -1,0 +1,85 @@
+@use 'breakpoints';
+
+.toggle-button-wrapper {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--color-white);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  padding: 0;
+
+  .toggle-button {
+    z-index: 5;
+    overflow: hidden;
+    color: var(--color-white);
+    -webkit-tap-highlight-color: transparent;
+    transition: color .1s linear .2s;
+    background: transparent;
+    border-radius: 0;
+    height: 100%;
+
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      background: var(--color-white);
+      transition: transform .3s linear;
+      pointer-events: none;
+      z-index: -1;
+      inset: 0;
+    }
+
+    &[data-id="standard"] {
+      &::before {
+        transform: translateX(100%);
+      }
+    }
+
+    &[data-id="bonus"] {
+      &::before {
+        transform: translateX(-100%);
+      }
+    }
+
+    &--is-selected {
+      color: var(--color-navy-900);
+
+      &[data-id="standard"] {
+        &::before {
+          transform: translateX(0);
+          transition-delay: .1s;
+        }
+      }
+
+      &[data-id="bonus"] {
+        &::before {
+          transform: translateX(0);
+          transition-delay: .1s;
+        }
+      }
+    }
+  }
+
+  &__theme-dark {
+    border-color: var(--color-navy-900);
+
+    .toggle-button {
+      color: var(--color-navy-900);
+
+      &::before {
+        background: var(--color-navy-900);
+      }
+
+      &--is-selected {
+        color: var(--color-white);
+      }
+    }
+  }
+
+  @include breakpoints.mobile {
+    .toggle-button {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+    }
+  }
+}

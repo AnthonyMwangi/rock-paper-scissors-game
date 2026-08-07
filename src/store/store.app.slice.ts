@@ -7,6 +7,7 @@ export const initialAppState: AppState = {
   player: undefined,
   playerResults: [],
   playerWantsToStayAnonymous: false,
+  playerStats: undefined,
 };
 
 export const createAppSlice: StateCreator<Store, [], [], Store> = (set) => ({
@@ -14,8 +15,8 @@ export const createAppSlice: StateCreator<Store, [], [], Store> = (set) => ({
   setHasHydrated: (hasHydrated) => {
     set((state) => ({ app: { ...state.app, hasHydrated } }));
   },
-  setPlayerInfo: (player) => {
-    set((state) => ({ app: { ...state.app, player } }));
+  setPlayerInfo: ({ player, playerStats }) => {
+    set((state) => ({ app: { ...state.app, player, playerStats } }));
   },
   setPlayerWantsToStayAnonymous: (playerWantsToStayAnonymous = true) => {
     set((state) => ({ app: { ...state.app, playerWantsToStayAnonymous } }));

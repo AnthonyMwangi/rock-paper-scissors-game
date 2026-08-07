@@ -12,6 +12,7 @@ import {
 import { toSnakeCase } from "@/utilities/utilities.snakeCase";
 import {
   GameAnalytics,
+  GameMode,
   GameOption,
   GamePlayer,
   GameResult,
@@ -46,6 +47,7 @@ import {
   serverTimestamp,
   setDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -100,10 +102,11 @@ export class Firebase {
     });
 
     useGlobalStore.getState().setPlayerInfo({
-      uid: this.auth.currentUser.uid,
-      isReturning: !!useGlobalStore.getState().app.player?.isReturning,
-      isAnonymous: this.auth.currentUser.isAnonymous,
-      displayName: name,
+      player: {
+        ...(useGlobalStore.getState().app.player || {}),
+        displayName: name,
+      } as GamePlayer,
+      playerStats: useGlobalStore.getState().app.playerStats,
     });
   };
 
@@ -111,7 +114,7 @@ export class Firebase {
    * Authenticate user anonymously
    * - All users are assigned a guest session
    */
-  static guestSignIn = () => {
+  static guestSignIn = async () => {
     this.initAnalytics();
 
     return new Promise((resolve, reject) => {
@@ -136,11 +139,23 @@ export class Firebase {
         }
 
         // Update global store
-        if (
-          authUser?.uid &&
-          authUser?.uid !== useGlobalStore.getState().app.player?.uid
-        ) {
-          useGlobalStore.getState().setPlayerInfo(authUser);
+        if (authUser?.uid) {
+          const [bonusStats] = await this.fetchLeaderboard(
+            "bonus",
+            authUser.uid,
+          );
+          const [standardStats] = await this.fetchLeaderboard(
+            "standard",
+            authUser.uid,
+          );
+
+          useGlobalStore.getState().setPlayerInfo({
+            player: authUser,
+            playerStats: {
+              standard: standardStats,
+              bonus: bonusStats,
+            },
+          });
         }
 
         // Track guest sign-ins
@@ -200,10 +215,10 @@ export class Firebase {
     }
   };
 
-  static fetchLeaderboard = async (playerId?: string) => {
+  static fetchLeaderboard = async (gameMode: GameMode, playerId?: string) => {
     if (playerId) {
       const playerEntry = await getDoc(
-        doc(this.db, this.leaderboard_db_name, playerId),
+        doc(this.db, this.leaderboard_db_name, `${playerId}_${gameMode}`),
       ).then(
         (playerSnapshot) =>
           playerSnapshot.data() as LeaderboardEntry | undefined,
@@ -215,6 +230,7 @@ export class Firebase {
     const snapshot = await getDocs(
       query(
         collection(this.db, this.leaderboard_db_name),
+        where("mode", "==", gameMode),
         orderBy("netScore", "desc"),
         limit(LEADERBOARD_FETCH_BUFFER),
       ),
@@ -232,9 +248,12 @@ export class Firebase {
     if (!import.meta.env.PROD) return;
     if (!this.auth.currentUser) return;
 
+    const doc_id = `${this.auth.currentUser.uid}_${result.mode}`;
+
     return await setDoc(
-      doc(this.db, this.leaderboard_db_name, this.auth.currentUser.uid),
+      doc(this.db, this.leaderboard_db_name, doc_id),
       {
+        mode: result.mode,
         uid: this.auth.currentUser.uid,
         displayName: this.auth.currentUser.displayName ?? "Anonymous",
         wins: increment(result.outcome === "win" ? 1 : 0),
@@ -248,6 +267,69 @@ export class Firebase {
       },
       { merge: true },
     );
+  };
+
+  static migrateLeaderboard = async () => {
+    const rawResultsSnapshot = await getDocs(
+      collection(this.db, this.results_db_name),
+    );
+
+    const aggregates = new Map<string, LeaderboardEntry>();
+
+    rawResultsSnapshot.docs.forEach((docSnap) => {
+      const game = docSnap.data() as GameResult;
+
+      if (game.playerId && game.mode) {
+        const key = `${game.playerId}_${game.mode}`;
+
+        const existing = aggregates.get(key) ?? {
+          uid: game.playerId!,
+          displayName: "Anonymous",
+          mode: game.mode,
+          totalGames: 0,
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          netScore: 0,
+        };
+
+        existing.totalGames += 1;
+        if (game.outcome === "win") {
+          existing.wins += 1;
+          existing.netScore += 1;
+        } else if (game.outcome === "lose") {
+          existing.losses += 1;
+          existing.netScore -= 1;
+        } else {
+          existing.draws += 1;
+        }
+
+        aggregates.set(key, existing);
+      }
+    });
+
+    // Firestore batches cap at 500 writes — chunk if you have more entries
+    const entries = Array.from(aggregates.values());
+    const BATCH_LIMIT = 500;
+
+    for (let i = 0; i < entries.length; i += BATCH_LIMIT) {
+      const batch = writeBatch(this.db);
+      const chunk = entries.slice(i, i + BATCH_LIMIT);
+
+      chunk.forEach((entry) => {
+        const leaderboardRef = doc(
+          this.db,
+          this.leaderboard_db_name,
+          `${entry.uid}_${entry.mode}`,
+        );
+        batch.set(leaderboardRef, entry);
+      });
+
+      await batch.commit();
+    }
+
+    // eslint-disable-next-line no-console
+    console.log(`Migrated ${entries.length} leaderboard entries.`);
   };
 
   static trackEvent = <K extends keyof GameAnalytics>(
