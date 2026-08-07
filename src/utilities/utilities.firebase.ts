@@ -205,6 +205,7 @@ export class Firebase {
       const playerEntry = await getDoc(
         doc(this.db, this.leaderboard_db_name, playerId),
       ).then((playerSnapshot) => playerSnapshot.data() as LeaderboardEntry);
+      console.log("playerEntry", playerEntry);
       return [parseLeaderboardEntry(playerEntry)];
     }
 
