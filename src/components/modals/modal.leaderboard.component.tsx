@@ -7,6 +7,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 export const LeaderboardModal: FC = () => {
   const playerId = useGlobalStore((state) => state.app.player?.uid);
 
+  const [error, setError] = useState<string>();
   const [data, setData] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPlayerRanked, setIsPlayerRanked] = useState<boolean>(true);
@@ -27,7 +28,11 @@ export const LeaderboardModal: FC = () => {
         const { player } = useGlobalStore.getState().app;
 
         // If user is not ranked show their stats at the end
-        if (player?.uid && !entries.find((entry) => entry.uid === player.uid)) {
+        if (
+          player?.uid &&
+          entries.length &&
+          !entries.find((entry) => entry.uid === player.uid)
+        ) {
           const [userEntry] = await Firebase.fetchLeaderboard(player.uid);
           if (userEntry.uid) entries.push(userEntry);
           setIsPlayerRanked(false);
@@ -35,6 +40,11 @@ export const LeaderboardModal: FC = () => {
 
         setData(entries);
       })
+      .catch((e) =>
+        setError(
+          `Uh oh! Something went wrong, Please close the board and try again — ${e.message}`,
+        ),
+      )
       .finally(() => setIsLoading(false));
   }, [isLoading]);
 
@@ -66,10 +76,12 @@ export const LeaderboardModal: FC = () => {
 
       <div ref={listRef} className="lb-list-wrapper">
         <ul
+          data-error={error}
           style={{ height: wrapperLayout?.height }}
           className={classnames("lb-list-container", {
             isEmpty: !isLoading && !data?.length,
             isLoading: isLoading,
+            hasError: !!error,
           })}
         >
           {data.map((entry, index) => {

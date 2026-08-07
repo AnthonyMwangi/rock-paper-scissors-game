@@ -109,6 +109,35 @@
           width: 2.5rem;
         }
       }
+
+      &--has-error {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        &::before {
+          content: "";
+          display: block;
+          background-image: url("../../images/leaderboard-error.svg");
+          background-color: transparent;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: contain;
+          aspect-ratio: 1;
+          width: 15rem;
+        }
+
+        &::after {
+          display: block;
+          font-style: italic;
+          margin-bottom: 6rem;
+          color: var(--color-gray-500);
+          content: attr(data-error);
+          text-align: center;
+          max-width: 50%;
+        }
+      }
     }
 
     .lb-entry {
