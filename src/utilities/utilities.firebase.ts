@@ -209,7 +209,7 @@ export class Firebase {
           playerSnapshot.data() as LeaderboardEntry | undefined,
       );
 
-      return playerEntry?.uid ? [parseLeaderboardEntry(playerEntry)] : [];
+      return playerEntry?.uid ? [parseLeaderboardEntry(playerEntry)!] : [];
     }
 
     const snapshot = await getDocs(
@@ -221,8 +221,10 @@ export class Firebase {
     );
 
     return snapshot.docs
-      .map((d) => parseLeaderboardEntry(d.data() as LeaderboardEntry))
-      .filter((entry) => entry.totalGames >= LEADERBOARD_MIN_GAMES_THRESHOLD)
+      .map((d) => parseLeaderboardEntry(d.data() as LeaderboardEntry)!)
+      .filter(
+        (entry) => (entry?.totalGames || 0) >= LEADERBOARD_MIN_GAMES_THRESHOLD,
+      )
       .slice(0, LEADERBOARD_SIZE);
   };
 

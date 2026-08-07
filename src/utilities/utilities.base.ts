@@ -56,7 +56,7 @@ export function getPlayerOutcome(playerChoice: GameOption): GameResult {
 /**
  * Parse leaderboard entry
  */
-export function parseLeaderboardEntry(entry: LeaderboardEntry) {
-  if (!entry.uid) return;
+export function parseLeaderboardEntry(entry?: LeaderboardEntry) {
+  if (!entry?.uid) return;
   return { ...entry, winRate: (entry.wins / entry.totalGames) * 100 };
 }
