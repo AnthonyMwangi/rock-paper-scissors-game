@@ -1,5 +1,5 @@
 import { classnames, GameMode, GameOption, GameOptionImage } from "@/utilities";
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import "./chip.base.styles.scss";
 
 type ChipProps = {
@@ -15,6 +15,8 @@ export const Chip: FC<ChipProps> = ({
   isWinningChip,
   onSelectOption,
 }) => {
+  const Icon = useMemo(() => GameOptionImage[option], [option]);
+
   return (
     <button
       onClick={() => onSelectOption?.(option)}
@@ -25,11 +27,9 @@ export const Chip: FC<ChipProps> = ({
       })}
     >
       <div className="chip-wrapper">
-        <img
-          className="chip-icon"
-          alt={`chip ${option} icon`}
-          src={GameOptionImage[option]}
-        />
+        <div className="chip-icon">
+          <Icon style={{ width: "100%", height: "auto" }} />
+        </div>
       </div>
       <div className="chip-hover-animation" />
     </button>

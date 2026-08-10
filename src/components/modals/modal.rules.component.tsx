@@ -1,5 +1,5 @@
 import { ModalComponent } from "@/components/modals/modal.base.component";
-import iconYoutube from "@/images/icon-youtube.svg";
+import { Icons } from "@/images";
 import { useGlobalStore } from "@/store";
 import {
   BONUS_RULES_VIDEO,
@@ -15,7 +15,7 @@ export const RulesModal: FC = () => {
 
   const [isVideoContent, setIsVideoContent] = useState(false);
 
-  const rulesImageUrl = useMemo(() => GameRules[gameMode], [gameMode]);
+  const RulesImageComponent = useMemo(() => GameRules[gameMode], [gameMode]);
 
   const handleToggleVideo = useCallback(() => {
     if (gameMode === "bonus") {
@@ -82,7 +82,9 @@ export const RulesModal: FC = () => {
         media: isVideoContent ? "video" : "image",
       }}
     >
-      <img src={rulesImageUrl} className="md-content-image" alt="game rules" />
+      <div className="md-content-image">
+        <RulesImageComponent className="md-image-icon" />
+      </div>
 
       <iframe
         title="YouTube video player"
@@ -100,7 +102,7 @@ export const RulesModal: FC = () => {
           {isVideoContent ? (
             <span>View Rules Matrix</span>
           ) : (
-            <img alt="play video" src={iconYoutube} />
+            <Icons.Youtube className="md-youtube-icon" />
           )}
         </button>
       ) : null}

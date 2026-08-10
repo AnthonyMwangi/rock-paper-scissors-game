@@ -73,3 +73,11 @@ export interface LeaderboardEntry {
   draws: number;
   netScore: number;
 }
+
+export interface IconProps extends React.SVGProps<SVGSVGElement> {
+  style?: React.CSSProperties;
+  className?: string;
+  width?: number | string;
+  height?: number | string;
+  viewBox?: string;
+}

@@ -43,9 +43,9 @@
       padding: 0;
       opacity: 0.3;
 
-      img.md-close-icon {
+      .md-close-icon {
+        height: auto;
         width: 1.2rem;
-        aspect-ratio: 1;
       }
     }
 
@@ -82,7 +82,7 @@
         width: max-content;
         place-self: center center;
 
-        img.md-close-icon {
+        .md-close-icon {
           width: 2rem;
         }
       }

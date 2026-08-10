@@ -1,6 +1,6 @@
 import { useAppContext } from "@/context";
 import { useLayout, UseLayoutCallback } from "@/hooks";
-import iconClose from "@/images/icon-close.svg";
+import { Icons } from "@/images";
 import { classnames, GameModal, ModifierValue } from "@/utilities";
 import { FC, PropsWithChildren } from "react";
 import "./modal.base.styles.scss";
@@ -38,7 +38,7 @@ export const ModalComponent: FC<ModalComponentProps> = ({
             onToggleModal(modalName, { mode: gameMode, ...classNameModifiers })
           }
         >
-          <img className="md-close-icon" alt="close icon" src={iconClose} />
+          <Icons.IconClose className="md-close-icon" />
         </button>
 
         <div className="md-header">

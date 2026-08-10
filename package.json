@@ -11,7 +11,7 @@
     "zustand": "^5.0.14"
   },
   "scripts": {
-    "dev": "vite --port 3000",
+    "dev": "npm run generate:icons && vite --port 3000",
     "build": "vite build",
     "preview": "vite preview",
     "eslint": "eslint .",
@@ -22,7 +22,8 @@
     "lint": "npm run eslint && npm run stylelint",
     "lint:fix": "npm run eslint:fix && npm run stylelint:fix",
     "lint:ci": "npm run eslint:ci && npm run stylelint && npm run typecheck",
-    "typecheck": "tsc --noEmit --project tsconfig.json"
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "generate:icons": "node src/scripts/generate-icons.mjs"
   },
   "eslintConfig": {
     "extends": [

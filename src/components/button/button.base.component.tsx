@@ -1,10 +1,11 @@
 import { useLayout } from "@/hooks";
-import { FC, useState } from "react";
+import { Icons } from "@/images";
+import { FC, useMemo, useState } from "react";
 import "./button.base.styles.scss";
 
 export type ButtonProps = {
   id?: string;
-  icon?: string;
+  icon?: keyof typeof Icons;
   label: string;
   className?: string;
   onClick?: () => void;
@@ -21,9 +22,11 @@ export const Button: FC<ButtonProps> = ({
 }) => {
   const [iconSize, setIconSize] = useState("auto");
 
+  const IconComponent = useMemo(() => (icon ? Icons[icon] : null), [icon]);
+
   // Handler to match icon height to span font size
   const spanLayoutRef = useLayout((e) =>
-    setIconSize(`${e.layout.height * 1}px`),
+    setIconSize(`${e.layout.height * 1.1}px`),
   );
 
   return (
@@ -34,10 +37,8 @@ export const Button: FC<ButtonProps> = ({
       data-label={label}
       data-id={id}
     >
-      {icon ? (
-        <img
-          src={icon}
-          alt={`${label.toLowerCase()} button  icon`}
+      {IconComponent ? (
+        <IconComponent
           style={{ width: iconSize, height: "auto" }}
           className="button-icon"
         />

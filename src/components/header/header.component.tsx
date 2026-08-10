@@ -6,7 +6,7 @@ import "./header.styles.scss";
 export const Header: FC = () => {
   const { gameMode, currentPlayerResults } = useAppContext();
 
-  const logo = useMemo(() => GameLogo[gameMode], [gameMode]);
+  const LogoComponent = useMemo(() => GameLogo[gameMode], [gameMode]);
 
   const playerScore = useMemo(() => {
     return currentPlayerResults
@@ -16,7 +16,9 @@ export const Header: FC = () => {
 
   return (
     <header className="header">
-      <img className="logo" alt="app logo" src={logo} />
+      <div className="logo">
+        <LogoComponent />
+      </div>
 
       <div className="score-card">
         <span className="score-card-label">SCORE</span>

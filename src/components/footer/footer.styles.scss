@@ -1,5 +1,7 @@
 @use 'breakpoints';
 
+$translucent-bg: #00000090;
+
 .footer {
   width: 100%;
   position: relative;
@@ -28,18 +30,17 @@
   }
 
   @include breakpoints.mobile {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-
     .toggle-button-wrapper {
       .toggle-button {
+        background-color: $translucent-bg;
         padding: 0.8rem 1.25rem;
         font-size: 0.85rem;
       }
     }
 
     .outline-button {
+      color: var(--color-navy-900);
+      background-color: var(--color-white);
       padding: 0.8rem 1.25rem;
       font-size: 0.8rem;
     }
@@ -58,28 +59,35 @@
       padding-right: 1rem;
       z-index: 800;
       display: none;
-
-      &--is-mobile-open {
-        display: flex;
-      }
     }
 
     .fab-action-button {
-      z-index: 850;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--color-white);
+      border: 1.2px solid var(--color-white);
+      color: var(--color-navy-900);
       position: fixed;
-      display: inline-flex;
-      background-color: transparent;
-      background-image: url("../../images/icon-menu.svg");
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
+      z-index: 850;
       bottom: 1rem;
       right: 1rem;
+    }
 
-      &--is-menu-open {
+    &--is-menu-open {
+      inset: 0;
+      position: absolute;
+      background-color: $translucent-bg;
+      z-index: 800;
+
+      .footer-container {
+        display: flex;
+      }
+
+      .fab-action-button {
+        color: var(--color-red-800);
         background-color: var(--color-white);
-        background-image: url("../../images/icon-close.svg");
-        background-size: 1.5rem;
+        border-color: transparent;
       }
     }
   }

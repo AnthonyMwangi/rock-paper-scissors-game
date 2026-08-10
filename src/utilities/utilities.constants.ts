@@ -1,12 +1,5 @@
-import iconLizard from "@/images/icon-lizard.svg";
-import iconPaper from "@/images/icon-paper.svg";
-import iconRock from "@/images/icon-rock.svg";
-import iconScissors from "@/images/icon-scissors.svg";
-import iconSpock from "@/images/icon-spock.svg";
-import imageRulesBonus from "@/images/image-rules-bonus.svg";
-import imageRules from "@/images/image-rules.svg";
-import logoBonus from "@/images/logo-bonus.svg";
-import logo from "@/images/logo.svg";
+import { Icons } from "@/images";
+import { FC } from "react";
 import { GameMode, GameOption, GameOutcome } from "./utilities.types";
 
 export const BONUS_RULES_VIDEO = {
@@ -30,23 +23,23 @@ export const GameModeName: Record<GameMode, string> = {
   bonus: "bonus",
 };
 
-export const GameLogo: Record<GameMode, string> = {
-  standard: logo,
-  bonus: logoBonus,
-};
+export const GameLogo = {
+  standard: Icons.Logo,
+  bonus: Icons.LogoBonus,
+} as const satisfies Record<GameMode, FC>;
 
-export const GameRules: Record<GameMode, string> = {
-  standard: imageRules,
-  bonus: imageRulesBonus,
-};
+export const GameRules = {
+  standard: Icons.ImageRules,
+  bonus: Icons.ImageRulesBonus,
+} as const satisfies Record<GameMode, FC>;
 
-export const GameOptionImage: Record<GameOption, string> = {
-  rock: iconRock,
-  paper: iconPaper,
-  scissors: iconScissors,
-  lizard: iconLizard,
-  spock: iconSpock,
-};
+export const GameOptionImage = {
+  rock: Icons.IconRock,
+  paper: Icons.IconPaper,
+  scissors: Icons.IconScissors,
+  lizard: Icons.IconLizard,
+  spock: Icons.IconSpock,
+} as const satisfies Record<GameOption, FC>;
 
 export const GameOutcomeLabel: Record<GameOutcome, string> = {
   win: "You Win",

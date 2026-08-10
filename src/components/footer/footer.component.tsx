@@ -1,6 +1,6 @@
 import { Button, ToggleButton } from "@/components/button";
 import { useAppContext } from "@/context/app.context";
-import leaderboardIcon from "@/images/ranking.svg";
+import { Icons } from "@/images";
 import { useGlobalStore } from "@/store";
 import { classnames, GameMode, GameModeName } from "@/utilities";
 import { FC, useCallback, useMemo, useState } from "react";
@@ -10,7 +10,7 @@ export const Footer: FC = () => {
   const { gameMode, currentPlayerChoice, onResetGame, onToggleModal } =
     useAppContext();
 
-  const [showFabActions, setShowFabActions] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleToggleGameMode = useCallback(
     (mode: GameMode) => {
@@ -31,16 +31,12 @@ export const Footer: FC = () => {
   }, [currentPlayerChoice, handleToggleGameMode]);
 
   return (
-    <footer className="footer">
-      <div
-        className={classnames("footer-container", {
-          isMobileOpen: showFabActions,
-        })}
-      >
+    <footer className={classnames("footer", { isMenuOpen })}>
+      <div className="footer-container">
         <ToggleButton selectedOptionID={gameMode} options={gameModes} />
         <Button
+          icon="IconRanking"
           label="Leaderboard"
-          icon={leaderboardIcon}
           onClick={() => onToggleModal("leaderboard")}
           className="outline-button"
         />
@@ -52,11 +48,15 @@ export const Footer: FC = () => {
       </div>
 
       <button
-        onClick={() => setShowFabActions((v) => !v)}
-        className={classnames("fab-action-button", {
-          isMenuOpen: showFabActions,
-        })}
-      />
+        onClick={() => setIsMenuOpen((v) => !v)}
+        className="fab-action-button"
+      >
+        {isMenuOpen ? (
+          <Icons.IconClose className="fab-action-icon" />
+        ) : (
+          <Icons.IconMenu className="fab-action-icon" />
+        )}
+      </button>
     </footer>
   );
 };

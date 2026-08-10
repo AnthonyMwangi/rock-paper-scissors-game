@@ -7,6 +7,11 @@
       position: relative;
       visibility: visible;
       user-select: none;
+
+      svg.md-image-icon {
+        width: 100%;
+        height: auto;
+      }
     }
 
     .md-youtube-player {
@@ -22,8 +27,9 @@
     .md-video-button {
       border: 0;
 
-      img {
+      .md-youtube-icon {
         width: 6rem;
+        height: auto;
       }
     }
 
@@ -48,6 +54,8 @@
     }
 
     @include breakpoints.mobile {
+      padding: 4rem 1.5rem;
+
       &__content-type-video {
         max-width: 100%;
       }
