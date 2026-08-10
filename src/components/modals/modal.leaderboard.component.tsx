@@ -1,6 +1,7 @@
 import { ToggleButton } from "@/components";
 import { ModalComponent } from "@/components/modals/modal.base.component";
 import { Layout, useLayout } from "@/hooks";
+import { Icons } from "@/images";
 import { useGlobalStore } from "@/store";
 import {
   classnames,
@@ -34,6 +35,7 @@ export const LeaderboardModal: FC = () => {
 
   const fetchLeaderboardData = useCallback(async () => {
     try {
+      setData([]);
       setIsLoading(true);
 
       const entries = await Firebase.fetchLeaderboard(gameModeFilter);
@@ -120,6 +122,8 @@ export const LeaderboardModal: FC = () => {
             hasError: !!error,
           })}
         >
+          {isLoading ? <Icons.IconLoader className="lb-loading-icon" /> : null}
+
           {data.map((entry, index) => {
             const isPlayer = entry.uid === playerId;
             const isUnRankedPlayer = isPlayer && !isPlayerRanked;

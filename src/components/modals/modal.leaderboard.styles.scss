@@ -110,16 +110,10 @@
         flex-direction: column;
         padding: 10rem 1rem;
 
-        &::before {
-          content: "";
-          display: block;
-          background-image: url("../../images/loader-dark.svg");
-          background-color: transparent;
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: contain;
-          aspect-ratio: 1;
+        .lb-loading-icon {
           width: 2.5rem;
+          fill: var(--color-navy-900);
+          height: auto;
         }
       }
 

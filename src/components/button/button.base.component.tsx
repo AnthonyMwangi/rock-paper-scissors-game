@@ -10,6 +10,7 @@ export type ButtonProps = {
   className?: string;
   onClick?: () => void;
   disabled?: boolean;
+  isLoading?: boolean;
 };
 
 export const Button: FC<ButtonProps> = ({
@@ -18,11 +19,15 @@ export const Button: FC<ButtonProps> = ({
   label,
   disabled,
   className = "",
+  isLoading,
   onClick,
 }) => {
   const [iconSize, setIconSize] = useState("auto");
 
-  const IconComponent = useMemo(() => (icon ? Icons[icon] : null), [icon]);
+  const IconComponent = useMemo(() => {
+    if (isLoading) return Icons.IconLoader;
+    return icon ? Icons[icon] : null;
+  }, [icon, isLoading]);
 
   // Handler to match icon height to span font size
   const spanLayoutRef = useLayout((e) =>
@@ -33,7 +38,7 @@ export const Button: FC<ButtonProps> = ({
     <button
       onClick={() => onClick?.()}
       className={`button ${className}`.trim()}
-      disabled={!!disabled}
+      disabled={!!disabled || !!isLoading}
       data-label={label}
       data-id={id}
     >

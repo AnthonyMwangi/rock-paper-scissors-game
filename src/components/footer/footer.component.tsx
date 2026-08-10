@@ -41,6 +41,12 @@ export const Footer: FC = () => {
           className="outline-button"
         />
         <Button
+          label="Profile"
+          onClick={() => onToggleModal("username")}
+          className="outline-button"
+          icon="IconUser"
+        />
+        <Button
           label="Rules"
           onClick={() => onToggleModal("rules")}
           className="outline-button"

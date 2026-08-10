@@ -29,7 +29,7 @@ $translucent-bg: #00000090;
     color: var(--color-white);
   }
 
-  @include breakpoints.mobile {
+  @include breakpoints.tablet {
     .toggle-button-wrapper {
       .toggle-button {
         background-color: $translucent-bg;

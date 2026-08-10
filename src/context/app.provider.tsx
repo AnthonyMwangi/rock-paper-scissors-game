@@ -1,3 +1,4 @@
+import { Icons } from "@/images";
 import { useGlobalStore } from "@/store";
 import {
   AUTO_PLAY_TIMEOUT_SECONDS,
@@ -120,7 +121,9 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       {isLoading || !currentPlayer?.uid ? (
-        <div className="app-loading__animation" />
+        <div className="app-loader-wrapper">
+          <Icons.IconLoader className="loading-icon" />
+        </div>
       ) : (
         children
       )}

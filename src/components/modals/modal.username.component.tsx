@@ -1,5 +1,6 @@
-import { ModalComponent } from "@/components/modals/modal.base.component";
+import { Button } from "@/components";
 import { useAppContext } from "@/context";
+import { useGlobalStore } from "@/store";
 import {
   classnames,
   Firebase,
@@ -7,11 +8,15 @@ import {
   validateUsername,
 } from "@/utilities";
 import { ChangeEvent, FC, useCallback, useMemo, useState } from "react";
+import { ModalComponent } from "./modal.base.component";
 
 export const UsernameModal: FC = () => {
   const { onToggleModal } = useAppContext();
 
-  const [username, setUsername] = useState<string>("");
+  const [username, setUsername] = useState<string>(
+    useGlobalStore.getState().app.player?.displayName || "",
+  );
+
   const [submitErrorCount, setSubmitErrorCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -86,13 +91,12 @@ export const UsernameModal: FC = () => {
 
         <span className="md-input-error">{validationErrorMessage}</span>
 
-        <button
+        <Button
+          label="Update Username"
           onClick={handleSaveUsername}
           className={classnames("md-save-button", { isLoading })}
-          disabled={isLoading}
-        >
-          <span>Update Username</span>
-        </button>
+          isLoading={isLoading}
+        />
       </div>
     </ModalComponent>
   );

@@ -83,6 +83,7 @@ body {
   font-family: var(--font-family-base);
   font-weight: var(--font-weight-semibold);
   color: var(--color-navy-900);
+  position: relative;
   width: 100vw;
 
   @include breakpoints.tablet {
@@ -111,28 +112,21 @@ body {
     width: 100%;
   }
 
-  .app-loading {
-    &__animation {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--color-bg-gradient);
-      position: fixed;
-      left: 0;
-      top: 0;
+  .app-loader-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-modal-gradient);
+    position: fixed;
+    z-index: 100;
+    inset: 0;
 
-      &::after {
-        content: "";
-        display: block;
-        background: url("../images/loader.svg");
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
-        aspect-ratio: 1;
-        width: 4rem;
-      }
+    .loading-icon {
+      width: 2rem;
+      height: auto;
+      fill: var(--color-white);
     }
   }
 

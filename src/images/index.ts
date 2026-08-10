@@ -11,6 +11,7 @@ import IconRanking from "./icon-ranking.svg?react";
 import IconRock from "./icon-rock.svg?react";
 import IconScissors from "./icon-scissors.svg?react";
 import IconSpock from "./icon-spock.svg?react";
+import IconUser from "./icon-user.svg?react";
 import ImageRulesBonus from "./image-rules-bonus.svg?react";
 import ImageRules from "./image-rules.svg?react";
 import Leaderboard1 from "./leaderboard-1.svg?react";
@@ -36,6 +37,7 @@ export const Icons = {
   IconRock,
   IconScissors,
   IconSpock,
+  IconUser,
   ImageRulesBonus,
   ImageRules,
   Leaderboard1,
