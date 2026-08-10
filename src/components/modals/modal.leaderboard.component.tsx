@@ -34,6 +34,8 @@ export const LeaderboardModal: FC = () => {
 
   const fetchLeaderboardData = useCallback(async () => {
     try {
+      setIsLoading(true);
+
       const entries = await Firebase.fetchLeaderboard(gameModeFilter);
 
       // If user is not ranked show their stats at the end
@@ -51,9 +53,9 @@ export const LeaderboardModal: FC = () => {
       setError(
         `Uh oh! Something went wrong, Please close the board and try again — ${(e as Error).message}`,
       );
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }, [gameModeFilter, playerId]);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ export const LeaderboardModal: FC = () => {
 
   const getOverlayCopy = useCallback(
     (entry: LeaderboardEntry, rank: number) => {
-      if (rank === 1) return "#Undisputed. All hail the King!";
+      if (rank === 1) return "Undisputed. Watch the Throne!";
       if (rank === 2) return "Silver's just Gold with a grudge.";
       if (rank === 3) return "Podium locked in. Eyes on #1.";
       if (entry.uid === playerId) {
@@ -81,34 +83,37 @@ export const LeaderboardModal: FC = () => {
     return Object.entries(GameModeName).map(([name, label]) => ({
       id: name,
       onClick: () => setGameModeFilter(name as GameMode),
-      disabled: isLoading || !data.length,
+      disabled: isLoading,
       label,
     }));
-  }, [data.length, isLoading]);
+  }, [isLoading]);
 
   const listRef = useLayout((e) => handleLayout(e.layout));
 
   return (
     <ModalComponent title="Leaderboard" modalName="leaderboard">
-      <p className="lb-description">
-        Wins earn you a point <b className="pos">(+1)</b>, losses cost you one{" "}
-        <b className="neg">(-1)</b>. Draws don&apos;t count (nobody remembers a
-        tie 🤪). Play enough games to make the cut, then let your record do the
-        talking.
-      </p>
+      <div
+        ref={listRef}
+        style={{ height: wrapperLayout?.height }}
+        className="lb-list-wrapper"
+      >
+        <p className="lb-description">
+          Wins earn you a point <b className="pos">(+1)</b>, losses cost you one{" "}
+          <b className="neg">(-1)</b>. Draws don&apos;t count (nobody remembers
+          a tie 🤪). Play enough games to make the cut, then let your record do
+          the talking.
+        </p>
 
-      <div className="lb-filter">
-        <ToggleButton
-          theme="dark"
-          selectedOptionID={gameModeFilter}
-          options={gameModes}
-        />
-      </div>
+        <div className="lb-filter">
+          <ToggleButton
+            theme="dark"
+            selectedOptionID={gameModeFilter}
+            options={gameModes}
+          />
+        </div>
 
-      <div ref={listRef} className="lb-list-wrapper">
         <ul
           data-error={error}
-          style={{ height: wrapperLayout?.height }}
           className={classnames("lb-list-container", {
             isEmpty: !isLoading && !data?.length,
             isLoading: isLoading,

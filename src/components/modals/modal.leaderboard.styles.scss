@@ -2,39 +2,23 @@
 
 @mixin leaderboard-modal {
   &#leaderboard {
-    padding-bottom: 2rem;
     height: calc(100vh - 6rem);
     max-width: calc(breakpoints.$breakpoint-max - 2rem);
-    gap: 1rem;
+    padding: 2rem 0;
+    gap: 0;
+
+    .md-header {
+      padding-left: 3rem;
+    }
+
+    .md-close-button {
+      padding-right: 3rem;
+    }
 
     .md-content-wrapper {
       gap: 0;
-      position: relative;
       justify-content: flex-start;
-    }
-
-    .lb-description {
-      text-align: center;
-
-      b.pos {
-        color: var(--color-blue-500);
-      }
-
-      b.neg {
-        color: var(--color-red-600);
-      }
-    }
-
-    .lb-filter {
-      display: flex;
-      justify-content: flex-end;
-      padding: 2rem 1rem 0;
-    }
-
-    .lb-list-wrapper {
-      width: 100%;
       position: relative;
-      height: 100%;
 
       &::after,
       &::before {
@@ -58,13 +42,35 @@
       }
     }
 
+    .lb-description {
+      text-align: center;
+
+      b.pos {
+        color: var(--color-blue-500);
+      }
+
+      b.neg {
+        color: var(--color-red-600);
+      }
+    }
+
+    .lb-filter {
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+    }
+
+    .lb-list-wrapper {
+      width: 100%;
+      height: 100%;
+      padding: 2.5rem 3rem 0;
+      overflow: auto;
+    }
+
     .lb-list-container {
       width: 100%;
-      height: auto;
       list-style: none;
-      padding-top: 2rem;
       position: relative;
-      padding-right: 1rem;
       overflow: scroll;
       margin: 0;
 
@@ -73,6 +79,7 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        padding: 5rem 1rem;
 
         &::before {
           content: "";
@@ -89,7 +96,6 @@
         &::after {
           display: block;
           font-style: italic;
-          margin-bottom: 6rem;
           color: var(--color-gray-500);
           content: "It's looking kinda lonely. Play your first game and enjoy being at the top of the leaderboard — it might be your only chance.";
           text-align: center;
@@ -102,6 +108,7 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        padding: 10rem 1rem;
 
         &::before {
           content: "";
@@ -344,11 +351,13 @@
         grid-row: 1;
         grid-column: 1;
         text-align: left;
+        padding-left: 1rem;
       }
 
       .md-close-button {
         grid-row: 1;
         grid-column: 2;
+        padding-right: 1rem;
 
         img.md-close-icon {
           width: 1.5rem;
@@ -362,6 +371,10 @@
 
       .lb-filter {
         justify-content: center;
+      }
+
+      .lb-list-wrapper {
+        padding: 2.5rem 1rem 0;
       }
 
       .lb-list-container {
