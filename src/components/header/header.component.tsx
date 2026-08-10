@@ -16,9 +16,7 @@ export const Header: FC = () => {
 
   return (
     <header className="header">
-      <div className="logo">
-        <LogoComponent />
-      </div>
+      <LogoComponent className="logo" />
 
       <div className="score-card">
         <span className="score-card-label">SCORE</span>

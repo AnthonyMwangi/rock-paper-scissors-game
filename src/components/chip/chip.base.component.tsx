@@ -27,9 +27,7 @@ export const Chip: FC<ChipProps> = ({
       })}
     >
       <div className="chip-wrapper">
-        <div className="chip-icon">
-          <Icon style={{ width: "100%", height: "auto" }} />
-        </div>
+        <Icon className="chip-icon" />
       </div>
       <div className="chip-hover-animation" />
     </button>
