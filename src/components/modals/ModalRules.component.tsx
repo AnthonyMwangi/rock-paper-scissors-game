@@ -1,4 +1,4 @@
-import { ModalComponent } from "@/components/modals/modal.base.component";
+import { ModalBase } from "@/components/modals/ModalBase.component";
 import { Icons } from "@/images";
 import { useGlobalStore } from "@/store";
 import {
@@ -75,7 +75,7 @@ export const RulesModal: FC = () => {
   }, []);
 
   return (
-    <ModalComponent
+    <ModalBase
       title="rules"
       modalName="rules"
       classNameModifiers={{
@@ -109,6 +109,6 @@ export const RulesModal: FC = () => {
           )}
         </button>
       ) : null}
-    </ModalComponent>
+    </ModalBase>
   );
 };

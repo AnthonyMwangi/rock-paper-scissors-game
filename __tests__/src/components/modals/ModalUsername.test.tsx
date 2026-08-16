@@ -1,4 +1,4 @@
-import { UsernameModal } from "@/components/modals/modal.username.component";
+import { UsernameModal } from "@/components/modals/ModalUsername.component";
 import * as utilities from "@/utilities";
 import {
   act,

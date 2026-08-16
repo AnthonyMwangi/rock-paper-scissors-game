@@ -1,7 +1,7 @@
 @use 'breakpoints';
-@use "./modal.rules.styles.scss" as rules;
-@use "./modal.leaderboard.styles.scss" as leaderboard;
-@use "./modal.username.styles.scss" as username;
+@use "./ModalRules.styles.scss" as rules;
+@use "./ModalLeaderboard.styles.scss" as leaderboard;
+@use "./ModalUsername.styles.scss" as username;
 
 .modal {
   inset: 0;

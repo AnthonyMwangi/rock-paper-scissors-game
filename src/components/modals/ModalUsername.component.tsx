@@ -8,7 +8,7 @@ import {
   validateUsername,
 } from "@/utilities";
 import { ChangeEvent, FC, useCallback, useMemo, useState } from "react";
-import { ModalComponent } from "./modal.base.component";
+import { ModalBase } from "./ModalBase.component";
 
 export const UsernameModal: FC = () => {
   const { onToggleModal } = useAppContext();
@@ -80,7 +80,7 @@ export const UsernameModal: FC = () => {
   );
 
   return (
-    <ModalComponent modalName="username" disableCloseBtn={isLoading}>
+    <ModalBase modalName="username" disableCloseBtn={isLoading}>
       <div className="md-input-wrapper">
         <h2 className="md-heading">Don&lsquo;t play as a ghost!</h2>
 
@@ -115,6 +115,6 @@ export const UsernameModal: FC = () => {
           id="save-button"
         />
       </div>
-    </ModalComponent>
+    </ModalBase>
   );
 };

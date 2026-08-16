@@ -1,6 +1,6 @@
 @use 'breakpoints';
-@use "./board.selection.scss" as bs;
-@use './board.outcome.scss' as bo;
+@use "./GameBoardSelection.styles.scss" as bs;
+@use './GameBoardOutcome.styles.scss' as bo;
 
 .game-board {
   display: flex;

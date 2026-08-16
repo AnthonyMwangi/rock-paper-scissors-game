@@ -1,1 +1,1 @@
-export * from "./board.base.component";
+export * from "./GameBoard.component";

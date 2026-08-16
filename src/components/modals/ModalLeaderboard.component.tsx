@@ -1,5 +1,5 @@
 import { ToggleButton } from "@/components";
-import { ModalComponent } from "@/components/modals/modal.base.component";
+import { ModalBase } from "@/components/modals/ModalBase.component";
 import { Layout, useLayout } from "@/hooks";
 import { Icons } from "@/images";
 import { useGlobalStore } from "@/store";
@@ -98,7 +98,7 @@ export const LeaderboardModal: FC = () => {
   const listRef = useLayout((e) => handleLayout(e.layout));
 
   return (
-    <ModalComponent title="Leaderboard" modalName="leaderboard">
+    <ModalBase title="Leaderboard" modalName="leaderboard">
       <div
         ref={listRef}
         style={{ height: wrapperHeight }}
@@ -194,6 +194,6 @@ export const LeaderboardModal: FC = () => {
           })}
         </ul>
       </div>
-    </ModalComponent>
+    </ModalBase>
   );
 };

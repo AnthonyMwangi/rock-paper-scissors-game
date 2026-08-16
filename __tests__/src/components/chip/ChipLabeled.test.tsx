@@ -1,4 +1,4 @@
-import { LabeledChip } from "@/components/chip/chip.labeled.component";
+import { LabeledChip } from "@/components/chip/ChipLabeled.component";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 

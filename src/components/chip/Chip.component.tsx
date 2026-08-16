@@ -1,6 +1,7 @@
+import "./Chip.styles.scss";
+
 import { clsx, GameMode, GameOption, GameOptionImage } from "@/utilities";
 import { FC, useMemo } from "react";
-import "./chip.base.styles.scss";
 
 type ChipProps = {
   board: GameMode | "outcome";

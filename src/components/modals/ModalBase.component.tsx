@@ -1,11 +1,12 @@
+import "./ModalBase.styles.scss";
+
 import { useAppContext } from "@/context";
 import { useLayout, UseLayoutCallback } from "@/hooks";
 import { Icons } from "@/images";
 import { clsx, GameModal, ModifierValue } from "@/utilities";
 import { FC, PropsWithChildren } from "react";
-import "./modal.base.styles.scss";
 
-type ModalComponentProps = PropsWithChildren<{
+type ModalBaseProps = PropsWithChildren<{
   title?: string;
   classNameModifiers?: Record<string, ModifierValue>;
   modalName: Lowercase<GameModal>;
@@ -13,7 +14,7 @@ type ModalComponentProps = PropsWithChildren<{
   onLayout?: UseLayoutCallback;
 }>;
 
-export const ModalComponent: FC<ModalComponentProps> = ({
+export const ModalBase: FC<ModalBaseProps> = ({
   title,
   children,
   onLayout,

@@ -1,7 +1,8 @@
+import "./ButtonToggle.styles.scss";
+
 import { clsx } from "@/utilities";
 import { FC } from "react";
-import { Button, ButtonProps } from "./button.base.component";
-import "./button.toggle.styles.scss";
+import { Button, ButtonProps } from "./Button.component";
 
 type ToggleButtonProps = {
   selectedOptionID: string;
@@ -26,6 +27,7 @@ export const ToggleButton: FC<ToggleButtonProps> = ({
           className={clsx("toggle-button", {
             disabled: option.disabled,
             isSelected: option.id === selectedOptionID,
+            option: option.id,
             theme,
           })}
           key={option.label}

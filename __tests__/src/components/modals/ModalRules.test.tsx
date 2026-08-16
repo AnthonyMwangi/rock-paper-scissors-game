@@ -1,4 +1,4 @@
-import { RulesModal } from "@/components/modals/modal.rules.component";
+import { RulesModal } from "@/components/modals/ModalRules.component";
 import { render, screen } from "@testing-library/react";
 import { MockStore } from "mockUtils/mockStore";
 import { beforeAll, describe, expect, it } from "vitest";

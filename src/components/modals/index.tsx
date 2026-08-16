@@ -1,8 +1,8 @@
 import { useAppContext } from "@/context";
 import { FC } from "react";
-import { LeaderboardModal } from "./modal.leaderboard.component";
-import { RulesModal } from "./modal.rules.component";
-import { UsernameModal } from "./modal.username.component";
+import { LeaderboardModal } from "./ModalLeaderboard.component";
+import { RulesModal } from "./ModalRules.component";
+import { UsernameModal } from "./ModalUsername.component";
 
 export const Modals: FC = () => {
   const { isModalOpen } = useAppContext();

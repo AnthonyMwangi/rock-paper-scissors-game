@@ -1,4 +1,4 @@
-import { LeaderboardModal } from "@/components/modals/modal.leaderboard.component";
+import { LeaderboardModal } from "@/components/modals/ModalLeaderboard.component";
 import { useLayout } from "@/hooks";
 import * as utilities from "@/utilities";
 import {

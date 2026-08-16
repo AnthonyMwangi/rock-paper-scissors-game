@@ -1,4 +1,4 @@
-import { GameBoardOutcome } from "@/components/board/board.outcome.component";
+import { GameBoardOutcome } from "@/components/board/GameBoardOutcome.component";
 import { GameOutcome } from "@/utilities";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MockAppContext } from "mockUtils/mockAppContext";

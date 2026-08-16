@@ -1,9 +1,9 @@
-import { ModalComponent } from "@/components/modals/modal.base.component";
+import { ModalBase } from "@/components/modals/ModalBase.component";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MockAppContext } from "mockUtils/mockAppContext";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-describe("ModalComponent", () => {
+describe("ModalBase", () => {
   const mockToggleModal = vi.fn();
 
   beforeAll(() => {
@@ -15,9 +15,9 @@ describe("ModalComponent", () => {
 
   it("should render its children", () => {
     render(
-      <ModalComponent modalName="rules">
+      <ModalBase modalName="rules">
         <p>Modal content</p>
-      </ModalComponent>,
+      </ModalBase>,
     );
 
     expect(screen.getByText("Modal content")).toBeInTheDocument();
@@ -25,22 +25,22 @@ describe("ModalComponent", () => {
 
   it("should render the title when supplied", () => {
     render(
-      <ModalComponent modalName="rules" title="Rules">
+      <ModalBase modalName="rules" title="Rules">
         Content
-      </ModalComponent>,
+      </ModalBase>,
     );
 
     expect(screen.getByRole("heading", { name: "Rules" })).toBeInTheDocument();
   });
 
   it("should use the modal name as the content id", () => {
-    render(<ModalComponent modalName="leaderboard">Content</ModalComponent>);
+    render(<ModalBase modalName="leaderboard">Content</ModalBase>);
 
     expect(document.getElementById("leaderboard")).toBeInTheDocument();
   });
 
   it("should close the modal with the current game mode", () => {
-    render(<ModalComponent modalName="rules">Content</ModalComponent>);
+    render(<ModalBase modalName="rules">Content</ModalBase>);
 
     fireEvent.click(screen.getByRole("button", { name: "" }));
 
@@ -51,9 +51,9 @@ describe("ModalComponent", () => {
 
   it("should disable the close button when requested", () => {
     render(
-      <ModalComponent modalName="rules" disableCloseBtn>
+      <ModalBase modalName="rules" disableCloseBtn>
         Content
-      </ModalComponent>,
+      </ModalBase>,
     );
 
     expect(screen.getByRole("button")).toBeDisabled();

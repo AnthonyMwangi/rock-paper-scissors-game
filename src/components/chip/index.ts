@@ -1,2 +1,2 @@
-export * from "./chip.base.component";
-export * from "./chip.labeled.component";
+export * from "./Chip.component";
+export * from "./ChipLabeled.component";

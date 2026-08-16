@@ -1,7 +1,8 @@
+import "./ChipLabeled.styles.scss";
+
 import { clsx, GameOption } from "@/utilities";
 import { FC } from "react";
-import { Chip } from "./chip.base.component";
-import "./chip.labeled.styles.scss";
+import { Chip } from "./Chip.component";
 
 type LabeledChipProps = {
   option?: GameOption;

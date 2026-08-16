@@ -1,2 +1,2 @@
-export * from "./button.base.component";
-export * from "./button.toggle.component";
+export * from "./Button.component";
+export * from "./ButtonToggle.component";

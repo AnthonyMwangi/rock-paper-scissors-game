@@ -53,7 +53,7 @@
     "lint:fix": "npm run eslint:fix && npm run stylelint:fix",
     "lint:ci": "npm run eslint:ci && npm run stylelint && npm run typecheck",
     "typecheck": "tsc --noEmit --project tsconfig.json",
-    "generate:icons": "node src/scripts/generate-icons.mjs",
+    "generate:icons": "node scripts/generate-icons.mjs",
     "test:coverage": "vitest run --coverage",
     "test:run": "vitest run",
     "test": "vitest"

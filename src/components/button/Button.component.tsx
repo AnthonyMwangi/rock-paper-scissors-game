@@ -1,7 +1,8 @@
+import "./Button.styles.scss";
+
 import { useLayout } from "@/hooks";
 import { Icons } from "@/images";
 import { FC, useMemo, useState } from "react";
-import "./button.base.styles.scss";
 
 export type ButtonProps = {
   id?: string;
@@ -40,6 +41,7 @@ export const Button: FC<ButtonProps> = ({
       disabled={!!disabled || !!isLoading}
       className={`button ${className}`.trim()}
       data-testid={`${(id || label.toLowerCase()).replace(" ", "-")}`}
+      data-id={id || label.toLowerCase()}
       data-label={label.toLowerCase()}
     >
       {IconComponent ? (

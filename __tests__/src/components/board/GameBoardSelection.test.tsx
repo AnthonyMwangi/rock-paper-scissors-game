@@ -1,4 +1,4 @@
-import { GameBoardSelection } from "@/components/board/board.selection.component";
+import { GameBoardSelection } from "@/components/board/GameBoardSelection.component";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MockAppContext } from "mockUtils/mockAppContext";
 import { beforeAll, describe, expect, it, vi } from "vitest";

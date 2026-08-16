@@ -29,13 +29,13 @@
       inset: 0;
     }
 
-    &[data-id="standard"] {
+    &[data-id="standard-toggle-button"] {
       &::before {
         transform: translateX(100%);
       }
     }
 
-    &[data-id="bonus"] {
+    &[data-id="bonus-toggle-button"] {
       &::before {
         transform: translateX(-100%);
       }
@@ -44,14 +44,14 @@
     &--is-selected {
       color: var(--color-navy-900);
 
-      &[data-id="standard"] {
+      &[data-id="standard-toggle-button"] {
         &::before {
           transform: translateX(0);
           transition-delay: .1s;
         }
       }
 
-      &[data-id="bonus"] {
+      &[data-id="bonus-toggle-button"] {
         &::before {
           transform: translateX(0);
           transition-delay: .1s;

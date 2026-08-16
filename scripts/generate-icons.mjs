@@ -7,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const imagesDir = path.resolve(__dirname, "../images");
+const imagesDir = path.resolve(__dirname, "../src/images");
 const outputFile = path.join(imagesDir, "index.ts");
 
 function toPascalCase(filename) {
