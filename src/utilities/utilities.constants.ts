@@ -1,6 +1,11 @@
 import { Icons } from "@/images";
 import { FC } from "react";
-import { GameMode, GameOption, GameOutcome } from "./utilities.types";
+import {
+  GameMode,
+  GameOption,
+  GameOutcome,
+  Predictor,
+} from "./utilities.types";
 
 export const BONUS_RULES_VIDEO = {
   ID: "iSHPVCBsnLw",
@@ -9,9 +14,23 @@ export const BONUS_RULES_VIDEO = {
 
 export const AUTO_PLAY_TIMEOUT_SECONDS = 5;
 
+export const RESULTS_MIN_THRESHOLD = 5;
+export const RESULTS_DOMINANCE_THRESHOLD = 0.6;
+export const RESULTS_RECENT_LIMIT = 20;
+
 export const LEADERBOARD_MIN_GAMES_THRESHOLD = 1;
 export const LEADERBOARD_FETCH_BUFFER = 30;
 export const LEADERBOARD_SIZE = 10;
+
+export const PREDICTION_ACCURACY_DECAY_RATE = 0.95;
+export const PREDICTION_ACCURACY_MULTIPLIER = 0.5;
+export const PREDICTION_EXPLORATION_RATE = 0.1;
+export const PREDICTION_WEIGHTS = {
+  spam: 0.9,
+  markov: 0.7,
+  behavior: 0.6,
+  frequency: 0.5,
+} as const satisfies Record<Predictor, number>;
 
 export const GameOptions: Record<GameMode, GameOption[]> = {
   standard: ["rock", "scissors", "paper"],

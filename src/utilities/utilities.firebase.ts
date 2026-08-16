@@ -1,24 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { useGlobalStore } from "@/store";
-import {
-  getPlayerOutcome,
-  parseLeaderboardEntry,
-} from "@/utilities/utilities.base";
-import {
-  LEADERBOARD_FETCH_BUFFER,
-  LEADERBOARD_MIN_GAMES_THRESHOLD,
-  LEADERBOARD_SIZE,
-} from "@/utilities/utilities.constants";
-import { toSnakeCase } from "@/utilities/utilities.snakeCase";
-import {
-  GameAnalytics,
-  GameMode,
-  GameOption,
-  GamePlayer,
-  GameResult,
-  LeaderboardEntry,
-  Writable,
-} from "@/utilities/utilities.types";
+import { parseLeaderboardEntry } from "@/utilities/utilities.prediction";
 import {
   Analytics,
   getAnalytics,
@@ -47,8 +29,24 @@ import {
   serverTimestamp,
   setDoc,
   where,
-  writeBatch,
 } from "firebase/firestore";
+import {
+  LEADERBOARD_FETCH_BUFFER,
+  LEADERBOARD_MIN_GAMES_THRESHOLD,
+  LEADERBOARD_SIZE,
+  RESULTS_RECENT_LIMIT,
+} from "./utilities.constants";
+import { getPlayerOutcome } from "./utilities.gameplay";
+import { objectKeysToSnakeCase } from "./utilities.parsers";
+import {
+  GameAnalytics,
+  GameMode,
+  GameOption,
+  GamePlayer,
+  GameResult,
+  LeaderboardEntry,
+  Writable,
+} from "./utilities.types";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -102,12 +100,9 @@ export class Firebase {
     });
 
     useGlobalStore.getState().setPlayerInfo({
-      player: {
-        ...(useGlobalStore.getState().app.player || {}),
-        displayName: name,
-      } as GamePlayer,
-      playerStats: useGlobalStore.getState().app.playerStats,
-    });
+      ...(useGlobalStore.getState().app.player || {}),
+      displayName: name,
+    } as GamePlayer);
   };
 
   /**
@@ -140,22 +135,10 @@ export class Firebase {
 
         // Update global store
         if (authUser?.uid) {
-          const [bonusStats] = await this.fetchLeaderboard(
-            "bonus",
-            authUser.uid,
-          );
-          const [standardStats] = await this.fetchLeaderboard(
-            "standard",
-            authUser.uid,
-          );
+          await this.fetchLeaderboard("bonus", authUser.uid);
+          await this.fetchLeaderboard("standard", authUser.uid);
 
-          useGlobalStore.getState().setPlayerInfo({
-            player: authUser,
-            playerStats: {
-              standard: standardStats,
-              bonus: bonusStats,
-            },
-          });
+          useGlobalStore.getState().setPlayerInfo(authUser);
         }
 
         // Track guest sign-ins
@@ -165,7 +148,8 @@ export class Firebase {
         }
 
         // Update history in the background
-        this.getPlayerResults();
+        this.fetchPlayerResults("standard");
+        this.fetchPlayerResults("bonus");
 
         resolve(authUser);
       });
@@ -183,11 +167,12 @@ export class Firebase {
     await addDoc(collection(this.db, this.results_db_name), {
       ...result,
       createdAt: serverTimestamp(),
+      env: import.meta.env.MODE,
     });
 
-    await this.updateLeaderboard(result);
-
-    await this.getPlayerResults();
+    this.updateLeaderboard(result);
+    this.fetchLeaderboard(result.mode, result.playerId!);
+    this.fetchPlayerResults(result.mode);
 
     return result;
   };
@@ -195,13 +180,20 @@ export class Firebase {
   /**
    * Fetch the current player's previous results
    */
-  static getPlayerResults = async () => {
-    const { player } = useGlobalStore.getState().app;
+  static fetchPlayerResults = async (gameMode: GameMode) => {
+    try {
+      const { player } = useGlobalStore.getState().app;
 
-    if (player?.uid) {
+      if (!player?.uid) {
+        return { error: "Invalid player id", data: [] };
+      }
+
       const q = query(
         collection(this.db, this.results_db_name),
         where("playerId", "==", player.uid),
+        where("mode", "==", gameMode),
+        orderBy("createdAt", "desc"),
+        limit(RESULTS_RECENT_LIMIT),
       );
 
       const data = (await getDocs(q)).docs.map((document) => ({
@@ -209,139 +201,105 @@ export class Firebase {
         ...document.data(),
       })) as unknown as GameResult[];
 
-      useGlobalStore.getState().setPlayerResults(data);
+      useGlobalStore.getState().setPlayerResults(gameMode, data);
 
-      return data;
+      return { error: undefined, data };
+    } catch (e) {
+      const errorMessage = (e as Error).message;
+      // eslint-disable-next-line no-console
+      console.error("RPS_FETCH_RESULTS", errorMessage);
+      return { error: errorMessage, data: [] };
     }
   };
 
   static fetchLeaderboard = async (gameMode: GameMode, playerId?: string) => {
-    if (playerId) {
-      const playerEntry = await getDoc(
-        doc(this.db, this.leaderboard_db_name, `${playerId}_${gameMode}`),
-      ).then(
-        (playerSnapshot) =>
-          playerSnapshot.data() as LeaderboardEntry | undefined,
+    try {
+      if (playerId) {
+        const playerEntry = await getDoc(
+          doc(this.db, this.leaderboard_db_name, `${playerId}_${gameMode}`),
+        ).then(
+          (playerSnapshot) =>
+            playerSnapshot.data() as LeaderboardEntry | undefined,
+        );
+
+        const parsedPlayerEntry = playerEntry?.uid
+          ? parseLeaderboardEntry(playerEntry)
+          : undefined;
+
+        if (parsedPlayerEntry?.uid) {
+          useGlobalStore.getState().setPlayerStats(gameMode, parsedPlayerEntry);
+        }
+
+        return [parsedPlayerEntry];
+      }
+
+      const snapshot = await getDocs(
+        query(
+          collection(this.db, this.leaderboard_db_name),
+          where("mode", "==", gameMode),
+          orderBy("netScore", "desc"),
+          limit(LEADERBOARD_FETCH_BUFFER),
+        ),
       );
 
-      return playerEntry?.uid ? [parseLeaderboardEntry(playerEntry)!] : [];
+      return snapshot.docs
+        .map((d) => parseLeaderboardEntry(d.data() as LeaderboardEntry)!)
+        .filter((e) => (e?.totalGames || 0) >= LEADERBOARD_MIN_GAMES_THRESHOLD)
+        .slice(0, LEADERBOARD_SIZE);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("RPS_FETCH_LEADERBOARD", (e as Error).message);
+      return [];
     }
-
-    const snapshot = await getDocs(
-      query(
-        collection(this.db, this.leaderboard_db_name),
-        where("mode", "==", gameMode),
-        orderBy("netScore", "desc"),
-        limit(LEADERBOARD_FETCH_BUFFER),
-      ),
-    );
-
-    return snapshot.docs
-      .map((d) => parseLeaderboardEntry(d.data() as LeaderboardEntry)!)
-      .filter(
-        (entry) => (entry?.totalGames || 0) >= LEADERBOARD_MIN_GAMES_THRESHOLD,
-      )
-      .slice(0, LEADERBOARD_SIZE);
   };
 
   static updateLeaderboard = async (result: GameResult) => {
-    if (!import.meta.env.PROD) return;
-    if (!this.auth.currentUser) return;
+    try {
+      if (!this.auth.currentUser) return;
 
-    const doc_id = `${this.auth.currentUser.uid}_${result.mode}`;
+      const doc_id = `${this.auth.currentUser.uid}_${result.mode}`;
 
-    return await setDoc(
-      doc(this.db, this.leaderboard_db_name, doc_id),
-      {
-        mode: result.mode,
-        uid: this.auth.currentUser.uid,
-        displayName: this.auth.currentUser.displayName ?? "Anonymous",
-        wins: increment(result.outcome === "win" ? 1 : 0),
-        losses: increment(result.outcome === "lose" ? 1 : 0),
-        draws: increment(result.outcome === "draw" ? 1 : 0),
-        netScore: increment(
-          result.outcome === "win" ? 1 : result.outcome === "lose" ? -1 : 0,
-        ),
-        totalGames: increment(1),
-        lastPlayedAt: serverTimestamp(),
-      },
-      { merge: true },
-    );
-  };
-
-  static migrateLeaderboard = async () => {
-    const rawResultsSnapshot = await getDocs(
-      collection(this.db, this.results_db_name),
-    );
-
-    const aggregates = new Map<string, LeaderboardEntry>();
-
-    rawResultsSnapshot.docs.forEach((docSnap) => {
-      const game = docSnap.data() as GameResult;
-
-      if (game.playerId && game.mode) {
-        const key = `${game.playerId}_${game.mode}`;
-
-        const existing = aggregates.get(key) ?? {
-          uid: game.playerId!,
-          displayName: "Anonymous",
-          mode: game.mode,
-          totalGames: 0,
-          wins: 0,
-          losses: 0,
-          draws: 0,
-          netScore: 0,
-        };
-
-        existing.totalGames += 1;
-        if (game.outcome === "win") {
-          existing.wins += 1;
-          existing.netScore += 1;
-        } else if (game.outcome === "lose") {
-          existing.losses += 1;
-          existing.netScore -= 1;
-        } else {
-          existing.draws += 1;
-        }
-
-        aggregates.set(key, existing);
-      }
-    });
-
-    // Firestore batches cap at 500 writes — chunk if you have more entries
-    const entries = Array.from(aggregates.values());
-    const BATCH_LIMIT = 500;
-
-    for (let i = 0; i < entries.length; i += BATCH_LIMIT) {
-      const batch = writeBatch(this.db);
-      const chunk = entries.slice(i, i + BATCH_LIMIT);
-
-      chunk.forEach((entry) => {
-        const leaderboardRef = doc(
-          this.db,
-          this.leaderboard_db_name,
-          `${entry.uid}_${entry.mode}`,
-        );
-        batch.set(leaderboardRef, entry);
-      });
-
-      await batch.commit();
+      return await setDoc(
+        doc(this.db, this.leaderboard_db_name, doc_id),
+        {
+          mode: result.mode,
+          uid: this.auth.currentUser.uid,
+          displayName: this.auth.currentUser.displayName ?? "Anonymous",
+          wins: increment(result.outcome === "win" ? 1 : 0),
+          losses: increment(result.outcome === "lose" ? 1 : 0),
+          draws: increment(result.outcome === "draw" ? 1 : 0),
+          netScore: increment(
+            result.outcome === "win" ? 1 : result.outcome === "lose" ? -1 : 0,
+          ),
+          totalGames: increment(1),
+          lastPlayedAt: serverTimestamp(),
+          env: import.meta.env.MODE,
+        },
+        { merge: true },
+      );
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("RPS_UPDATE_LEADERBOARD", (e as Error).message);
     }
-
-    // eslint-disable-next-line no-console
-    console.log(`Migrated ${entries.length} leaderboard entries.`);
   };
 
   static trackEvent = <K extends keyof GameAnalytics>(
     name: K,
     params: GameAnalytics[K],
   ) => {
-    if (this.analytics) {
-      return logEvent(
-        this.analytics,
-        name.toLowerCase(),
-        toSnakeCase(params || undefined),
-      );
+    try {
+      const parsedName = name.toLowerCase();
+      const parsedParams = objectKeysToSnakeCase(params || {});
+
+      if (!this.analytics) {
+        // eslint-disable-next-line no-console
+        return console.debug(parsedName, parsedParams);
+      }
+
+      return logEvent(this.analytics, parsedName, parsedParams);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("RPS_TRACK_EVENT", (e as Error).message);
     }
   };
 }

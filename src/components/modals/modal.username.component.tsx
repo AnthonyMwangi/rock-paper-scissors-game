@@ -2,7 +2,7 @@ import { Button } from "@/components";
 import { useAppContext } from "@/context";
 import { useGlobalStore } from "@/store";
 import {
-  classnames,
+  clsx,
   Firebase,
   USERNAME_ERROR_MESSAGES,
   validateUsername,
@@ -78,7 +78,7 @@ export const UsernameModal: FC = () => {
         <input
           type="name"
           key={submitErrorCount}
-          className={classnames("md-input", {
+          className={clsx("md-input", {
             hasError: !!submitErrorCount && !!validationErrorMessage,
           })}
           placeholder="Enter your name"
@@ -94,7 +94,7 @@ export const UsernameModal: FC = () => {
         <Button
           label="Update Username"
           onClick={handleSaveUsername}
-          className={classnames("md-save-button", { isLoading })}
+          className={clsx("md-save-button", { isLoading })}
           isLoading={isLoading}
         />
       </div>

@@ -1,10 +1,6 @@
 import { LabeledChip } from "@/components";
 import { useAppContext } from "@/context/app.context";
-import {
-  AUTO_PLAY_TIMEOUT_SECONDS,
-  classnames,
-  GameOutcomeLabel,
-} from "@/utilities";
+import { AUTO_PLAY_TIMEOUT_SECONDS, clsx, GameOutcomeLabel } from "@/utilities";
 import { FC } from "react";
 
 export const GameBoardOutcome: FC = () => {
@@ -13,7 +9,7 @@ export const GameBoardOutcome: FC = () => {
 
   return (
     <div
-      className={classnames("board-content-wrapper", {
+      className={clsx("board-content-wrapper", {
         isLoading: !currentGameResult?.outcome,
         board: "outcome",
       })}
@@ -33,7 +29,7 @@ export const GameBoardOutcome: FC = () => {
           </span>
 
           <button
-            className={classnames("outcome-button", {
+            className={clsx("outcome-button", {
               outcome: currentGameResult.outcome,
             })}
             style={{

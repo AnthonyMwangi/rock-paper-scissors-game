@@ -1,4 +1,4 @@
-import { classnames } from "@/utilities";
+import { clsx } from "@/utilities";
 import { FC } from "react";
 import { Button, ButtonProps } from "./button.base.component";
 import "./button.toggle.styles.scss";
@@ -15,11 +15,11 @@ export const ToggleButton: FC<ToggleButtonProps> = ({
   theme = "light",
 }) => {
   return (
-    <div className={classnames("toggle-button-wrapper", { theme })}>
+    <div className={clsx("toggle-button-wrapper", { theme })}>
       {options.map((option) => (
         <Button
           {...option}
-          className={classnames("toggle-button", {
+          className={clsx("toggle-button", {
             isSelected: option.id === selectedOptionID,
             theme,
           })}

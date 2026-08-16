@@ -1,16 +1,13 @@
-import clsx from "clsx";
+import clsxUtil from "clsx";
+import { toKebabCase } from "./utilities.parsers";
 
 export type ModifierValue = boolean | string | number | undefined | null;
 
-function toKebabCase(str: string) {
-  return str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
-}
-
-export function classnames(
+export function clsx(
   baseName: string,
   modifiers: Record<string, ModifierValue> = {},
 ) {
-  return clsx(
+  return clsxUtil(
     baseName,
     ...Object.entries(modifiers)
       .filter(([, value]) => !!value)

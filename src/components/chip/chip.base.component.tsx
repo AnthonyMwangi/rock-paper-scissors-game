@@ -1,4 +1,4 @@
-import { classnames, GameMode, GameOption, GameOptionImage } from "@/utilities";
+import { clsx, GameMode, GameOption, GameOptionImage } from "@/utilities";
 import { FC, useMemo } from "react";
 import "./chip.base.styles.scss";
 
@@ -20,7 +20,7 @@ export const Chip: FC<ChipProps> = ({
   return (
     <button
       onClick={() => onSelectOption?.(option)}
-      className={classnames("chip", {
+      className={clsx("chip", {
         status: isWinningChip ? "winner" : "neutral",
         option,
         board,

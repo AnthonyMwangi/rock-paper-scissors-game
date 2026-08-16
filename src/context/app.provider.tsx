@@ -12,6 +12,7 @@ import {
   PropsWithChildren,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -23,9 +24,13 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const gameMode = useGlobalStore((state) => state.app.gameMode);
   const isLoading = useGlobalStore((state) => !state.app.hasHydrated);
+  const currentPlayerStats = useGlobalStore((state) => state.app.playerStats);
+
   const currentPlayer = useGlobalStore((state) => state.app.player);
-  const currentPlayerResults = useGlobalStore(
-    (state) => state.app.playerResults,
+
+  const currentPlayerScore = useMemo(
+    () => currentPlayerStats?.[gameMode]?.netScore ?? 0,
+    [currentPlayerStats, gameMode],
   );
 
   const [currentPlayerChoice, setCurrentPlayerChoice] = useState<GameOption>();
@@ -112,7 +117,7 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
         gameMode,
         currentGameResult,
         currentPlayerChoice,
-        currentPlayerResults,
+        currentPlayerScore,
         uid: currentPlayer?.uid || "",
         isModalOpen: isModalVisible,
         onSelectPlayerOption,

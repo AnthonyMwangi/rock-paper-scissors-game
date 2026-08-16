@@ -17,6 +17,7 @@ export type GameMode = "standard" | "bonus";
 export type StandardOption = "rock" | "paper" | "scissors";
 export type BonusOption = "lizard" | "spock";
 export type GameOutcome = "win" | "draw" | "lose";
+export type Predictor = "spam" | "markov" | "frequency" | "behavior";
 
 export type GameModal = "RULES" | "LEADERBOARD" | "USERNAME";
 export type GameModalOpenedEvent = `RPS_${GameModal}_MODAL_VIEWED`;
@@ -28,6 +29,10 @@ export type GamePlayer = Pick<User, "uid" | "displayName" | "isAnonymous"> & {
   isReturning: boolean;
 };
 
+export type GameResultPrediction = Required<
+  Omit<Prediction, "source" | "params">
+>;
+
 export type GameResult = {
   id: string | null;
   mode: GameMode;
@@ -37,6 +42,12 @@ export type GameResult = {
   opponentId: string | null;
   opponentChoice: GameOption;
   timestamp: number;
+  predictors?: {
+    predictedMove: GameOption;
+    predictedMoveConfidence: number;
+    houseEdgeAdjustedMove: GameOption;
+    predictions: Record<Predictor, GameResultPrediction>;
+  };
 };
 
 export type GameModalAnalytics = Record<
@@ -73,6 +84,16 @@ export interface LeaderboardEntry {
   draws: number;
   netScore: number;
 }
+
+export type Prediction = {
+  accuracy: number;
+  prediction: GameOption;
+  confidence: number; // 0 → 1
+  weight: number; // base importance
+  source: Predictor;
+  params?: Record<string, unknown>;
+  score?: number;
+};
 
 export interface IconProps extends React.SVGProps<SVGSVGElement> {
   style?: React.CSSProperties;

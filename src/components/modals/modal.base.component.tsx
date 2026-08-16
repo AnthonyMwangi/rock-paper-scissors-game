@@ -1,7 +1,7 @@
 import { useAppContext } from "@/context";
 import { useLayout, UseLayoutCallback } from "@/hooks";
 import { Icons } from "@/images";
-import { classnames, GameModal, ModifierValue } from "@/utilities";
+import { clsx, GameModal, ModifierValue } from "@/utilities";
 import { FC, PropsWithChildren } from "react";
 import "./modal.base.styles.scss";
 
@@ -27,10 +27,7 @@ export const ModalComponent: FC<ModalComponentProps> = ({
 
   return (
     <div className="modal">
-      <div
-        id={modalName}
-        className={classnames("md-content", classNameModifiers)}
-      >
+      <div id={modalName} className={clsx("md-content", classNameModifiers)}>
         <button
           className="md-close-button"
           disabled={disableCloseBtn}

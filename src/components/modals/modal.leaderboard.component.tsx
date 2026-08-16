@@ -4,7 +4,7 @@ import { Layout, useLayout } from "@/hooks";
 import { Icons } from "@/images";
 import { useGlobalStore } from "@/store";
 import {
-  classnames,
+  clsx,
   Firebase,
   GameMode,
   GameModeName,
@@ -116,7 +116,7 @@ export const LeaderboardModal: FC = () => {
 
         <ul
           data-error={error}
-          className={classnames("lb-list-container", {
+          className={clsx("lb-list-container", {
             isEmpty: !isLoading && !data?.length,
             isLoading: isLoading,
             hasError: !!error,
@@ -132,7 +132,7 @@ export const LeaderboardModal: FC = () => {
             return (
               <li
                 key={entry.uid}
-                className={classnames("lb-entry", {
+                className={clsx("lb-entry", {
                   isPlayer,
                   isUnRankedPlayer,
                 })}
@@ -158,7 +158,7 @@ export const LeaderboardModal: FC = () => {
                       {entry.losses} Losses
                     </span>
                     <span className="lb-metric-rate">
-                      {`(${entry.totalGames}% Win Rate)`}
+                      {`(${entry.totalGames.toFixed(0)}% Win Rate)`}
                     </span>
                   </p>
                 </div>

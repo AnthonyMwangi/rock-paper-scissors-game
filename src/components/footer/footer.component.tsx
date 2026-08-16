@@ -2,7 +2,7 @@ import { Button, ToggleButton } from "@/components/button";
 import { useAppContext } from "@/context/app.context";
 import { Icons } from "@/images";
 import { useGlobalStore } from "@/store";
-import { classnames, GameMode, GameModeName } from "@/utilities";
+import { clsx, GameMode, GameModeName } from "@/utilities";
 import { FC, useCallback, useMemo, useState } from "react";
 import "./footer.styles.scss";
 
@@ -31,7 +31,7 @@ export const Footer: FC = () => {
   }, [currentPlayerChoice, handleToggleGameMode]);
 
   return (
-    <footer className={classnames("footer", { isMenuOpen })}>
+    <footer className={clsx("footer", { isMenuOpen })}>
       <div className="footer-container">
         <ToggleButton selectedOptionID={gameMode} options={gameModes} />
         <Button

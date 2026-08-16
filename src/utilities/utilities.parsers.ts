@@ -15,20 +15,26 @@ export type SnakeCaseKeys<T> = T extends readonly (infer U)[]
       ? { [K in keyof T as CamelToSnake<K & string>]: SnakeCaseKeys<T[K]> }
       : T;
 
-function parseToSnakeCase(str: string): string {
+export function toSnakeCase(str: string): string {
   return str.replace(/[A-Z]/g, (char) => `_${char.toLowerCase()}`);
 }
 
-export function toSnakeCase<T>(input: T): SnakeCaseKeys<T> {
+export function toKebabCase(str: string) {
+  return str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+}
+
+export function objectKeysToSnakeCase<T extends object>(
+  input: T,
+): SnakeCaseKeys<T> {
   if (Array.isArray(input)) {
-    return input.map(toSnakeCase) as SnakeCaseKeys<T>;
+    return input.map(objectKeysToSnakeCase) as SnakeCaseKeys<T>;
   }
 
   if (input !== null && typeof input === "object" && !(input instanceof Date)) {
     return Object.fromEntries(
       Object.entries(input).map(([key, value]) => [
-        parseToSnakeCase(key),
-        toSnakeCase(value),
+        toSnakeCase(key),
+        objectKeysToSnakeCase(value),
       ]),
     ) as SnakeCaseKeys<T>;
   }

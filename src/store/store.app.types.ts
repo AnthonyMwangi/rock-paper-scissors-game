@@ -7,9 +7,9 @@ import {
 
 export type AppState = {
   hasHydrated: boolean;
-  playerStats?: Record<GameMode, LeaderboardEntry | undefined>;
+  playerStats: Record<GameMode, LeaderboardEntry | undefined>;
   playerWantsToStayAnonymous?: boolean;
-  playerResults: GameResult[];
+  playerResults: Record<GameMode, GameResult[]>;
   player?: GamePlayer;
   gameMode: GameMode;
 };
@@ -17,9 +17,10 @@ export type AppState = {
 export interface AppStore {
   app: AppState;
   setHasHydrated: (value: boolean) => void;
-  setPlayerInfo: (params: Pick<AppState, "player" | "playerStats">) => void;
+  setPlayerInfo: (player: GamePlayer) => void;
   setPlayerWantsToStayAnonymous: (value?: boolean) => void;
-  setPlayerResults: (results: GameResult[]) => void;
+  setPlayerResults: (gameMode: GameMode, results: GameResult[]) => void;
+  setPlayerStats: (gameMode: GameMode, stats: LeaderboardEntry) => void;
   setGameMode: (mode: GameMode) => void;
   resetApp: () => void;
 }

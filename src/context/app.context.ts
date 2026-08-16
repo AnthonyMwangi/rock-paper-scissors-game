@@ -18,7 +18,7 @@ export type AppContextValues = {
   onSelectPlayerOption: (option: GameOption) => void;
   currentPlayerChoice?: GameOption;
   currentGameResult?: GameResult;
-  currentPlayerResults: GameResult[];
+  currentPlayerScore: number;
   isModalOpen: ModalStatus;
 };
 
@@ -30,7 +30,7 @@ export const AppContext = createContext<AppContextValues>({
   onSelectPlayerOption: () => undefined,
   currentPlayerChoice: undefined,
   currentGameResult: undefined,
-  currentPlayerResults: [],
+  currentPlayerScore: 0,
   isModalOpen: {
     rules: false,
     leaderboard: false,
