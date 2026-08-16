@@ -39,8 +39,8 @@ export const Button: FC<ButtonProps> = ({
       onClick={() => onClick?.()}
       className={`button ${className}`.trim()}
       disabled={!!disabled || !!isLoading}
+      data-testid={id || className || label.toLowerCase()}
       data-label={label.toLowerCase()}
-      data-id={id}
     >
       {IconComponent ? (
         <IconComponent

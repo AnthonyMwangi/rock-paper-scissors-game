@@ -23,7 +23,7 @@ export const ToggleButton: FC<ToggleButtonProps> = ({
             isSelected: option.id === selectedOptionID,
             theme,
           })}
-          key={option.id || option.label}
+          key={option.label}
         />
       ))}
     </div>

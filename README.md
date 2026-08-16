@@ -29,7 +29,7 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
+- Solution URL: [frontendmentor.io/solutions/*-XIOL8A8-mB](https://www.frontendmentor.io/solutions/rock-paper-scissors-bonus-with-predictive-model-and-live-leaderboard-XIOL8A8-mB)
 - Live Site URL: [anthony-mwangi-rps.netlify.app](https://anthony-mwangi-rps.netlify.app/)
 
 ## My process

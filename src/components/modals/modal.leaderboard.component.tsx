@@ -122,7 +122,12 @@ export const LeaderboardModal: FC = () => {
             hasError: !!error,
           })}
         >
-          {isLoading ? <Icons.IconLoader className="lb-loading-icon" /> : null}
+          {isLoading ? (
+            <Icons.IconLoader
+              className="lb-loading-icon"
+              data-testid="lb-loader"
+            />
+          ) : null}
 
           {data.map((entry, index) => {
             const isPlayer = entry.uid === playerId;

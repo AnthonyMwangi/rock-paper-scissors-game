@@ -83,7 +83,10 @@ export const RulesModal: FC = () => {
       }}
     >
       <div className="md-content-image">
-        <RulesImageComponent className="md-image-icon" />
+        <RulesImageComponent
+          className="md-image-icon"
+          data-testid="rules-image"
+        />
       </div>
 
       <iframe

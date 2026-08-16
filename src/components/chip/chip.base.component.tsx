@@ -19,6 +19,8 @@ export const Chip: FC<ChipProps> = ({
 
   return (
     <button
+      data-option={option}
+      data-winning={isWinningChip}
       onClick={() => onSelectOption?.(option)}
       className={clsx("chip", {
         status: isWinningChip ? "winner" : "neutral",
