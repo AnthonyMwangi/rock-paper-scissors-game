@@ -113,46 +113,59 @@ export class Firebase {
     this.initAnalytics();
 
     return new Promise((resolve, reject) => {
-      onAuthStateChanged(this.auth, async (user) => {
-        const authUser: Writable<GamePlayer> = {
-          uid: user?.uid || "",
-          displayName: user?.displayName || "",
-          isAnonymous: !!user?.isAnonymous,
-          isReturning: true,
-        };
+      const unsubscribe = onAuthStateChanged(
+        this.auth,
+        async (user) => {
+          const authUser: Writable<GamePlayer> = {
+            uid: user?.uid || "",
+            displayName: user?.displayName || "",
+            isAnonymous: !!user?.isAnonymous,
+            isReturning: true,
+          };
 
-        // If there's no user info, sign-in
-        if (!authUser?.uid) {
-          await signInAnonymously(this.auth)
-            .then((cred) => {
-              authUser.uid = cred.user.uid || "";
-              authUser.displayName = cred.user.displayName || "";
-              authUser.isAnonymous = !!cred.user.isAnonymous;
-              authUser.isReturning = false;
-            })
-            .catch(reject);
-        }
+          // If there's no user info, sign-in
+          if (!authUser?.uid) {
+            await signInAnonymously(this.auth)
+              .then((cred) => {
+                authUser.uid = cred.user.uid || "";
+                authUser.displayName = cred.user.displayName || "";
+                authUser.isAnonymous = !!cred.user.isAnonymous;
+                authUser.isReturning = false;
+              })
+              .catch((e) => {
+                unsubscribe();
+                reject(e);
+              });
+          }
 
-        // Update global store
-        if (authUser?.uid) {
-          await this.fetchLeaderboard("bonus", authUser.uid);
-          await this.fetchLeaderboard("standard", authUser.uid);
+          // Update global store
+          if (authUser?.uid) {
+            await this.fetchLeaderboard("bonus", authUser.uid);
+            await this.fetchLeaderboard("standard", authUser.uid);
 
-          useGlobalStore.getState().setPlayerInfo(authUser);
-        }
+            useGlobalStore.getState().setPlayerInfo(authUser);
+          }
 
-        // Track guest sign-ins
-        if (this.analytics && authUser?.uid) {
-          setUserId(this.analytics, authUser.uid);
-          this.trackEvent("RPS_SESSION_START", authUser);
-        }
+          // Track guest sign-ins
+          if (this.analytics && authUser?.uid) {
+            setUserId(this.analytics, authUser.uid);
+            this.trackEvent("RPS_SESSION_START", authUser);
+          }
 
-        // Update history in the background
-        this.fetchPlayerResults("standard");
-        this.fetchPlayerResults("bonus");
+          // Update history in the background
+          this.fetchPlayerResults("standard");
+          this.fetchPlayerResults("bonus");
 
-        resolve(authUser);
-      });
+          // Stop listening after first trigger
+          unsubscribe();
+
+          resolve(authUser);
+        },
+        (error) => {
+          unsubscribe();
+          reject(error);
+        },
+      );
     });
   };
 

@@ -38,6 +38,7 @@ export const LeaderboardModal: FC = () => {
       try {
         setData([]);
         setIsLoading(true);
+        setIsPlayerRanked(true);
 
         const entries = await Firebase.fetchLeaderboard(gameModeFilter);
 

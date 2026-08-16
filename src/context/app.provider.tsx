@@ -89,26 +89,32 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const onSelectPlayerOption = useCallback(
     async (option: GameOption) => {
-      setCurrentPlayerChoice(option);
+      try {
+        setCurrentPlayerChoice(option);
 
-      if (gameplayTimeoutRef.current) {
-        clearTimeout(gameplayTimeoutRef.current);
+        if (gameplayTimeoutRef.current) {
+          clearTimeout(gameplayTimeoutRef.current);
+        }
+
+        if (autoplayTimeoutRef.current) {
+          clearTimeout(autoplayTimeoutRef.current);
+        }
+
+        const result = await Firebase.savePlayerChoice(option);
+
+        // Automatically play again if its a draw
+        if (result.outcome === "draw") {
+          autoplayTimeoutRef.current = setTimeout(() => {
+            onResetGame({ showUsernameModal: true });
+          }, AUTO_PLAY_TIMEOUT_SECONDS * 1000);
+        }
+
+        setCurrentGameResult(result);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error("RPS_SAVE_RESULT", (e as Error).message);
+        onResetGame({ showUsernameModal: false });
       }
-
-      if (autoplayTimeoutRef.current) {
-        clearTimeout(autoplayTimeoutRef.current);
-      }
-
-      const result = await Firebase.savePlayerChoice(option);
-
-      // Automatically play again if its a draw
-      if (result.outcome === "draw") {
-        autoplayTimeoutRef.current = setTimeout(() => {
-          onResetGame({ showUsernameModal: true });
-        }, AUTO_PLAY_TIMEOUT_SECONDS * 1000);
-      }
-
-      setCurrentGameResult(result);
     },
     [onResetGame],
   );

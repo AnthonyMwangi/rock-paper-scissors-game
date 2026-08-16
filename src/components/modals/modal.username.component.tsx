@@ -18,6 +18,7 @@ export const UsernameModal: FC = () => {
   );
 
   const [submitErrorCount, setSubmitErrorCount] = useState<number | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   /**
@@ -54,16 +55,28 @@ export const UsernameModal: FC = () => {
     if (error) return setSubmitErrorCount((c) => (c || 0) + 1);
 
     setIsLoading(true);
-    await Firebase.updateUserName(username).finally(() => {
-      setIsLoading(false);
-    });
+    setApiError(null);
+
+    const response = await Firebase.updateUserName(username)
+      .then(() => {
+        return { error: undefined };
+      })
+      .catch((e) => {
+        return { error: e.message };
+      });
+
+    setIsLoading(false);
+
+    if (response.error) {
+      return setApiError(response.error);
+    }
 
     return onToggleModal("username", {});
   }, [handleValidation, onToggleModal, username]);
 
   const validationErrorMessage = useMemo(
-    () => handleValidation(false),
-    [handleValidation],
+    () => apiError || handleValidation(false),
+    [apiError, handleValidation],
   );
 
   return (
