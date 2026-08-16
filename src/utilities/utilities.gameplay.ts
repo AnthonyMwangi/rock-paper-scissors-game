@@ -11,6 +11,7 @@ import {
   getBeatingMoves,
   getMappedOptions,
   getParams,
+  getPredictorAccuracy,
   getRandomMove,
   markovPredictor,
   spamPredictor,
@@ -43,6 +44,11 @@ export function predictAndCounterMove() {
     return { move: getRandomMove(options) };
   }
 
+  // Randomly pick a value to prevent the house being too aggressive
+  if (applyHouseEdge()) {
+    return { move: getRandomMove(options) };
+  }
+
   const predictors = [
     spamPredictor(),
     frequencyPredictor(),
@@ -55,12 +61,14 @@ export function predictAndCounterMove() {
     return { move: getRandomMove(options) };
   }
 
-  // aggregate scores per move
   const aggregateScores = getMappedOptions(options);
+  const predictorAccuracy = getPredictorAccuracy();
+
   const predictorScores = {} as Record<Predictor, number>;
 
   predictors.forEach((p) => {
-    const score = p.confidence * p.weight * p.accuracy;
+    const accuracy = predictorAccuracy[p.source];
+    const score = p.confidence * p.weight * accuracy;
     aggregateScores[p.prediction] += Number(score.toFixed(4));
     predictorScores[p.source] = Number(score.toFixed(4));
   });
@@ -77,28 +85,24 @@ export function predictAndCounterMove() {
     predictedMove = getRandomMove([ranked[0][0], ranked[1][0]]);
   }
 
-  // optional: house edge control (soft cap win rate)
-  const houseEdgeAdjustedMove = applyHouseEdge(predictedMove);
-
   const predictions = Object.fromEntries(
     predictors.map((p) => [
       p.source,
       {
         prediction: p.prediction,
         score: predictorScores[p.source],
+        accuracy: predictorAccuracy[p.source],
         confidence: p.confidence,
-        accuracy: p.accuracy,
         weight: p.weight,
       } satisfies GameResultPrediction,
     ]),
   ) as unknown as Record<Predictor, GameResultPrediction>;
 
   return {
-    move: getRandomMove(getBeatingMoves(houseEdgeAdjustedMove, options)),
+    move: getRandomMove(getBeatingMoves(predictedMove, options)),
     predictors: {
       predictedMove,
       predictedMoveConfidence: aggregateScores[predictedMove],
-      houseEdgeAdjustedMove,
       predictions,
     } satisfies GameResult["predictors"],
   };

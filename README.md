@@ -16,8 +16,6 @@ This is a solution to the [Rock, Paper, Scissors challenge on Frontend Mentor](h
 - [Author](#author)
 - [Acknowledgments](#acknowledgments)
 
-**Note: Delete this note and update the table of contents based on what sections you keep.**
-
 ## Overview
 
 ### The challenge
@@ -32,7 +30,7 @@ Users should be able to:
 ### Links
 
 - Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Live Site URL: [anthony-mwangi-rps.netlify.app](https://anthony-mwangi-rps.netlify.app/)
 
 ## My process
 
@@ -46,11 +44,13 @@ Users should be able to:
 
 ### What I learned
 
-Use this section to recap over some of your major learnings while working through this project. Writing these out and providing code samples of areas you want to highlight is a great way to reinforce your own knowledge.
+Working on this project was a solid refresher on a few fronts. I got reacquainted with just how much SCSS has evolved since I last leaned on it heavily, and I was reminded how useful the modulus operator can be — a small but powerful tool that comes up more often than you'd expect in DSA-style problems.
+
+Since this was my first vibe-coded app, I also came away with new ways of working with AI tools, particularly around how to structure prompts and when to trust versus double-check their output. Beyond the tooling, building the prediction model itself was probably the most fun part of the project — it gave me some genuine insight into how gaming platforms model and predict player behavior.
 
 ### Continued development
 
-I'd like to build a dynamic version of the game that allows users to specify their own custom options (complete with colors, icons, ordering and rules)
+I'd like to build a dynamic version of the game that allows users to play 1-v-1, and to specify their own custom options (complete with colors, icons, ordering and rules)
 
 ### Useful resources
 
@@ -59,13 +59,11 @@ I'd like to build a dynamic version of the game that allows users to specify the
 
 ### AI Collaboration
 
-Describe how you used AI tools (if any) during this project. This helps demonstrate your ability to work effectively with AI assistants.
+Using the `AGENTS.md` prompt as a baseline, I used both **ChatGPT** and **Claude** for debugging and, more importantly, to brainstorm ideas for the prediction algorithm.
 
-- What tools did you use (e.g., ChatGPT, Claude, GitHub Copilot)?
-- How did you use them (e.g., debugging, generating boilerplate, brainstorming solutions)?
-- What worked well? What didn't?
+I had a lot of success with ChatGPT on the final version of the prediction model — it was blazing fast and surfaced more relevant options. Its answers generally felt more useful than Claude's, which seemed to struggle with maintaining context and overall accuracy.
 
-**Note: Delete this note and the content above if you didn't use AI, or replace with your own experience.**
+Regardless of the AI tool used, though, it was important to audit everything and do a sanity check on the final solution.
 
 ## Author
 

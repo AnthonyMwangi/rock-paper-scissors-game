@@ -2,12 +2,15 @@ import { useGlobalStore } from "@/store";
 import {
   GameOptions,
   PREDICTION_ACCURACY_DECAY_RATE,
+  PREDICTION_ACCURACY_MIN_THRESHOLD,
   PREDICTION_ACCURACY_MULTIPLIER,
+  PREDICTION_HOUSE_WINNING_EDGE,
   PREDICTION_WEIGHTS,
   RESULTS_DOMINANCE_THRESHOLD,
 } from "./utilities.constants";
 import {
   GameOption,
+  GameResultPrediction,
   LeaderboardEntry,
   Prediction,
   Predictor,
@@ -53,50 +56,80 @@ export function getMappedOptions<T = number>(
 /**
  * Checks previous predictions to see how accurate they were
  * - recent games matter more thats why a decay rate is applied
- * -
  */
-export function getPredictorAccuracy(source: Predictor): number {
+export function getPredictorAccuracy() {
   const { options, playerHistory } = getParams();
 
-  let weightedTotal = 0;
-  let weightedAccurate = 0;
+  const scores = {} as Record<
+    Predictor,
+    {
+      total: number;
+      accurate: number;
+      count: number;
+    }
+  >;
+
+  const predictorAccuracy = {} as Record<Predictor, number>;
 
   playerHistory.forEach((result, index) => {
-    if (result.predictors?.predictions?.[source]) {
-      const decay = Math.pow(PREDICTION_ACCURACY_DECAY_RATE, index);
+    if (result?.predictors?.predictions) {
+      (
+        Object.entries(result.predictors.predictions) as [
+          Predictor,
+          GameResultPrediction,
+        ][]
+      ).forEach(([source, values]) => {
+        if (!scores[source]) {
+          scores[source] = { count: 0, total: 0, accurate: 0 };
+        }
 
-      const { prediction } = result.predictors?.predictions?.[source] || {};
+        const decay = Math.pow(PREDICTION_ACCURACY_DECAY_RATE, index);
 
-      if (prediction === result.playerChoice) {
-        weightedAccurate += decay;
-      }
+        if (values.prediction === result.playerChoice) {
+          scores[source].accurate += decay;
+        }
 
-      weightedTotal += decay;
+        scores[source].total += decay;
+        scores[source].count++;
+      });
     }
   });
 
-  if (weightedTotal > 0) {
-    const baselineAccuracy = 1 / options.length;
-    const weightedAccuracy = weightedAccurate / weightedTotal;
-    const normalizedAccuracy =
-      (weightedAccuracy - baselineAccuracy) / (1 - baselineAccuracy);
-    return 1 + normalizedAccuracy * PREDICTION_ACCURACY_MULTIPLIER;
-  }
+  Object.entries(scores).forEach(([source, predictions]) => {
+    if (predictions.count < PREDICTION_ACCURACY_MIN_THRESHOLD) {
+      predictorAccuracy[source as Predictor] = 1; // Neutral
+      return;
+    }
 
-  return 1; // Neutral
+    const baseAccuracy = 1 / options.length;
+    const weightedAccuracy = predictions.accurate / predictions.total;
+
+    const normalizedAccuracy =
+      (weightedAccuracy - baseAccuracy) / (1 - baseAccuracy);
+
+    predictorAccuracy[source as Predictor] =
+      1 + normalizedAccuracy * PREDICTION_ACCURACY_MULTIPLIER;
+  });
+
+  return predictorAccuracy;
 }
 
 /**
- * Occasionally weaken prediction (keep ~60% win rate)
+ * Occasionally weaken prediction
+ * - Allows players to maintain a decent win rate
+ * - Prevent the house from playing too aggressively
  */
-export function applyHouseEdge(prediction: GameOption) {
-  const { playerStats, options } = getParams();
+export function applyHouseEdge() {
+  const { playerStats } = getParams();
 
-  if (playerStats?.uid && playerStats.lossRate > 0.7) {
-    return Math.random() < 0.3 ? getRandomMove(options) : prediction;
+  if (
+    playerStats?.uid &&
+    playerStats.lossRate > PREDICTION_HOUSE_WINNING_EDGE
+  ) {
+    return Math.random() < 0.3;
   }
 
-  return prediction;
+  return false;
 }
 
 /**
@@ -147,9 +180,7 @@ export function spamPredictor(): Prediction | null {
     return {
       source: "spam",
       prediction: mostRecentMove.playerChoice,
-      accuracy: getPredictorAccuracy("spam"),
       weight: PREDICTION_WEIGHTS.spam,
-      params: { streak },
       confidence,
     };
   }
@@ -171,15 +202,12 @@ export function frequencyPredictor(): Prediction | null {
     (a, b) => b[1] - a[1],
   )[0] as [GameOption, number];
 
-  const threshold = Math.max(0, Math.min(1 - RESULTS_DOMINANCE_THRESHOLD, 1));
-  const weightedScore = predictionScore / playerHistory.length - threshold;
+  const weightedScore = predictionScore / playerHistory.length;
 
-  if (weightedScore > 0) {
+  if (weightedScore >= RESULTS_DOMINANCE_THRESHOLD) {
     return {
       source: "frequency",
       prediction: predictedMove,
-      accuracy: getPredictorAccuracy("frequency"),
-      params: { frequencyMap, threshold: 1 - threshold },
       weight: PREDICTION_WEIGHTS.frequency,
       confidence: weightedScore,
     };
@@ -200,8 +228,8 @@ export function markovPredictor(): Prediction | null {
     });
 
     // build transition matrix
-    for (let i = 1; i < playerHistory.length; i++) {
-      const prev = playerHistory?.[i - 1]?.playerChoice;
+    for (let i = 0; i < playerHistory.length - 1; i++) {
+      const prev = playerHistory?.[i + 1]?.playerChoice;
       const curr = playerHistory?.[i]?.playerChoice;
       markovMap[prev][curr]++;
     }
@@ -217,8 +245,6 @@ export function markovPredictor(): Prediction | null {
       return {
         source: "markov",
         prediction: predictedMove,
-        accuracy: getPredictorAccuracy("markov"),
-        params: { markovMap: nextMove, predictedMoveScore },
         confidence: predictedMoveScore / totalScore,
         weight: PREDICTION_WEIGHTS.markov,
       };
@@ -240,18 +266,10 @@ export function behavioralPredictor(): Prediction | null {
 
   const nextMovePrediction: Prediction = {
     source: "behavior",
-    params: { mostRecentMove },
-    accuracy: getPredictorAccuracy("behavior"),
-    prediction: null as unknown as GameOption,
+    prediction: mostRecentMove.playerChoice,
     weight: PREDICTION_WEIGHTS.behavior,
-    confidence: 0,
+    confidence: 0.3, // Default (draw)
   };
-
-  // Default (draw)
-  if (mostRecentMove?.outcome === "draw") {
-    nextMovePrediction.prediction = mostRecentMove.playerChoice;
-    nextMovePrediction.confidence = 0.3; // draw bias
-  }
 
   // win → repeat
   if (mostRecentMove?.outcome === "win") {
@@ -266,7 +284,7 @@ export function behavioralPredictor(): Prediction | null {
       options,
     );
 
-    nextMovePrediction.prediction = movesThatBeatOpponentChoice[0];
+    nextMovePrediction.prediction = getRandomMove(movesThatBeatOpponentChoice);
     nextMovePrediction.confidence = 0.5; // switch bias
   }
 

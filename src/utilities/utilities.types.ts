@@ -31,7 +31,7 @@ export type GamePlayer = Pick<User, "uid" | "displayName" | "isAnonymous"> & {
 
 export type GameResultPrediction = Required<
   Omit<Prediction, "source" | "params">
->;
+> & { accuracy: number };
 
 export type GameResult = {
   id: string | null;
@@ -45,7 +45,6 @@ export type GameResult = {
   predictors?: {
     predictedMove: GameOption;
     predictedMoveConfidence: number;
-    houseEdgeAdjustedMove: GameOption;
     predictions: Record<Predictor, GameResultPrediction>;
   };
 };
@@ -86,12 +85,10 @@ export interface LeaderboardEntry {
 }
 
 export type Prediction = {
-  accuracy: number;
   prediction: GameOption;
   confidence: number; // 0 → 1
   weight: number; // base importance
   source: Predictor;
-  params?: Record<string, unknown>;
   score?: number;
 };
 
