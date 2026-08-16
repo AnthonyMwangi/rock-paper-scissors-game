@@ -1,28 +1,7 @@
-import { GameModal, GameMode, GameOption, GameResult } from "@/utilities";
 import { createContext, useContext } from "react";
+import { AppContextValues } from "./app.types";
 
-export type OnResetGameOptions = {
-  showUsernameModal: boolean;
-};
-
-export type ModalStatus = Record<Lowercase<GameModal>, boolean>;
-
-export type AppContextValues = {
-  uid: string;
-  gameMode: GameMode;
-  onResetGame: (options: OnResetGameOptions) => void;
-  onToggleModal: (
-    modal: Lowercase<GameModal>,
-    options?: Record<string, unknown>,
-  ) => void;
-  onSelectPlayerOption: (option: GameOption) => void;
-  currentPlayerChoice?: GameOption;
-  currentGameResult?: GameResult;
-  currentPlayerScore: number;
-  isModalOpen: ModalStatus;
-};
-
-export const AppContext = createContext<AppContextValues>({
+export const initialAppContext = {
   uid: "",
   gameMode: "standard",
   onResetGame: () => undefined,
@@ -36,6 +15,8 @@ export const AppContext = createContext<AppContextValues>({
     leaderboard: false,
     username: false,
   },
-});
+} satisfies AppContextValues;
+
+export const AppContext = createContext<AppContextValues>(initialAppContext);
 
 export const useAppContext = () => useContext(AppContext);

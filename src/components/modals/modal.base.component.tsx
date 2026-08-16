@@ -26,7 +26,7 @@ export const ModalComponent: FC<ModalComponentProps> = ({
   const contentWrapperRef = useLayout((e) => onLayout?.(e));
 
   return (
-    <div className="modal">
+    <div className="modal" data-testid={`${modalName.toLowerCase()}-modal`}>
       <div id={modalName} className={clsx("md-content", classNameModifiers)}>
         <button
           className="md-close-button"

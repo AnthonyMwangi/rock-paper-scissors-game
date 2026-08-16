@@ -12,6 +12,7 @@ import {
   GameOption,
   GameResultPrediction,
   LeaderboardEntry,
+  ParsedLeaderboardEntry,
   Prediction,
   Predictor,
 } from "./utilities.types";
@@ -294,7 +295,9 @@ export function behavioralPredictor(): Prediction | null {
 /**
  * Parse leaderboard entry
  */
-export function parseLeaderboardEntry(entry: LeaderboardEntry) {
+export function parseLeaderboardEntry(
+  entry: LeaderboardEntry,
+): ParsedLeaderboardEntry | undefined {
   if (!entry?.uid) return;
   return {
     ...entry,

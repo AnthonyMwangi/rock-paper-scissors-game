@@ -39,28 +39,40 @@ export const Footer: FC = () => {
           label="Leaderboard"
           onClick={() => onToggleModal("leaderboard")}
           className="outline-button"
+          id="leaderboard-modal-button"
         />
+
         <Button
           label="Profile"
+          id="username-modal-button"
           onClick={() => onToggleModal("username")}
           className="outline-button"
           icon="IconUser"
         />
+
         <Button
           label="Rules"
           onClick={() => onToggleModal("rules")}
           className="outline-button"
+          id="rules-modal-button"
         />
       </div>
 
       <button
+        data-testid="menu-button"
         onClick={() => setIsMenuOpen((v) => !v)}
         className="fab-action-button"
       >
         {isMenuOpen ? (
-          <Icons.IconClose className="fab-action-icon" />
+          <Icons.IconClose
+            className="fab-action-icon"
+            data-testid="menu-close-icon"
+          />
         ) : (
-          <Icons.IconMenu className="fab-action-icon" />
+          <Icons.IconMenu
+            className="fab-action-icon"
+            data-testid="menu-open-icon"
+          />
         )}
       </button>
     </footer>

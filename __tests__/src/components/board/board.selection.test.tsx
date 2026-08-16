@@ -1,18 +1,18 @@
+import { GameBoardSelection } from "@/components/board/board.selection.component";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import { GameBoardSelection } from "../../../src/components/board/board.selection.component";
-import { AppContextValues } from "../../../src/context";
-
-const mockContext: Partial<AppContextValues> = {
-  gameMode: "standard",
-  onSelectPlayerOption: vi.fn(),
-};
-
-vi.mock("@/context/app.context", () => ({
-  useAppContext: () => mockContext,
-}));
+import { MockAppContext } from "mockUtils/mockAppContext";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 describe("GameBoardSelection", () => {
+  const mockSelectPlayerOption = vi.fn();
+
+  beforeAll(() => {
+    MockAppContext.update({
+      onSelectPlayerOption: mockSelectPlayerOption,
+      gameMode: "standard",
+    });
+  });
+
   it("should render all standard game options", () => {
     render(<GameBoardSelection />);
 
@@ -20,20 +20,20 @@ describe("GameBoardSelection", () => {
   });
 
   it("should render all bonus game options", () => {
-    mockContext.gameMode = "bonus";
+    MockAppContext.update({ gameMode: "bonus" });
 
     render(<GameBoardSelection />);
 
     expect(screen.getAllByRole("button")).toHaveLength(5);
-
-    mockContext.gameMode = "standard";
   });
 
   it("should pass option selection to the context handler", () => {
+    MockAppContext.update({ gameMode: "standard" });
+
     render(<GameBoardSelection />);
 
     fireEvent.click(screen.getAllByRole("button")[0]);
 
-    expect(mockContext.onSelectPlayerOption).toHaveBeenCalledWith("rock");
+    expect(mockSelectPlayerOption).toHaveBeenCalledWith("rock");
   });
 });

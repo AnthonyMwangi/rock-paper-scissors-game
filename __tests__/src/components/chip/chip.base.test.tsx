@@ -1,6 +1,6 @@
+import { Chip } from "@/components";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Chip } from "../../../src/components";
 
 describe("Chip", () => {
   it("should render a button", () => {

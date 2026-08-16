@@ -61,5 +61,3 @@ export const createAppSlice: StateCreator<Store, [], [], Store> = (
     set(() => ({ app: initialAppState }));
   },
 });
-
-export type AppStore = Store;

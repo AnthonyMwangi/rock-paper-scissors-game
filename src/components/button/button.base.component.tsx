@@ -30,21 +30,22 @@ export const Button: FC<ButtonProps> = ({
   }, [icon, isLoading]);
 
   // Handler to match icon height to span font size
-  const spanLayoutRef = useLayout((e) =>
-    setIconSize(`${e.layout.height * 1.1}px`),
-  );
+  const spanLayoutRef = useLayout((e) => {
+    setIconSize(`${e.layout.height * 1.1}px`);
+  });
 
   return (
     <button
       onClick={() => onClick?.()}
-      className={`button ${className}`.trim()}
       disabled={!!disabled || !!isLoading}
-      data-testid={id || className || label.toLowerCase()}
+      className={`button ${className}`.trim()}
+      data-testid={`${(id || label.toLowerCase()).replace(" ", "-")}`}
       data-label={label.toLowerCase()}
     >
       {IconComponent ? (
         <IconComponent
-          style={{ width: iconSize, height: "auto" }}
+          style={{ width: iconSize }}
+          data-testid="button-icon"
           className="button-icon"
         />
       ) : null}

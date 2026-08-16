@@ -10,7 +10,7 @@ export const Header: FC = () => {
 
   return (
     <header className="header">
-      <LogoComponent className="logo" />
+      <LogoComponent className="logo" data-testid={`${gameMode}-logo`} />
 
       <div className="score-card">
         <span className="score-card-label">SCORE</span>

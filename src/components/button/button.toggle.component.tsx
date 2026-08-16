@@ -15,11 +15,16 @@ export const ToggleButton: FC<ToggleButtonProps> = ({
   theme = "light",
 }) => {
   return (
-    <div className={clsx("toggle-button-wrapper", { theme })}>
+    <div
+      className={clsx("toggle-button-wrapper", { theme })}
+      data-testid="toggle-button-wrapper"
+    >
       {options.map((option) => (
         <Button
           {...option}
+          id={`${option.id}-toggle-button`}
           className={clsx("toggle-button", {
+            disabled: option.disabled,
             isSelected: option.id === selectedOptionID,
             theme,
           })}

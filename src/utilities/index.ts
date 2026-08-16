@@ -1,3 +1,4 @@
+export * from "./objectUtils";
 export * from "./utilities.clsx";
 export * from "./utilities.constants";
 export * from "./utilities.firebase";

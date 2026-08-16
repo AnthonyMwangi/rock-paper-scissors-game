@@ -76,7 +76,7 @@ export const UsernameModal: FC = () => {
         </label>
 
         <input
-          type="name"
+          type="text"
           key={submitErrorCount}
           className={clsx("md-input", {
             hasError: !!submitErrorCount && !!validationErrorMessage,
@@ -84,18 +84,22 @@ export const UsernameModal: FC = () => {
           placeholder="Enter your name"
           onChange={handleUsernameInput}
           id="display-name-input"
+          data-testid="username-input"
           autoComplete="name"
           disabled={isLoading}
           value={username}
         />
 
-        <span className="md-input-error">{validationErrorMessage}</span>
+        <span className="md-input-error" data-testid="input-error">
+          {validationErrorMessage}
+        </span>
 
         <Button
           label="Update Username"
           onClick={handleSaveUsername}
           className={clsx("md-save-button", { isLoading })}
           isLoading={isLoading}
+          id="save-button"
         />
       </div>
     </ModalComponent>

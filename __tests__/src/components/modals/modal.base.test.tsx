@@ -1,28 +1,18 @@
+import { ModalComponent } from "@/components/modals/modal.base.component";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import { ModalComponent } from "../../../src/components/modals/modal.base.component";
-import { AppContextValues } from "../../../src/context";
-
-const mockContext: Partial<AppContextValues> = {
-  gameMode: "standard",
-  onToggleModal: vi.fn(),
-};
-
-vi.mock("@/context", () => ({
-  useAppContext: () => mockContext,
-}));
-
-vi.mock("@/hooks", () => ({
-  useLayout: () => () => {},
-}));
-
-vi.mock("@/images", () => ({
-  Icons: {
-    IconClose: () => <span />,
-  },
-}));
+import { MockAppContext } from "mockUtils/mockAppContext";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 describe("ModalComponent", () => {
+  const mockToggleModal = vi.fn();
+
+  beforeAll(() => {
+    MockAppContext.update({
+      gameMode: "standard",
+      onToggleModal: mockToggleModal,
+    });
+  });
+
   it("should render its children", () => {
     render(
       <ModalComponent modalName="rules">
@@ -54,7 +44,7 @@ describe("ModalComponent", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "" }));
 
-    expect(mockContext.onToggleModal).toHaveBeenCalledWith("rules", {
+    expect(mockToggleModal).toHaveBeenCalledWith("rules", {
       mode: "standard",
     });
   });

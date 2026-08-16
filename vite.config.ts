@@ -11,6 +11,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      mockUtils: path.resolve(__dirname, "./__tests__/utils"),
     },
   },
   css: {

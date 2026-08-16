@@ -1,19 +1,13 @@
+import { RulesModal } from "@/components/modals/modal.rules.component";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import { RulesModal } from "../../../src/components/modals/modal.rules.component";
-
-const setState = vi.fn();
-const trackEvent = vi.fn();
-
-vi.mock("@/store", () => ({
-  useGlobalStore: vi.fn(() => "standard"),
-}));
-
-vi.mock("@/hooks/useLayout.ts", () => ({
-  useLayout: vi.fn(),
-}));
+import { MockStore } from "mockUtils/mockStore";
+import { beforeAll, describe, expect, it } from "vitest";
 
 describe("RulesModal", () => {
+  beforeAll(() => {
+    MockStore.update({ gameMode: "standard" });
+  });
+
   it("should render the rules title", () => {
     render(<RulesModal />);
 

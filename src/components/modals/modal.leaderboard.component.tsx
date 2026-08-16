@@ -22,49 +22,53 @@ export const LeaderboardModal: FC = () => {
   const [gameModeFilter, setGameModeFilter] = useState(globalGameMode);
 
   const [isPlayerRanked, setIsPlayerRanked] = useState<boolean>(true);
-  const [wrapperLayout, setWrapperLayout] = useState<Layout>();
+  const [wrapperHeight, setWrapperHeight] = useState<number>();
 
   const handleLayout = useCallback(
     (layout: Layout) => {
-      if (!wrapperLayout?.height) {
-        setWrapperLayout(layout);
+      if (wrapperHeight !== null) {
+        setWrapperHeight(layout.height);
       }
     },
-    [wrapperLayout?.height],
+    [wrapperHeight],
   );
 
-  const fetchLeaderboardData = useCallback(async () => {
-    try {
-      setData([]);
-      setIsLoading(true);
+  const fetchLeaderboardData = useCallback(
+    async (filterMode: GameMode) => {
+      try {
+        setData([]);
+        setIsLoading(true);
 
-      const entries = await Firebase.fetchLeaderboard(gameModeFilter);
+        const entries = await Firebase.fetchLeaderboard(gameModeFilter);
 
-      // If user is not ranked show their stats at the end
-      if (playerId && !entries.find((entry) => entry.uid === playerId)) {
-        const [userEntry] = await Firebase.fetchLeaderboard(
-          gameModeFilter,
-          playerId,
+        // If user is not ranked show their stats at the end
+        if (playerId && !entries.find((entry) => entry?.uid === playerId)) {
+          const [userEntry] = await Firebase.fetchLeaderboard(
+            gameModeFilter,
+            playerId,
+          );
+          if (userEntry?.uid) entries.push(userEntry);
+          setIsPlayerRanked(false);
+        }
+
+        setData(entries);
+        setGameModeFilter(filterMode);
+      } catch (e: unknown) {
+        setError(
+          `Uh oh! Something went wrong, Please close the board and try again — ${(e as Error).message}`,
         );
-        if (userEntry?.uid) entries.push(userEntry);
-        setIsPlayerRanked(false);
+      } finally {
+        setIsLoading(false);
       }
-
-      setData(entries);
-    } catch (e: unknown) {
-      setError(
-        `Uh oh! Something went wrong, Please close the board and try again — ${(e as Error).message}`,
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, [gameModeFilter, playerId]);
+    },
+    [gameModeFilter, playerId],
+  );
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchLeaderboardData();
+    fetchLeaderboardData(useGlobalStore.getState().app.gameMode);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameModeFilter]);
+  }, []);
 
   const getOverlayCopy = useCallback(
     (entry: LeaderboardEntry, rank: number) => {
@@ -84,11 +88,11 @@ export const LeaderboardModal: FC = () => {
   const gameModes = useMemo(() => {
     return Object.entries(GameModeName).map(([name, label]) => ({
       id: name,
-      onClick: () => setGameModeFilter(name as GameMode),
+      onClick: () => fetchLeaderboardData(name as GameMode),
       disabled: isLoading,
       label,
     }));
-  }, [isLoading]);
+  }, [fetchLeaderboardData, isLoading]);
 
   const listRef = useLayout((e) => handleLayout(e.layout));
 
@@ -96,7 +100,8 @@ export const LeaderboardModal: FC = () => {
     <ModalComponent title="Leaderboard" modalName="leaderboard">
       <div
         ref={listRef}
-        style={{ height: wrapperLayout?.height }}
+        style={{ height: wrapperHeight }}
+        data-testid="lb-list-wrapper"
         className="lb-list-wrapper"
       >
         <p className="lb-description">
@@ -116,8 +121,11 @@ export const LeaderboardModal: FC = () => {
 
         <ul
           data-error={error}
+          data-testid="lb-list-container"
           className={clsx("lb-list-container", {
+            filter: gameModeFilter,
             isEmpty: !isLoading && !data?.length,
+            hasData: !isLoading && !error && data?.length,
             isLoading: isLoading,
             hasError: !!error,
           })}
@@ -175,7 +183,9 @@ export const LeaderboardModal: FC = () => {
 
                 {rankCopy ? (
                   <div className="lb-overlay-wrapper">
-                    <em className="lb-entry-overlay">{rankCopy}</em>
+                    <em className="lb-entry-overlay" data-testid="lb-overlay">
+                      {rankCopy}
+                    </em>
                   </div>
                 ) : null}
               </li>

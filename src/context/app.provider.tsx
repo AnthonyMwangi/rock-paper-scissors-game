@@ -1,3 +1,4 @@
+import { ModalStatus, OnResetGameOptions } from "@/context/app.types";
 import { Icons } from "@/images";
 import { useGlobalStore } from "@/store";
 import {
@@ -16,7 +17,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { AppContext, ModalStatus, OnResetGameOptions } from "./app.context";
+import { AppContext } from "./app.context";
 
 export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const gameplayTimeoutRef = useRef<NodeJS.Timeout>(null);
@@ -58,7 +59,12 @@ export const AppContextProvider: FC<PropsWithChildren> = ({ children }) => {
           );
         }
 
-        return { ...currValue, [modal]: isModalOpen };
+        return {
+          ...(Object.fromEntries(
+            Object.entries(currValue).map(([key]) => [key, false]),
+          ) as ModalStatus),
+          [modal]: isModalOpen,
+        };
       });
     },
     [],

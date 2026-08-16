@@ -1,6 +1,6 @@
+import { LabeledChip } from "@/components/chip/chip.labeled.component";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { LabeledChip } from "../../../src/components/chip/chip.labeled.component";
 
 describe("LabeledChip", () => {
   it("should render the supplied label", () => {

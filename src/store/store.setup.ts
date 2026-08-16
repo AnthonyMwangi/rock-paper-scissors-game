@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { AppStore, createAppSlice, initialAppState } from "./store.app.slice";
+import { createAppSlice, initialAppState } from "./store.app.slice";
+import { AppStore } from "./store.app.types";
 
 type GlobalStore = AppStore;
 

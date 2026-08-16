@@ -1,10 +1,6 @@
+import { ToggleButton } from "@/components";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { ToggleButton } from "../../../src/components";
-
-vi.mock("@/hooks/useLayout.ts", () => ({
-  useLayout: vi.fn(),
-}));
 
 describe("ToggleButton", () => {
   const mockStandardOption = {

@@ -228,9 +228,10 @@ export class Firebase {
 
         if (parsedPlayerEntry?.uid) {
           useGlobalStore.getState().setPlayerStats(gameMode, parsedPlayerEntry);
+          return [parsedPlayerEntry];
         }
 
-        return [parsedPlayerEntry];
+        return [];
       }
 
       const snapshot = await getDocs(

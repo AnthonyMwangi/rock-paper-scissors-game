@@ -84,6 +84,11 @@ export interface LeaderboardEntry {
   netScore: number;
 }
 
+export type ParsedLeaderboardEntry = LeaderboardEntry & {
+  lossRate: number;
+  winRate: number;
+};
+
 export type Prediction = {
   prediction: GameOption;
   confidence: number; // 0 → 1
